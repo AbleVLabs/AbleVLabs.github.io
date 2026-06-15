@@ -3,38 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>lana — Node Alignment Console · AbleVLabs</title>
+<title>lana — Logical Attribute Node Aligner · AbleVLabs</title>
+<meta name="description" content="lana: a Python library that weighs two records attribute by attribute and tells you which one wins. By AbleVLabs.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#07090f;
-    --panel:#0d1320;
-    --panel-2:#111829;
-    --line:rgba(255,255,255,.08);
-    --line-strong:rgba(255,255,255,.16);
-    --ink:#e8ecf4;
-    --muted:#6b7689;
-    --a:#35c9ff;          /* combatant A — electric cyan */
-    --b:#ffc24b;          /* combatant B — amber gold     */
-    --live:#38e08a;       /* status green, matches site   */
-    --a-soft:rgba(53,201,255,.14);
-    --b-soft:rgba(255,194,75,.14);
+    --bg:#07090f; --panel:#0d1320; --panel-2:#111829;
+    --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.16);
+    --ink:#e8ecf4; --muted:#6b7689;
+    --a:#35c9ff; --b:#ffc24b; --live:#38e08a;
+    --a-soft:rgba(53,201,255,.14); --b-soft:rgba(255,194,75,.14);
   }
   *{box-sizing:border-box}
-  html,body{margin:0}
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Rajdhani',system-ui,sans-serif;
-    line-height:1.45;
-    overflow-x:hidden;
-    -webkit-font-smoothing:antialiased;
-  }
-  /* faint static starfield, native to the AbleVLabs universe */
-  body::before{
-    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Rajdhani',system-ui,sans-serif;
+    line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
     background:
       radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.5), transparent),
       radial-gradient(1px 1px at 75% 18%, rgba(255,255,255,.35), transparent),
@@ -42,421 +28,435 @@
       radial-gradient(1px 1px at 88% 64%, rgba(255,255,255,.3), transparent),
       radial-gradient(1px 1px at 12% 84%, rgba(255,255,255,.3), transparent),
       radial-gradient(2px 2px at 60% 44%, rgba(53,201,255,.25), transparent);
-    background-repeat:no-repeat;
-  }
-  .wrap{position:relative;z-index:1;max-width:980px;margin:0 auto;padding:46px 22px 70px}
+    background-repeat:no-repeat}
+  .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 22px}
 
-  /* ---------- header ---------- */
-  .eyebrow{
-    font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.18em;
-    color:var(--muted);text-transform:uppercase;margin:0 0 14px;
-  }
+  /* top nav */
+  nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(10px);
+    background:rgba(7,9,15,.78);border-bottom:1px solid var(--line)}
+  nav .bar{max-width:920px;margin:0 auto;padding:13px 22px;display:flex;
+    justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  nav a{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;
+    color:var(--muted);text-decoration:none;transition:.15s}
+  nav a:hover{color:var(--a)}
+  nav .home{color:var(--ink);font-weight:700}
+  nav .navlinks{display:flex;gap:18px;flex-wrap:wrap}
+
+  .eyebrow{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.18em;
+    color:var(--muted);text-transform:uppercase;margin:0 0 14px}
   .eyebrow .dot{color:var(--live)}
-  h1{
-    font-family:'Bebas Neue',sans-serif;font-weight:400;
-    font-size:clamp(64px,14vw,128px);line-height:.86;letter-spacing:.02em;
-    margin:0;display:flex;align-items:flex-end;gap:.12em;
-  }
-  h1 .v{color:var(--a)}
-  .subtitle{
-    font-size:clamp(15px,2.4vw,19px);font-weight:600;letter-spacing:.04em;
-    color:var(--muted);margin:6px 0 0;text-transform:uppercase;
-  }
-  .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;align-items:center}
-  .pill{
-    font-family:'Space Mono',monospace;font-size:13px;
-    border:1px solid var(--line-strong);border-radius:2px;
-    padding:9px 14px;color:var(--ink);text-decoration:none;display:inline-flex;
-    gap:8px;align-items:center;background:var(--panel);transition:.18s;
-  }
+
+  /* hero */
+  header{padding:64px 0 18px}
+  h1{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(72px,16vw,150px);
+    line-height:.84;letter-spacing:.02em;margin:0}
+  .subtitle{font-size:clamp(16px,2.6vw,21px);font-weight:600;letter-spacing:.05em;
+    color:var(--muted);margin:8px 0 0;text-transform:uppercase}
+  .lede{font-size:clamp(17px,2.6vw,20px);max-width:60ch;margin:22px 0 0;color:var(--ink)}
+  .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;align-items:center}
+  .pill{font-family:'Space Mono',monospace;font-size:13px;border:1px solid var(--line-strong);
+    border-radius:2px;padding:9px 14px;color:var(--ink);text-decoration:none;display:inline-flex;
+    gap:8px;align-items:center;background:var(--panel);transition:.18s;cursor:pointer}
   .pill.install{color:var(--live);border-color:rgba(56,224,138,.35)}
   .pill.install::before{content:"$";color:var(--muted)}
   .pill:hover{border-color:var(--a);color:var(--a)}
   .pill.install:hover{color:var(--live);border-color:var(--live)}
 
-  /* ---------- matchup tabs ---------- */
-  .tabs{
-    display:flex;flex-wrap:wrap;gap:0;margin:42px 0 0;border:1px solid var(--line);
-    border-radius:3px;overflow:hidden;background:var(--panel);
-  }
-  .tab{
-    flex:1 1 0;min-width:120px;border:0;background:transparent;color:var(--muted);
+  /* section scaffolding */
+  section{padding:46px 0;border-top:1px solid var(--line)}
+  .seclabel{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 22px}
+  h2{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(34px,6vw,52px);
+    line-height:.95;letter-spacing:.02em;margin:0 0 16px}
+  p.body{font-size:17px;max-width:64ch;margin:0 0 16px}
+  .accent-a{color:var(--a)} .accent-b{color:var(--b)}
+  strong{color:var(--ink);font-weight:700}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .chip{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);
+    border:1px solid var(--line);border-radius:2px;padding:6px 10px;background:var(--panel)}
+  .chip b{color:var(--a);font-weight:400}
+
+  /* how-it-works */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px}
+  .step{border:1px solid var(--line);border-radius:3px;background:var(--panel);padding:20px}
+  .step .n{font-family:'Space Mono',monospace;font-size:12px;color:var(--a);letter-spacing:.1em}
+  .step h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:18px;margin:8px 0 6px;letter-spacing:.02em}
+  .step p{font-size:14.5px;color:var(--muted);margin:0}
+  .note{margin-top:18px;font-size:15px;color:var(--muted);border-left:2px solid var(--line-strong);padding-left:14px}
+
+  /* ====== interactive console (verified engine) ====== */
+  .tabs{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:3px 3px 0 0;
+    overflow:hidden;background:var(--panel)}
+  .tab{flex:1 1 0;min-width:120px;border:0;background:transparent;color:var(--muted);
     font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:.08em;
     text-transform:uppercase;padding:15px 12px;cursor:pointer;transition:.18s;
-    border-right:1px solid var(--line);text-align:left;
-  }
+    border-right:1px solid var(--line);text-align:left}
   .tab:last-child{border-right:0}
   .tab .num{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);display:block;margin-bottom:3px}
-  .tab:hover{color:var(--ink);background:var(--panel-2)}
-  .tab.active{color:var(--ink);background:var(--panel-2)}
+  .tab:hover,.tab.active{color:var(--ink);background:var(--panel-2)}
   .tab.active .num{color:var(--a)}
-
-  /* ---------- console ---------- */
-  .console{
-    border:1px solid var(--line);border-top:0;border-radius:0 0 3px 3px;
-    background:linear-gradient(180deg,var(--panel-2),var(--panel));
-    padding:28px 24px 26px;
-  }
-  .nameplate{
-    display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
-  }
+  .console{border:1px solid var(--line);border-top:0;border-radius:0 0 3px 3px;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));padding:28px 24px 26px}
+  .nameplate{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
   .fighter{flex:1 1 0;min-width:0}
-  .fighter .role{
-    font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;
-    text-transform:uppercase;color:var(--muted);margin-bottom:2px;
-  }
-  .fighter .fname{
-    font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,6vw,46px);
-    line-height:.95;letter-spacing:.02em;
-  }
+  .fighter .role{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+  .fighter .fname{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,6vw,46px);line-height:.95;letter-spacing:.02em}
   .fighter.A .fname{color:var(--a)}
-  .fighter.B{text-align:right}
-  .fighter.B .fname{color:var(--b)}
-  .vs{
-    font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);
-    padding-bottom:8px;letter-spacing:.1em;
-  }
-
-  /* ---------- balance beam (signature) ---------- */
+  .fighter.B{text-align:right} .fighter.B .fname{color:var(--b)}
+  .vs{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);padding-bottom:8px;letter-spacing:.1em}
   .beam-wrap{margin:24px 0 6px}
-  .beam{
-    height:14px;border-radius:2px;overflow:hidden;display:flex;
-    border:1px solid var(--line-strong);background:var(--bg);
-  }
+  .beam{height:14px;border-radius:2px;overflow:hidden;display:flex;border:1px solid var(--line-strong);background:var(--bg)}
   .beam .seg{height:100%;transition:width .55s cubic-bezier(.6,.02,.1,1)}
   .beam .segA{background:linear-gradient(90deg,rgba(53,201,255,.55),var(--a))}
   .beam .segB{background:linear-gradient(90deg,var(--b),rgba(255,194,75,.55))}
-  .beam-scale{
-    display:flex;justify-content:space-between;margin-top:9px;
-    font-family:'Space Mono',monospace;font-size:13px;
-  }
-  .beam-scale .pA{color:var(--a)}
-  .beam-scale .pB{color:var(--b)}
-  .verdict{
-    text-align:center;margin:18px 0 2px;font-family:'Bebas Neue',sans-serif;
-    font-size:clamp(22px,4vw,30px);letter-spacing:.04em;
-  }
+  .beam-scale{display:flex;justify-content:space-between;margin-top:9px;font-family:'Space Mono',monospace;font-size:13px}
+  .beam-scale .pA{color:var(--a)} .beam-scale .pB{color:var(--b)}
+  .verdict{text-align:center;margin:18px 0 2px;font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,30px);letter-spacing:.04em}
   .verdict .who{transition:color .3s}
-  .verdict.win-A .who{color:var(--a)}
-  .verdict.win-B .who{color:var(--b)}
-  .verdict.win-tie .who{color:var(--ink)}
-
-  /* ---------- section labels ---------- */
-  .seclabel{
-    font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--muted);margin:30px 0 12px;
-    border-top:1px solid var(--line);padding-top:18px;
-  }
-  .hint{color:var(--muted);font-size:13px;font-weight:500;text-transform:none;letter-spacing:0}
-
-  /* ---------- priority controls ---------- */
-  .ctrl{
-    display:grid;grid-template-columns:1fr 180px 28px;align-items:center;gap:14px;
-    padding:9px 0;border-bottom:1px solid var(--line);
-  }
+  .verdict.win-A .who{color:var(--a)} .verdict.win-B .who{color:var(--b)} .verdict.win-tie .who{color:var(--ink)}
+  .consolelabel{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);margin:30px 0 12px;border-top:1px solid var(--line);padding-top:18px}
+  .consolelabel .hint{color:var(--muted);font-size:13px;font-weight:500;text-transform:none;letter-spacing:0}
+  .ctrl{display:grid;grid-template-columns:1fr 180px 28px;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid var(--line)}
   .ctrl:last-child{border-bottom:0}
   .ctrl .label{font-weight:600;font-size:15.5px;letter-spacing:.02em}
-  .ctrl .tag{
-    font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.08em;
-    color:var(--b);border:1px solid rgba(255,194,75,.4);border-radius:2px;
-    padding:1px 5px;margin-left:8px;text-transform:uppercase;vertical-align:middle;
-  }
-  .ctrl .pval{
-    font-family:'Space Mono',monospace;font-size:15px;color:var(--ink);text-align:right;
-  }
-  input[type=range]{
-    -webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;
-    background:var(--line-strong);outline:none;cursor:pointer;
-  }
-  input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;
-    background:var(--ink);border:2px solid var(--bg);box-shadow:0 0 0 1px var(--line-strong);
-    transition:.15s;
-  }
-  input[type=range]::-moz-range-thumb{
-    width:16px;height:16px;border-radius:50%;background:var(--ink);
-    border:2px solid var(--bg);box-shadow:0 0 0 1px var(--line-strong);cursor:pointer;
-  }
+  .ctrl .tag{font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.08em;color:var(--b);
+    border:1px solid rgba(255,194,75,.4);border-radius:2px;padding:1px 5px;margin-left:8px;text-transform:uppercase;vertical-align:middle}
+  .ctrl .pval{font-family:'Space Mono',monospace;font-size:15px;color:var(--ink);text-align:right}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;
+    background:var(--line-strong);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;
+    background:var(--ink);border:2px solid var(--bg);box-shadow:0 0 0 1px var(--line-strong);transition:.15s}
+  input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--ink);
+    border:2px solid var(--bg);box-shadow:0 0 0 1px var(--line-strong);cursor:pointer}
   input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px var(--a-soft)}
   input[type=range]:hover::-webkit-slider-thumb{background:var(--a)}
-
-  /* ---------- scorecard ---------- */
-  .row{
-    display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;
-    padding:10px 12px;border-bottom:1px solid var(--line);
-    font-family:'Space Mono',monospace;font-size:14px;
-  }
+  .row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:10px 12px;
+    border-bottom:1px solid var(--line);font-family:'Space Mono',monospace;font-size:14px}
   .row:last-child{border-bottom:0}
-  .row .va{text-align:right}
-  .row .vb{text-align:left}
+  .row .va{text-align:right} .row .vb{text-align:left}
   .row .arrow{color:var(--muted);font-size:13px;min-width:34px;text-align:center}
-  .row.w-A .va{color:var(--a)} .row.w-A .arrow{color:var(--a)}
-  .row.w-B .vb{color:var(--b)} .row.w-B .arrow{color:var(--b)}
+  .row.w-A .va,.row.w-A .arrow{color:var(--a)}
+  .row.w-B .vb,.row.w-B .arrow{color:var(--b)}
   .row .field-name{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:13px;color:var(--muted);
     grid-column:1 / -1;letter-spacing:.06em;text-transform:uppercase;margin-bottom:-2px}
 
-  /* ---------- raw output ---------- */
-  details{margin-top:26px;border-top:1px solid var(--line);padding-top:16px}
-  summary{
-    font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--muted);cursor:pointer;list-style:none;
-  }
-  summary::-webkit-details-marker{display:none}
-  summary::before{content:"▸ ";color:var(--a)}
-  details[open] summary::before{content:"▾ "}
-  pre{
-    font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.6;
-    color:var(--muted);background:var(--bg);border:1px solid var(--line);
-    border-radius:3px;padding:16px;overflow:auto;margin:14px 0 0;
-  }
-  pre .k{color:var(--ink)} pre .a{color:var(--a)} pre .b{color:var(--b)} pre .n{color:#9fb0c9}
+  /* code blocks / cheat sheet */
+  .codeblock{position:relative;margin:0 0 18px}
+  .codeblock pre{font-family:'Space Mono',monospace;font-size:13px;line-height:1.7;color:var(--ink);
+    background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:18px 16px;overflow:auto;margin:0}
+  .codeblock .cap{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);margin:0 0 7px}
+  .codeblock .copy{position:absolute;top:30px;right:10px;font-family:'Space Mono',monospace;font-size:10.5px;
+    letter-spacing:.08em;text-transform:uppercase;background:var(--panel-2);color:var(--muted);
+    border:1px solid var(--line-strong);border-radius:2px;padding:4px 8px;cursor:pointer;transition:.15s}
+  .codeblock .copy:hover{color:var(--a);border-color:var(--a)}
+  pre .c{color:var(--muted)}      /* comment */
+  pre .kw{color:#c792ea}          /* keyword */
+  pre .fn{color:var(--a)}         /* function */
+  pre .str{color:#a5d6a7}         /* string */
+  pre .num{color:var(--b)}        /* number */
 
-  /* ---------- footer ---------- */
-  footer{
-    margin-top:46px;padding-top:20px;border-top:1px solid var(--line);
-    font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);
-    display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center;
-  }
+  table.opts{width:100%;border-collapse:collapse;margin-top:4px;font-size:14.5px}
+  table.opts th,table.opts td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.opts th{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  table.opts td code{font-family:'Space Mono',monospace;color:var(--a);font-size:13px}
+  table.opts td.req{color:var(--muted)}
+
+  .outlist{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
+  .outlist .o{border:1px solid var(--line);border-radius:3px;background:var(--panel);padding:13px 14px}
+  .outlist .o code{font-family:'Space Mono',monospace;color:var(--a);font-size:13px}
+  .outlist .o span{display:block;color:var(--muted);font-size:13.5px;margin-top:3px}
+
+  footer{padding:34px 0 60px;border-top:1px solid var(--line);font-family:'Space Mono',monospace;
+    font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center}
   footer a{color:var(--muted);text-decoration:none;transition:.15s}
   footer a:hover{color:var(--a)}
 
-  @media (max-width:560px){
+  @media (max-width:620px){
+    .steps{grid-template-columns:1fr}
+    .outlist{grid-template-columns:1fr}
     .ctrl{grid-template-columns:1fr 120px 26px;gap:10px}
     .row{font-size:13px}
   }
-  @media (prefers-reduced-motion:reduce){
-    *{transition:none!important}
-  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
 </style>
 </head>
 <body>
+
+<nav>
+  <div class="bar">
+    <a class="home" href="https://ablevlabs.com">← AbleVLabs</a>
+    <div class="navlinks">
+      <a href="#overview">Overview</a>
+      <a href="#demo">Try it</a>
+      <a href="#how">How it works</a>
+      <a href="#cheatsheet">Cheat sheet</a>
+    </div>
+  </div>
+</nav>
+
 <div class="wrap">
 
-  <p class="eyebrow"><span class="dot">●</span> node alignment console · ablevlabs // est. 2026</p>
-  <h1>LANA</h1>
-  <p class="subtitle">Logical Attribute Node Aligner</p>
+  <!-- HERO -->
+  <header>
+    <p class="eyebrow"><span class="dot">●</span> node alignment console · 04 // deployed systems</p>
+    <h1>LANA</h1>
+    <p class="subtitle">Logical Attribute Node Aligner</p>
+    <p class="lede">A Python library that weighs two records against each other —
+      attribute by attribute — and tells you which one wins, based on what <em>you</em> decide matters.</p>
+    <div class="links">
+      <a class="pill install" id="installPill" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">pip install ablevlabs</a>
+      <a class="pill" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">PyPI ↗</a>
+      <a class="pill" href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </header>
 
-  <div class="links">
-    <a class="pill install" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">pip install ablevlabs</a>
-    <a class="pill" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">PyPI ↗</a>
-    <a class="pill" href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub ↗</a>
-  </div>
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <p class="seclabel">// what it is</p>
+    <h2>Point it at two things. Get a verdict.</h2>
+    <p class="body">Hand <strong>lana</strong> two records that share the same set of attributes —
+      two job candidates, two laptops, two model runs, two cars — and it compares them field by field,
+      then renders an overall verdict weighted by the priorities you set.</p>
+    <p class="body">It is <strong>not a diff tool</strong>. A diff tells you what changed between two versions
+      of the <em>same</em> thing. lana relates two <em>different</em> things and scores the matchup — a question
+      diffs never answer.</p>
+    <p class="body">Because it only ever sees “records with fields,” it works in any domain. The fighters in the
+      console below are just a fun demo; the same call compares spec sheets, portfolios, or experiment results
+      without changing a line.</p>
+    <div class="chips">
+      <span class="chip"><b>›</b> hiring &amp; candidates</span>
+      <span class="chip"><b>›</b> product specs</span>
+      <span class="chip"><b>›</b> ML model runs</span>
+      <span class="chip"><b>›</b> vehicles</span>
+      <span class="chip"><b>›</b> portfolios</span>
+    </div>
+  </section>
 
-  <!-- tabs -->
-  <div class="tabs" id="tabs"></div>
+  <!-- DEMO -->
+  <section id="demo">
+    <p class="seclabel">// try it <span style="color:var(--muted);text-transform:none;letter-spacing:0">— drag the sliders and watch the beam tip</span></p>
+    <div class="tabs" id="tabs"></div>
+    <div class="console">
+      <div class="nameplate">
+        <div class="fighter A"><div class="role">// node a</div><div class="fname" id="nameA">—</div></div>
+        <div class="vs">VS</div>
+        <div class="fighter B"><div class="role">node b //</div><div class="fname" id="nameB">—</div></div>
+      </div>
+      <div class="beam-wrap">
+        <div class="beam"><div class="seg segA" id="segA" style="width:50%"></div><div class="seg segB" id="segB" style="width:50%"></div></div>
+        <div class="beam-scale"><span class="pA" id="pctA">50.0%</span><span class="pB" id="pctB">50.0%</span></div>
+      </div>
+      <div class="verdict" id="verdict"><span class="who">—</span></div>
+      <div class="consolelabel">// what matters <span class="hint">— 1–5: how much each attribute counts</span></div>
+      <div id="controls"></div>
+      <div class="consolelabel">// scorecard</div>
+      <div id="scorecard"></div>
+    </div>
+    <p class="note">The console runs a JavaScript port of lana’s engine so it works live in the browser.
+      The real library — same scoring — ships as the Python package above.</p>
+  </section>
 
-  <!-- console -->
-  <div class="console">
-    <div class="nameplate">
-      <div class="fighter A"><div class="role">// node a</div><div class="fname" id="nameA">—</div></div>
-      <div class="vs">VS</div>
-      <div class="fighter B"><div class="role">node b //</div><div class="fname" id="nameB">—</div></div>
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <p class="seclabel">// how it works</p>
+    <h2>Three inputs, one clean answer.</h2>
+    <div class="steps">
+      <div class="step"><div class="n">01</div><h3>Same fields</h3>
+        <p>Give lana two dicts that share attribute names, so there’s something to line up.</p></div>
+      <div class="step"><div class="n">02</div><h3>Rate what matters</h3>
+        <p>Score the fields you care about from 1 to 5. A field rated 5 counts five times as much as one rated 1.</p></div>
+      <div class="step"><div class="n">03</div><h3>Flag the inverses</h3>
+        <p>List fields where a smaller number wins — price, latency, weight — so they’re scored the right way.</p></div>
+    </div>
+    <p class="note">lana returns a clean dict: who won each field, by how much, and an overall weighted verdict.
+      Whichever record wins a field takes its full priority points; the most points wins. Margins are reported
+      but never secretly sway the result.</p>
+  </section>
+
+  <!-- CHEAT SHEET -->
+  <section id="cheatsheet">
+    <p class="seclabel">// cheat sheet</p>
+    <h2>Everything you need to use it.</h2>
+
+    <div class="codeblock">
+      <p class="cap">install &amp; import</p>
+      <button class="copy">copy</button>
+      <pre><span class="c"># install once</span>
+$ pip install ablevlabs
+
+<span class="c"># then, in any script</span>
+<span class="kw">from</span> ablevlabs <span class="kw">import</span> lana</pre>
     </div>
 
-    <div class="beam-wrap">
-      <div class="beam">
-        <div class="seg segA" id="segA" style="width:50%"></div>
-        <div class="seg segB" id="segB" style="width:50%"></div>
-      </div>
-      <div class="beam-scale">
-        <span class="pA" id="pctA">50.0%</span>
-        <span class="pB" id="pctB">50.0%</span>
-      </div>
+    <div class="codeblock">
+      <p class="cap">the smallest call</p>
+      <button class="copy">copy</button>
+      <pre>a = {<span class="str">"name"</span>: <span class="str">"Alice"</span>, <span class="str">"score"</span>: <span class="num">90</span>, <span class="str">"cost"</span>: <span class="num">120</span>}
+b = {<span class="str">"name"</span>: <span class="str">"Bob"</span>,   <span class="str">"score"</span>: <span class="num">80</span>, <span class="str">"cost"</span>: <span class="num">90</span>}
+
+result = lana.<span class="fn">compare</span>(a, b)
+lana.<span class="fn">show</span>(result)</pre>
     </div>
-    <div class="verdict" id="verdict"><span class="who">—</span></div>
 
-    <div class="seclabel">// what matters <span class="hint">— drag 1–5: how much each attribute counts</span></div>
-    <div id="controls"></div>
+    <div class="codeblock">
+      <p class="cap">the full call</p>
+      <button class="copy">copy</button>
+      <pre>result = lana.<span class="fn">compare</span>(
+    a, b,
+    priority={<span class="str">"score"</span>: <span class="num">5</span>, <span class="str">"cost"</span>: <span class="num">2</span>},  <span class="c"># 1–5: how much each matters</span>
+    lower_better=[<span class="str">"cost"</span>],            <span class="c"># cheaper wins</span>
+    aliases={<span class="str">"yrs"</span>: <span class="str">"years"</span>},        <span class="c"># reconcile field names</span>
+)</pre>
+    </div>
 
-    <div class="seclabel">// scorecard</div>
-    <div id="scorecard"></div>
+    <p class="cap" style="margin:26px 0 4px">compare() — options</p>
+    <table class="opts">
+      <tr><th>Argument</th><th>What it does</th></tr>
+      <tr><td><code>a</code>, <code>b</code></td><td class="req">The two records to compare. Required.</td></tr>
+      <tr><td><code>name_a</code>, <code>name_b</code></td><td>Labels for the output. If omitted, lana reads a <code>name</code>/<code>model</code>/<code>id</code> field, else uses A / B.</td></tr>
+      <tr><td><code>priority</code></td><td>Dict of <code>{field: 1–5}</code> — how much each field counts toward the winner.</td></tr>
+      <tr><td><code>lower_better</code></td><td>List of fields where a <strong>smaller</strong> number wins (price, latency, weight).</td></tr>
+      <tr><td><code>aliases</code></td><td>Dict of <code>{variant: canonical}</code> to reconcile differing field names.</td></tr>
+    </table>
 
-    <details>
-      <summary>raw output — lana.compare() returns this dict</summary>
-      <pre id="raw"></pre>
-    </details>
-  </div>
+    <p class="cap" style="margin:30px 0 8px">getting the result out</p>
+    <div class="outlist">
+      <div class="o"><code>lana.show(result)</code><span>Readable scorecard in the terminal.</span></div>
+      <div class="o"><code>lana.to_json(result)</code><span>JSON string.</span></div>
+      <div class="o"><code>lana.to_csv(result)</code><span>CSV — opens in Excel / Sheets.</span></div>
+      <div class="o"><code>lana.to_markdown(result)</code><span>Markdown table for docs / GitHub.</span></div>
+      <div class="o"><code>lana.to_df(result)</code><span>pandas DataFrame for analysis.</span></div>
+      <div class="o"><code>lana.save(result, "x.json")</code><span>Saves to disk — format from the extension.</span></div>
+    </div>
+
+    <div class="codeblock" style="margin-top:26px">
+      <p class="cap">what compare() returns</p>
+      <button class="copy">copy</button>
+      <pre>{
+  <span class="str">"matchup"</span>: [<span class="str">"Alice"</span>, <span class="str">"Bob"</span>],
+  <span class="str">"fields"</span>: {
+    <span class="str">"score"</span>: {<span class="str">"Alice"</span>: <span class="num">90</span>, <span class="str">"Bob"</span>: <span class="num">80</span>, <span class="str">"delta"</span>: <span class="num">10</span>,
+              <span class="str">"winner"</span>: <span class="str">"Alice"</span>, <span class="str">"priority"</span>: <span class="num">5</span>}
+  },
+  <span class="str">"verdict"</span>: {<span class="str">"winner"</span>: <span class="str">"Alice"</span>, <span class="str">"Alice"</span>: <span class="num">71.4</span>, <span class="str">"Bob"</span>: <span class="num">28.6</span>}
+}</pre>
+    </div>
+  </section>
 
   <footer>
     <span>© 2026 AbleVLabs — Carlos Abel Vivanco</span>
-    <span><a href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">from ablevlabs import lana</a></span>
+    <span><a href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">pip install ablevlabs</a></span>
   </footer>
 </div>
 
 <script>
-/* ---- display names for fields ---- */
+/* ===== interactive console (verified against the Python engine) ===== */
 const DISPLAY = {
   power_level:"Power Level", health:"Health", attack:"Attack", defense:"Defense",
   ram_gb:"RAM (GB)", storage_gb:"Storage (GB)", battery_hrs:"Battery (hrs)", price:"Price",
   horsepower:"Horsepower", mpg:"MPG", towing_lb:"Towing (lb)"
 };
-
-/* ---- the three matchups (domain-agnostic showcase) ---- */
 const MATCHUPS = {
-  fighters:{
-    label:"Fighters", num:"01",
+  fighters:{label:"Fighters", num:"01",
     a:{name:"Goku",   power_level:9100, health:50000, attack:22, defense:14},
     b:{name:"Vegeta", power_level:9000, health:52000, attack:25, defense:10},
-    fields:["power_level","health","attack","defense"],
-    lowerBetter:[],
-    defaults:{power_level:5, attack:3, defense:3, health:2}
-  },
-  machines:{
-    label:"Machines", num:"02",
+    fields:["power_level","health","attack","defense"], lowerBetter:[],
+    defaults:{power_level:5, attack:3, defense:3, health:2}},
+  machines:{label:"Machines", num:"02",
     a:{name:"Aero 14",   ram_gb:16, storage_gb:512,  battery_hrs:10, price:1200},
     b:{name:"Vortex 15", ram_gb:32, storage_gb:1024, battery_hrs:8,  price:1500},
-    fields:["ram_gb","storage_gb","battery_hrs","price"],
-    lowerBetter:["price"],
-    defaults:{ram_gb:5, price:4, storage_gb:3, battery_hrs:2}
-  },
-  roadsters:{
-    label:"Roadsters", num:"03",
+    fields:["ram_gb","storage_gb","battery_hrs","price"], lowerBetter:["price"],
+    defaults:{ram_gb:5, price:4, storage_gb:3, battery_hrs:2}},
+  roadsters:{label:"Roadsters", num:"03",
     a:{name:"F-150",  horsepower:400, mpg:19, towing_lb:13000, price:45000},
     b:{name:"Tacoma", horsepower:278, mpg:23, towing_lb:6800,  price:38000},
-    fields:["horsepower","mpg","towing_lb","price"],
-    lowerBetter:["price"],
-    defaults:{mpg:4, price:5, horsepower:2, towing_lb:2}
-  }
+    fields:["horsepower","mpg","towing_lb","price"], lowerBetter:["price"],
+    defaults:{mpg:4, price:5, horsepower:2, towing_lb:2}}
 };
-
-let current = "fighters";
-let priorities = {};
-
-/* ---- the lana engine, ported to JS (win-based scoring) ---- */
+let current="fighters", priorities={};
 function compare(m, prio){
-  const lower = new Set(m.lowerBetter);
-  let scoreA = 0, scoreB = 0;
-  const rows = [];
+  const lower=new Set(m.lowerBetter); let sA=0,sB=0; const rows=[];
   for(const f of m.fields){
-    const va = m.a[f], vb = m.b[f], p = prio[f];
-    const aBetter = lower.has(f) ? va < vb : va > vb;
-    const bBetter = lower.has(f) ? va > vb : va < vb;
-    const winner = aBetter ? "A" : bBetter ? "B" : "tie";
-    if(winner === "A") scoreA += p;
-    else if(winner === "B") scoreB += p;
-    else { scoreA += p/2; scoreB += p/2; }
-    rows.push({field:f, va, vb, winner, p, lower:lower.has(f)});
+    const va=m.a[f], vb=m.b[f], p=prio[f];
+    const aB = lower.has(f)?va<vb:va>vb, bB = lower.has(f)?va>vb:va<vb;
+    const w = aB?"A":bB?"B":"tie";
+    if(w==="A") sA+=p; else if(w==="B") sB+=p; else {sA+=p/2; sB+=p/2;}
+    rows.push({field:f,va,vb,winner:w,p,lower:lower.has(f)});
   }
-  const total = scoreA + scoreB;
-  const pctA = total ? Math.round(scoreA/total*1000)/10 : 50;
-  const vwin = scoreA > scoreB ? "A" : scoreB > scoreA ? "B" : "tie";
-  return {rows, scoreA, scoreB, pctA, pctB:Math.round((100-pctA)*10)/10, vwin};
+  const t=sA+sB, pctA=t?Math.round(sA/t*1000)/10:50;
+  return {rows, vwin:sA>sB?"A":sB>sA?"B":"tie", pctA, pctB:Math.round((100-pctA)*10)/10};
 }
-
-/* ---- build tabs ---- */
 function buildTabs(){
-  const el = document.getElementById("tabs");
-  el.innerHTML = "";
-  for(const key in MATCHUPS){
-    const m = MATCHUPS[key];
-    const b = document.createElement("button");
-    b.className = "tab" + (key===current?" active":"");
-    b.innerHTML = `<span class="num">${m.num} /</span>${m.label}`;
-    b.onclick = () => { current = key; loadMatchup(); };
-    el.appendChild(b);
-  }
+  const el=document.getElementById("tabs"); el.innerHTML="";
+  for(const k in MATCHUPS){const m=MATCHUPS[k];
+    const b=document.createElement("button");
+    b.className="tab"+(k===current?" active":"");
+    b.innerHTML=`<span class="num">${m.num} /</span>${m.label}`;
+    b.onclick=()=>{current=k; loadMatchup();}; el.appendChild(b);}
 }
-
-/* ---- build priority sliders for current matchup ---- */
 function buildControls(){
-  const m = MATCHUPS[current];
-  priorities = Object.assign({}, m.defaults);
-  const el = document.getElementById("controls");
-  el.innerHTML = "";
+  const m=MATCHUPS[current]; priorities=Object.assign({},m.defaults);
+  const el=document.getElementById("controls"); el.innerHTML="";
   for(const f of m.fields){
-    const tag = m.lowerBetter.includes(f) ? `<span class="tag">lower wins</span>` : "";
-    const row = document.createElement("div");
-    row.className = "ctrl";
-    row.innerHTML = `
-      <div class="label">${DISPLAY[f]||f}${tag}</div>
+    const tag=m.lowerBetter.includes(f)?`<span class="tag">lower wins</span>`:"";
+    const row=document.createElement("div"); row.className="ctrl";
+    row.innerHTML=`<div class="label">${DISPLAY[f]||f}${tag}</div>
       <input type="range" min="1" max="5" step="1" value="${priorities[f]}" data-f="${f}" aria-label="${DISPLAY[f]||f} priority">
       <div class="pval" id="pval-${f}">${priorities[f]}</div>`;
     el.appendChild(row);
   }
   el.querySelectorAll("input[type=range]").forEach(inp=>{
-    inp.addEventListener("input", e=>{
-      const f = e.target.dataset.f;
-      priorities[f] = +e.target.value;
-      document.getElementById("pval-"+f).textContent = priorities[f];
-      render();
+    inp.addEventListener("input",e=>{const f=e.target.dataset.f;
+      priorities[f]=+e.target.value; document.getElementById("pval-"+f).textContent=priorities[f]; render();});
+  });
+}
+function fmt(n){return typeof n==="number"?n.toLocaleString():n;}
+function render(){
+  const m=MATCHUPS[current], r=compare(m,priorities);
+  document.getElementById("segA").style.width=r.pctA+"%";
+  document.getElementById("segB").style.width=r.pctB+"%";
+  document.getElementById("pctA").textContent=r.pctA.toFixed(1)+"%";
+  document.getElementById("pctB").textContent=r.pctB.toFixed(1)+"%";
+  const v=document.getElementById("verdict"); v.className="verdict win-"+r.vwin;
+  const who=r.vwin==="A"?m.a.name:r.vwin==="B"?m.b.name:"Dead heat";
+  v.innerHTML=r.vwin==="tie"?`<span class="who">${who}</span>`:`Outcome: <span class="who">${who}</span> wins`;
+  const sc=document.getElementById("scorecard"); sc.innerHTML="";
+  r.rows.forEach(row=>{
+    const arrow=row.winner==="A"?"◄──":row.winner==="B"?"──►":"═══";
+    const d=document.createElement("div"); d.className="row w-"+row.winner;
+    d.innerHTML=`<div class="field-name">${DISPLAY[row.field]||row.field} · priority ${row.p}${row.lower?" · lower wins":""}</div>
+      <div class="va">${fmt(row.va)}</div><div class="arrow">${arrow}</div><div class="vb">${fmt(row.vb)}</div>`;
+    sc.appendChild(d);
+  });
+}
+function loadMatchup(){
+  const m=MATCHUPS[current];
+  document.getElementById("nameA").textContent=m.a.name;
+  document.getElementById("nameB").textContent=m.b.name;
+  buildTabs(); buildControls(); render();
+}
+loadMatchup();
+
+/* copy buttons */
+document.querySelectorAll(".codeblock .copy").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const code=btn.parentElement.querySelector("pre").innerText;
+    navigator.clipboard.writeText(code).then(()=>{
+      const t=btn.textContent; btn.textContent="copied"; setTimeout(()=>btn.textContent=t,1200);
     });
   });
-}
-
-/* ---- render scorecard, beam, verdict, raw ---- */
-function render(){
-  const m = MATCHUPS[current];
-  const r = compare(m, priorities);
-
-  // beam + percentages
-  document.getElementById("segA").style.width = r.pctA + "%";
-  document.getElementById("segB").style.width = r.pctB + "%";
-  document.getElementById("pctA").textContent = r.pctA.toFixed(1) + "%";
-  document.getElementById("pctB").textContent = r.pctB.toFixed(1) + "%";
-
-  // verdict line
-  const v = document.getElementById("verdict");
-  v.className = "verdict win-" + r.vwin;
-  const who = r.vwin==="A" ? m.a.name : r.vwin==="B" ? m.b.name : "Dead heat";
-  v.innerHTML = r.vwin==="tie"
-    ? `<span class="who">${who}</span>`
-    : `Outcome: <span class="who">${who}</span> wins`;
-
-  // scorecard
-  const sc = document.getElementById("scorecard");
-  sc.innerHTML = "";
-  r.rows.forEach(row=>{
-    const arrow = row.winner==="A" ? "◄──" : row.winner==="B" ? "──►" : "═══";
-    const div = document.createElement("div");
-    div.className = "row w-" + row.winner;
-    div.innerHTML = `
-      <div class="field-name">${DISPLAY[row.field]||row.field} · priority ${row.p}${row.lower?" · lower wins":""}</div>
-      <div class="va">${fmt(row.va)}</div>
-      <div class="arrow">${arrow}</div>
-      <div class="vb">${fmt(row.vb)}</div>`;
-    sc.appendChild(div);
+});
+const ip=document.getElementById("installPill");
+ip.addEventListener("click",e=>{
+  e.preventDefault();
+  navigator.clipboard.writeText("pip install ablevlabs").then(()=>{
+    const t=ip.textContent; ip.textContent="copied to clipboard"; setTimeout(()=>ip.textContent=t,1200);
   });
-
-  renderRaw(m, r);
-}
-
-function fmt(n){ return typeof n==="number" ? n.toLocaleString() : n; }
-
-/* ---- raw JSON, mirroring lana.compare() output ---- */
-function renderRaw(m, r){
-  const fields = {};
-  r.rows.forEach(row=>{
-    fields[row.field] = {
-      [m.a.name]: row.va, [m.b.name]: row.vb,
-      delta: row.va - row.vb,
-      winner: row.winner==="A"?m.a.name:row.winner==="B"?m.b.name:"tie",
-      priority: row.p
-    };
-  });
-  const verdictWho = r.vwin==="A"?m.a.name:r.vwin==="B"?m.b.name:"tie";
-  const obj = {
-    matchup:[m.a.name, m.b.name],
-    fields,
-    verdict:{ winner:verdictWho, [m.a.name]:r.pctA, [m.b.name]:r.pctB }
-  };
-  // light syntax coloring
-  let json = JSON.stringify(obj, null, 2)
-    .replace(new RegExp(`"${m.a.name}"`,"g"), `<span class="a">"${m.a.name}"</span>`)
-    .replace(new RegExp(`"${m.b.name}"`,"g"), `<span class="b">"${m.b.name}"</span>`)
-    .replace(/"(matchup|fields|delta|winner|priority|verdict)"/g, '<span class="k">"$1"</span>');
-  document.getElementById("raw").innerHTML = json;
-}
-
-function loadMatchup(){
-  const m = MATCHUPS[current];
-  document.getElementById("nameA").textContent = m.a.name;
-  document.getElementById("nameB").textContent = m.b.name;
-  buildTabs();
-  buildControls();
-  render();
-}
-
-loadMatchup();
+});
 </script>
 </body>
 </html>
