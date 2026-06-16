@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>lana — Logical Attribute Node Aligner · AbleVLabs</title>
-<meta name="description" content="lana: a Python library that weighs two records attribute by attribute and tells you which one wins. By AbleVLabs.">
+<meta name="description" content="lana: a Python library that compares and ranks records by what you decide matters. By AbleVLabs.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -14,6 +14,7 @@
     --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.16);
     --ink:#e8ecf4; --muted:#6b7689;
     --a:#35c9ff; --b:#ffc24b; --live:#38e08a;
+    --silver:#c9d1e0; --bronze:#d08a4a;
     --a-soft:rgba(53,201,255,.14); --b-soft:rgba(255,194,75,.14);
   }
   *{box-sizing:border-box}
@@ -31,7 +32,6 @@
     background-repeat:no-repeat}
   .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 22px}
 
-  /* top nav */
   nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(10px);
     background:rgba(7,9,15,.78);border-bottom:1px solid var(--line)}
   nav .bar{max-width:920px;margin:0 auto;padding:13px 22px;display:flex;
@@ -40,19 +40,21 @@
     color:var(--muted);text-decoration:none;transition:.15s}
   nav a:hover{color:var(--a)}
   nav .home{color:var(--ink);font-weight:700}
-  nav .navlinks{display:flex;gap:18px;flex-wrap:wrap}
+  nav .navlinks{display:flex;gap:16px;flex-wrap:wrap}
 
   .eyebrow{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.18em;
-    color:var(--muted);text-transform:uppercase;margin:0 0 14px}
+    color:var(--muted);text-transform:uppercase;margin:0 0 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   .eyebrow .dot{color:var(--live)}
+  .vbadge{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--live);
+    border:1px solid rgba(56,224,138,.4);border-radius:2px;padding:2px 8px}
 
-  /* hero */
-  header{padding:64px 0 18px}
+  header{padding:60px 0 18px}
   h1{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(72px,16vw,150px);
     line-height:.84;letter-spacing:.02em;margin:0}
   .subtitle{font-size:clamp(16px,2.6vw,21px);font-weight:600;letter-spacing:.05em;
     color:var(--muted);margin:8px 0 0;text-transform:uppercase}
-  .lede{font-size:clamp(17px,2.6vw,20px);max-width:60ch;margin:22px 0 0;color:var(--ink)}
+  .lede{font-size:clamp(17px,2.6vw,20px);max-width:62ch;margin:22px 0 0;color:var(--ink)}
+  .lede b{color:var(--a)}
   .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;align-items:center}
   .pill{font-family:'Space Mono',monospace;font-size:13px;border:1px solid var(--line-strong);
     border-radius:2px;padding:9px 14px;color:var(--ink);text-decoration:none;display:inline-flex;
@@ -62,22 +64,32 @@
   .pill:hover{border-color:var(--a);color:var(--a)}
   .pill.install:hover{color:var(--live);border-color:var(--live)}
 
-  /* section scaffolding */
   section{padding:46px 0;border-top:1px solid var(--line)}
   .seclabel{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.18em;
     text-transform:uppercase;color:var(--muted);margin:0 0 22px}
+  .seclabel .hint{color:var(--muted);text-transform:none;letter-spacing:0;font-size:13px}
   h2{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(34px,6vw,52px);
     line-height:.95;letter-spacing:.02em;margin:0 0 16px}
   p.body{font-size:17px;max-width:64ch;margin:0 0 16px}
-  .accent-a{color:var(--a)} .accent-b{color:var(--b)}
   strong{color:var(--ink);font-weight:700}
-
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
   .chip{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);
     border:1px solid var(--line);border-radius:2px;padding:6px 10px;background:var(--panel)}
   .chip b{color:var(--a);font-weight:400}
 
-  /* how-it-works */
+  /* what's new panel */
+  .whatsnew{border:1px solid rgba(56,224,138,.3);border-radius:4px;
+    background:linear-gradient(180deg,rgba(56,224,138,.05),transparent);padding:24px 22px}
+  .whatsnew h2{margin-bottom:6px}
+  .changelog{list-style:none;padding:0;margin:14px 0 0}
+  .changelog li{font-size:16px;padding:8px 0 8px 26px;position:relative;border-bottom:1px solid var(--line)}
+  .changelog li:last-child{border-bottom:0}
+  .changelog li::before{content:"▸";position:absolute;left:4px;color:var(--live)}
+  .changelog code{font-family:'Space Mono',monospace;color:var(--a);font-size:14px}
+  .tag-new{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--live);
+    border:1px solid rgba(56,224,138,.4);border-radius:2px;padding:1px 6px;margin-left:6px;text-transform:uppercase}
+
+  /* steps */
   .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px}
   .step{border:1px solid var(--line);border-radius:3px;background:var(--panel);padding:20px}
   .step .n{font-family:'Space Mono',monospace;font-size:12px;color:var(--a);letter-spacing:.1em}
@@ -85,10 +97,10 @@
   .step p{font-size:14.5px;color:var(--muted);margin:0}
   .note{margin-top:18px;font-size:15px;color:var(--muted);border-left:2px solid var(--line-strong);padding-left:14px}
 
-  /* ====== interactive console (verified engine) ====== */
+  /* shared console + tabs */
   .tabs{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:3px 3px 0 0;
     overflow:hidden;background:var(--panel)}
-  .tab{flex:1 1 0;min-width:120px;border:0;background:transparent;color:var(--muted);
+  .tab{flex:1 1 0;min-width:110px;border:0;background:transparent;color:var(--muted);
     font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;letter-spacing:.08em;
     text-transform:uppercase;padding:15px 12px;cursor:pointer;transition:.18s;
     border-right:1px solid var(--line);text-align:left}
@@ -98,6 +110,8 @@
   .tab.active .num{color:var(--a)}
   .console{border:1px solid var(--line);border-top:0;border-radius:0 0 3px 3px;
     background:linear-gradient(180deg,var(--panel-2),var(--panel));padding:28px 24px 26px}
+
+  /* compare console */
   .nameplate{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
   .fighter{flex:1 1 0;min-width:0}
   .fighter .role{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;
@@ -117,7 +131,8 @@
   .verdict .who{transition:color .3s}
   .verdict.win-A .who{color:var(--a)} .verdict.win-B .who{color:var(--b)} .verdict.win-tie .who{color:var(--ink)}
   .consolelabel{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-    color:var(--muted);margin:30px 0 12px;border-top:1px solid var(--line);padding-top:18px}
+    color:var(--muted);margin:30px 0 12px;border-top:1px solid var(--line);padding-top:18px;
+    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
   .consolelabel .hint{color:var(--muted);font-size:13px;font-weight:500;text-transform:none;letter-spacing:0}
   .ctrl{display:grid;grid-template-columns:1fr 180px 28px;align-items:center;gap:14px;padding:9px 0;border-bottom:1px solid var(--line)}
   .ctrl:last-child{border-bottom:0}
@@ -143,28 +158,39 @@
   .row .field-name{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:13px;color:var(--muted);
     grid-column:1 / -1;letter-spacing:.06em;text-transform:uppercase;margin-bottom:-2px}
 
-  /* code blocks / cheat sheet */
+  /* shuffle button */
+  .shuffle{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    background:var(--panel);color:var(--a);border:1px solid var(--line-strong);border-radius:2px;
+    padding:6px 12px;cursor:pointer;transition:.15s}
+  .shuffle:hover{border-color:var(--a);background:var(--a-soft)}
+
+  /* === animated leaderboard (rank demo) === */
+  .board{position:relative;margin-top:6px}
+  .brow{position:absolute;left:0;right:0;height:54px;display:flex;align-items:center;gap:14px;
+    padding:0 14px;border:1px solid var(--line);border-radius:3px;background:var(--panel);
+    transition:top .6s cubic-bezier(.5,.05,.1,1),border-color .3s;will-change:top}
+  .brow .badge{font-family:'Bebas Neue',sans-serif;font-size:26px;width:30px;text-align:center;color:var(--muted);line-height:1;transition:color .3s}
+  .brow.r1 .badge{color:var(--b)} .brow.r2 .badge{color:var(--silver)} .brow.r3 .badge{color:var(--bronze)}
+  .brow.r1{border-color:rgba(255,194,75,.55);box-shadow:0 0 18px rgba(255,194,75,.08)}
+  .brow .nm{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:17px;min-width:84px;letter-spacing:.02em}
+  .brow .barwrap{flex:1;height:8px;background:var(--bg);border-radius:2px;overflow:hidden;border:1px solid var(--line)}
+  .brow .bar{height:100%;background:linear-gradient(90deg,var(--a),var(--b));transition:width .6s cubic-bezier(.5,.05,.1,1)}
+  .brow .sc{font-family:'Space Mono',monospace;font-size:13px;color:var(--ink);width:64px;text-align:right}
+
+  /* code / cheat sheet */
   .codeblock{position:relative;margin:0 0 18px}
   .codeblock pre{font-family:'Space Mono',monospace;font-size:13px;line-height:1.7;color:var(--ink);
     background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:18px 16px;overflow:auto;margin:0}
-  .codeblock .cap{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--muted);margin:0 0 7px}
+  .codeblock .cap{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
   .codeblock .copy{position:absolute;top:30px;right:10px;font-family:'Space Mono',monospace;font-size:10.5px;
     letter-spacing:.08em;text-transform:uppercase;background:var(--panel-2);color:var(--muted);
     border:1px solid var(--line-strong);border-radius:2px;padding:4px 8px;cursor:pointer;transition:.15s}
   .codeblock .copy:hover{color:var(--a);border-color:var(--a)}
-  pre .c{color:var(--muted)}      /* comment */
-  pre .kw{color:#c792ea}          /* keyword */
-  pre .fn{color:var(--a)}         /* function */
-  pre .str{color:#a5d6a7}         /* string */
-  pre .num{color:var(--b)}        /* number */
-
+  pre .c{color:var(--muted)} pre .kw{color:#c792ea} pre .fn{color:var(--a)} pre .str{color:#a5d6a7} pre .num{color:var(--b)}
   table.opts{width:100%;border-collapse:collapse;margin-top:4px;font-size:14.5px}
   table.opts th,table.opts td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
   table.opts th{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
   table.opts td code{font-family:'Space Mono',monospace;color:var(--a);font-size:13px}
-  table.opts td.req{color:var(--muted)}
-
   .outlist{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
   .outlist .o{border:1px solid var(--line);border-radius:3px;background:var(--panel);padding:13px 14px}
   .outlist .o code{font-family:'Space Mono',monospace;color:var(--a);font-size:13px}
@@ -180,6 +206,7 @@
     .outlist{grid-template-columns:1fr}
     .ctrl{grid-template-columns:1fr 120px 26px;gap:10px}
     .row{font-size:13px}
+    .brow .nm{min-width:64px;font-size:15px}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
 </style>
@@ -190,9 +217,9 @@
   <div class="bar">
     <a class="home" href="https://ablevlabs.com">← AbleVLabs</a>
     <div class="navlinks">
-      <a href="#overview">Overview</a>
-      <a href="#demo">Try it</a>
-      <a href="#how">How it works</a>
+      <a href="#new">What's new</a>
+      <a href="#compare">Compare</a>
+      <a href="#rank">Rank</a>
       <a href="#cheatsheet">Cheat sheet</a>
     </div>
   </div>
@@ -200,13 +227,12 @@
 
 <div class="wrap">
 
-  <!-- HERO -->
   <header>
-    <p class="eyebrow"><span class="dot">●</span> node alignment console · 04 // deployed systems</p>
+    <p class="eyebrow"><span class="dot">●</span> node alignment console · 04 // deployed systems <span class="vbadge">v0.2.0</span></p>
     <h1>LANA</h1>
     <p class="subtitle">Logical Attribute Node Aligner</p>
-    <p class="lede">A Python library that weighs two records against each other —
-      attribute by attribute — and tells you which one wins, based on what <em>you</em> decide matters.</p>
+    <p class="lede">A Python library that <b>compares</b> two records head-to-head — or <b>ranks</b> a
+      whole lineup into a leaderboard — weighing every attribute by what <em>you</em> decide matters.</p>
     <div class="links">
       <a class="pill install" id="installPill" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">pip install ablevlabs</a>
       <a class="pill" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">PyPI ↗</a>
@@ -214,32 +240,44 @@
     </div>
   </header>
 
+  <!-- WHAT'S NEW -->
+  <section id="new">
+    <p class="seclabel">// transmission · changelog</p>
+    <div class="whatsnew">
+      <h2>What's new in 0.2.0</h2>
+      <p class="body" style="margin-bottom:4px">lana grew up: it no longer compares only two things at a time.</p>
+      <ul class="changelog">
+        <li><code>lana.rank()</code> <span class="tag-new">new</span> — rank any number of records into a leaderboard, scored by your priorities. Try it live below.</li>
+        <li><code>lana.compare()</code> is unchanged and fully backward compatible — nothing you built on 0.1.0 breaks.</li>
+        <li>Every exporter (<code>show</code>, <code>to_json</code>, <code>to_csv</code>, <code>to_markdown</code>, <code>to_df</code>, <code>save</code>) now works on rankings too.</li>
+        <li>Upgrade with <code>pip install -U ablevlabs</code>.</li>
+      </ul>
+    </div>
+  </section>
+
   <!-- OVERVIEW -->
   <section id="overview">
     <p class="seclabel">// what it is</p>
-    <h2>Point it at two things. Get a verdict.</h2>
-    <p class="body">Hand <strong>lana</strong> two records that share the same set of attributes —
-      two job candidates, two laptops, two model runs, two cars — and it compares them field by field,
-      then renders an overall verdict weighted by the priorities you set.</p>
-    <p class="body">It is <strong>not a diff tool</strong>. A diff tells you what changed between two versions
-      of the <em>same</em> thing. lana relates two <em>different</em> things and scores the matchup — a question
-      diffs never answer.</p>
-    <p class="body">Because it only ever sees “records with fields,” it works in any domain. The fighters in the
-      console below are just a fun demo; the same call compares spec sheets, portfolios, or experiment results
-      without changing a line.</p>
+    <h2>Point it at things. Get a verdict.</h2>
+    <p class="body">Give <strong>lana</strong> records that share the same attributes — candidates, laptops,
+      model runs, cars, fighters — and it weighs them field by field. Compare <strong>two</strong> for a
+      head-to-head verdict, or <strong>rank many</strong> into a leaderboard.</p>
+    <p class="body">It's a <strong>matchup</strong> engine, not a diff tool — it relates different things and
+      scores them, which is a question diffs never answer. And because it only sees “records with fields,”
+      it works in any domain.</p>
     <div class="chips">
       <span class="chip"><b>›</b> hiring &amp; candidates</span>
       <span class="chip"><b>›</b> product specs</span>
       <span class="chip"><b>›</b> ML model runs</span>
       <span class="chip"><b>›</b> vehicles</span>
-      <span class="chip"><b>›</b> portfolios</span>
+      <span class="chip"><b>›</b> tier lists</span>
     </div>
   </section>
 
-  <!-- DEMO -->
-  <section id="demo">
-    <p class="seclabel">// try it <span style="color:var(--muted);text-transform:none;letter-spacing:0">— drag the sliders and watch the beam tip</span></p>
-    <div class="tabs" id="tabs"></div>
+  <!-- COMPARE DEMO -->
+  <section id="compare">
+    <p class="seclabel">// head-to-head <span class="hint">— compare() · drag the sliders, watch the beam tip</span></p>
+    <div class="tabs" id="ctabs"></div>
     <div class="console">
       <div class="nameplate">
         <div class="fighter A"><div class="role">// node a</div><div class="fname" id="nameA">—</div></div>
@@ -251,13 +289,25 @@
         <div class="beam-scale"><span class="pA" id="pctA">50.0%</span><span class="pB" id="pctB">50.0%</span></div>
       </div>
       <div class="verdict" id="verdict"><span class="who">—</span></div>
-      <div class="consolelabel">// what matters <span class="hint">— 1–5: how much each attribute counts</span></div>
-      <div id="controls"></div>
-      <div class="consolelabel">// scorecard</div>
+      <div class="consolelabel"><span>// what matters</span><span class="hint">1–5 each</span></div>
+      <div id="ccontrols"></div>
+      <div class="consolelabel"><span>// scorecard</span></div>
       <div id="scorecard"></div>
     </div>
-    <p class="note">The console runs a JavaScript port of lana’s engine so it works live in the browser.
-      The real library — same scoring — ships as the Python package above.</p>
+  </section>
+
+  <!-- RANK DEMO -->
+  <section id="rank">
+    <p class="seclabel">// rank a lineup <span class="hint">— rank() · NEW · drag sliders, watch the board reshuffle</span></p>
+    <div class="tabs" id="rtabs"></div>
+    <div class="console">
+      <div class="consolelabel"><span>// what matters</span><button class="shuffle" id="shuffleBtn">⚄ shuffle priorities</button></div>
+      <div id="rcontrols"></div>
+      <div class="consolelabel"><span>// leaderboard</span><span class="hint">live</span></div>
+      <div class="board" id="board"></div>
+    </div>
+    <p class="note">Same engine, scaled to any number of items. On each field the best item earns the full
+      priority, the worst earns zero, evenly spaced — so consistency pays off, not just spikes.</p>
   </section>
 
   <!-- HOW IT WORKS -->
@@ -266,15 +316,15 @@
     <h2>Three inputs, one clean answer.</h2>
     <div class="steps">
       <div class="step"><div class="n">01</div><h3>Same fields</h3>
-        <p>Give lana two dicts that share attribute names, so there’s something to line up.</p></div>
+        <p>Give lana records that share attribute names, so there's something to line up.</p></div>
       <div class="step"><div class="n">02</div><h3>Rate what matters</h3>
-        <p>Score the fields you care about from 1 to 5. A field rated 5 counts five times as much as one rated 1.</p></div>
+        <p>Score the fields you care about 1 to 5. A 5 counts five times as much as a 1.</p></div>
       <div class="step"><div class="n">03</div><h3>Flag the inverses</h3>
-        <p>List fields where a smaller number wins — price, latency, weight — so they’re scored the right way.</p></div>
+        <p>List fields where a smaller number wins — price, latency, weight.</p></div>
     </div>
-    <p class="note">lana returns a clean dict: who won each field, by how much, and an overall weighted verdict.
-      Whichever record wins a field takes its full priority points; the most points wins. Margins are reported
-      but never secretly sway the result.</p>
+    <p class="note">You get a clean dict back. <code style="color:var(--a)">compare()</code> returns a head-to-head
+      verdict; <code style="color:var(--a)">rank()</code> returns an ordered leaderboard. For exactly two items,
+      they agree.</p>
   </section>
 
   <!-- CHEAT SHEET -->
@@ -283,84 +333,75 @@
     <h2>Everything you need to use it.</h2>
 
     <div class="codeblock">
-      <p class="cap">install &amp; import</p>
+      <p class="cap">install / upgrade &amp; import</p>
       <button class="copy">copy</button>
-      <pre><span class="c"># install once</span>
-$ pip install ablevlabs
+      <pre><span class="c"># install or upgrade to the latest</span>
+$ pip install -U ablevlabs
 
-<span class="c"># then, in any script</span>
 <span class="kw">from</span> ablevlabs <span class="kw">import</span> lana</pre>
     </div>
 
     <div class="codeblock">
-      <p class="cap">the smallest call</p>
+      <p class="cap">compare two — head-to-head</p>
       <button class="copy">copy</button>
-      <pre>a = {<span class="str">"name"</span>: <span class="str">"Zoro"</span>, <span class="str">"score"</span>: <span class="num">90</span>, <span class="str">"cost"</span>: <span class="num">120</span>}
-b = {<span class="str">"name"</span>: <span class="str">"Sanji"</span>,   <span class="str">"score"</span>: <span class="num">80</span>, <span class="str">"cost"</span>: <span class="num">90</span>}
+      <pre>zoro  = {<span class="str">"name"</span>: <span class="str">"Zoro"</span>,  <span class="str">"power"</span>: <span class="num">92</span>, <span class="str">"speed"</span>: <span class="num">80</span>}
+sanji = {<span class="str">"name"</span>: <span class="str">"Sanji"</span>, <span class="str">"power"</span>: <span class="num">88</span>, <span class="str">"speed"</span>: <span class="num">95</span>}
 
-result = lana.<span class="fn">compare</span>(a, b)
+result = lana.<span class="fn">compare</span>(zoro, sanji, priority={<span class="str">"power"</span>: <span class="num">5</span>, <span class="str">"speed"</span>: <span class="num">3</span>})
 lana.<span class="fn">show</span>(result)</pre>
     </div>
 
     <div class="codeblock">
-      <p class="cap">the full call</p>
+      <p class="cap">rank many — leaderboard <span style="color:var(--live)">(new)</span></p>
       <button class="copy">copy</button>
-      <pre>result = lana.<span class="fn">compare</span>(
-    a, b,
-    priority={<span class="str">"score"</span>: <span class="num">5</span>, <span class="str">"cost"</span>: <span class="num">2</span>},  <span class="c"># 1–5: how much each matters</span>
-    lower_better=[<span class="str">"cost"</span>],            <span class="c"># cheaper wins</span>
-    aliases={<span class="str">"yrs"</span>: <span class="str">"years"</span>},        <span class="c"># reconcile field names</span>
-)</pre>
+      <pre>roster = [
+    {<span class="str">"name"</span>: <span class="str">"Goku"</span>,   <span class="str">"power"</span>: <span class="num">9100</span>,  <span class="str">"attack"</span>: <span class="num">88</span>},
+    {<span class="str">"name"</span>: <span class="str">"Vegeta"</span>, <span class="str">"power"</span>: <span class="num">9000</span>,  <span class="str">"attack"</span>: <span class="num">90</span>},
+    {<span class="str">"name"</span>: <span class="str">"Frieza"</span>, <span class="str">"power"</span>: <span class="num">10500</span>, <span class="str">"attack"</span>: <span class="num">86</span>},
+]
+
+board = lana.<span class="fn">rank</span>(roster, priority={<span class="str">"power"</span>: <span class="num">5</span>, <span class="str">"attack"</span>: <span class="num">4</span>})
+lana.<span class="fn">show</span>(board)</pre>
     </div>
 
-    <p class="cap" style="margin:26px 0 4px">compare() — options</p>
+    <p class="cap" style="margin:26px 0 4px">rank() — options</p>
     <table class="opts">
       <tr><th>Argument</th><th>What it does</th></tr>
-      <tr><td><code>a</code>, <code>b</code></td><td class="req">The two records to compare. Required.</td></tr>
-      <tr><td><code>name_a</code>, <code>name_b</code></td><td>Labels for the output. If omitted, lana reads a <code>name</code>/<code>model</code>/<code>id</code> field, else uses A / B.</td></tr>
-      <tr><td><code>priority</code></td><td>Dict of <code>{field: 1–5}</code> — how much each field counts toward the winner.</td></tr>
-      <tr><td><code>lower_better</code></td><td>List of fields where a <strong>smaller</strong> number wins (price, latency, weight).</td></tr>
-      <tr><td><code>aliases</code></td><td>Dict of <code>{variant: canonical}</code> to reconcile differing field names.</td></tr>
+      <tr><td><code>items</code></td><td>A <strong>list</strong> of records, or a <code>{name: record}</code> dict. Required (2+).</td></tr>
+      <tr><td><code>priority</code></td><td><code>{field: 1–5}</code> — how much each field matters. Omit it and every numeric field counts equally.</td></tr>
+      <tr><td><code>lower_better</code></td><td>List of fields where a <strong>smaller</strong> number wins.</td></tr>
+      <tr><td><code>aliases</code></td><td><code>{variant: canonical}</code> to reconcile differing field names.</td></tr>
     </table>
 
-    <p class="cap" style="margin:30px 0 8px">getting the result out</p>
+    <p class="cap" style="margin:30px 0 8px">works on both compare() and rank() results</p>
     <div class="outlist">
-      <div class="o"><code>lana.show(result)</code><span>Readable scorecard in the terminal.</span></div>
-      <div class="o"><code>lana.to_json(result)</code><span>JSON string.</span></div>
-      <div class="o"><code>lana.to_csv(result)</code><span>CSV — opens in Excel / Sheets.</span></div>
-      <div class="o"><code>lana.to_markdown(result)</code><span>Markdown table for docs / GitHub.</span></div>
-      <div class="o"><code>lana.to_df(result)</code><span>pandas DataFrame for analysis.</span></div>
-      <div class="o"><code>lana.save(result, "x.json")</code><span>Saves to disk — format from the extension.</span></div>
-    </div>
-
-    <div class="codeblock" style="margin-top:26px">
-      <p class="cap">what compare() returns</p>
-      <button class="copy">copy</button>
-      <pre>{
-  <span class="str">"matchup"</span>: [<span class="str">"Zoro"</span>, <span class="str">"Sanji"</span>],
-  <span class="str">"fields"</span>: {
-    <span class="str">"score"</span>: {<span class="str">"Zoro"</span>: <span class="num">90</span>, <span class="str">"Sanji"</span>: <span class="num">80</span>, <span class="str">"delta"</span>: <span class="num">10</span>,
-              <span class="str">"winner"</span>: <span class="str">"Zoro"</span>, <span class="str">"priority"</span>: <span class="num">5</span>}
-  },
-  <span class="str">"verdict"</span>: {<span class="str">"winner"</span>: <span class="str">"Zoro"</span>, <span class="str">"Zoro"</span>: <span class="num">71.4</span>, <span class="str">"Sanji"</span>: <span class="num">28.6</span>}
-}</pre>
+      <div class="o"><code>lana.show(r)</code><span>Scorecard or leaderboard, in the terminal.</span></div>
+      <div class="o"><code>lana.to_json(r)</code><span>JSON string.</span></div>
+      <div class="o"><code>lana.to_csv(r)</code><span>CSV — Excel / Sheets.</span></div>
+      <div class="o"><code>lana.to_markdown(r)</code><span>Markdown table for docs / GitHub.</span></div>
+      <div class="o"><code>lana.to_df(r)</code><span>pandas DataFrame.</span></div>
+      <div class="o"><code>lana.save(r, "x.csv")</code><span>To disk — format from the extension.</span></div>
     </div>
   </section>
 
   <footer>
     <span>© 2026 AbleVLabs — Carlos Abel Vivanco</span>
-    <span><a href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">pip install ablevlabs</a></span>
+    <span><a href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">pip install -U ablevlabs</a></span>
   </footer>
 </div>
 
 <script>
-/* ===== interactive console (verified against the Python engine) ===== */
+/* ===================== shared display names ===================== */
 const DISPLAY = {
-  power_level:"Power Level", health:"Health", attack:"Attack", defense:"Defense",
+  power_level:"Power Level", power:"Power", health:"Health", attack:"Attack", defense:"Defense", speed:"Speed",
   ram_gb:"RAM (GB)", storage_gb:"Storage (GB)", battery_hrs:"Battery (hrs)", price:"Price",
-  horsepower:"Horsepower", mpg:"MPG", towing_lb:"Towing (lb)"
+  horsepower:"Horsepower", mpg:"MPG", towing_lb:"Towing (lb)", range_mi:"Range (mi)"
 };
-const MATCHUPS = {
+const pretty = f => DISPLAY[f] || f;
+const fmt = n => typeof n === "number" ? n.toLocaleString() : n;
+
+/* ===================== COMPARE demo (2 items) ===================== */
+const CMATCH = {
   fighters:{label:"Fighters", num:"01",
     a:{name:"Goku",   power_level:9100, health:50000, attack:22, defense:14},
     b:{name:"Vegeta", power_level:9000, health:52000, attack:25, defense:10},
@@ -377,46 +418,44 @@ const MATCHUPS = {
     fields:["horsepower","mpg","towing_lb","price"], lowerBetter:["price"],
     defaults:{mpg:4, price:5, horsepower:2, towing_lb:2}}
 };
-let current="fighters", priorities={};
-function compare(m, prio){
+let ccur="fighters", cprio={};
+function ccompare(m,prio){
   const lower=new Set(m.lowerBetter); let sA=0,sB=0; const rows=[];
   for(const f of m.fields){
     const va=m.a[f], vb=m.b[f], p=prio[f];
-    const aB = lower.has(f)?va<vb:va>vb, bB = lower.has(f)?va>vb:va<vb;
-    const w = aB?"A":bB?"B":"tie";
+    const aB=lower.has(f)?va<vb:va>vb, bB=lower.has(f)?va>vb:va<vb;
+    const w=aB?"A":bB?"B":"tie";
     if(w==="A") sA+=p; else if(w==="B") sB+=p; else {sA+=p/2; sB+=p/2;}
     rows.push({field:f,va,vb,winner:w,p,lower:lower.has(f)});
   }
   const t=sA+sB, pctA=t?Math.round(sA/t*1000)/10:50;
   return {rows, vwin:sA>sB?"A":sB>sA?"B":"tie", pctA, pctB:Math.round((100-pctA)*10)/10};
 }
-function buildTabs(){
-  const el=document.getElementById("tabs"); el.innerHTML="";
-  for(const k in MATCHUPS){const m=MATCHUPS[k];
-    const b=document.createElement("button");
-    b.className="tab"+(k===current?" active":"");
+function cbuildTabs(){
+  const el=document.getElementById("ctabs"); el.innerHTML="";
+  for(const k in CMATCH){const m=CMATCH[k];
+    const b=document.createElement("button"); b.className="tab"+(k===ccur?" active":"");
     b.innerHTML=`<span class="num">${m.num} /</span>${m.label}`;
-    b.onclick=()=>{current=k; loadMatchup();}; el.appendChild(b);}
+    b.onclick=()=>{ccur=k; cload();}; el.appendChild(b);}
 }
-function buildControls(){
-  const m=MATCHUPS[current]; priorities=Object.assign({},m.defaults);
-  const el=document.getElementById("controls"); el.innerHTML="";
+function cbuildControls(){
+  const m=CMATCH[ccur]; cprio=Object.assign({},m.defaults);
+  const el=document.getElementById("ccontrols"); el.innerHTML="";
   for(const f of m.fields){
     const tag=m.lowerBetter.includes(f)?`<span class="tag">lower wins</span>`:"";
     const row=document.createElement("div"); row.className="ctrl";
-    row.innerHTML=`<div class="label">${DISPLAY[f]||f}${tag}</div>
-      <input type="range" min="1" max="5" step="1" value="${priorities[f]}" data-f="${f}" aria-label="${DISPLAY[f]||f} priority">
-      <div class="pval" id="pval-${f}">${priorities[f]}</div>`;
+    row.innerHTML=`<div class="label">${pretty(f)}${tag}</div>
+      <input type="range" min="1" max="5" step="1" value="${cprio[f]}" data-f="${f}" aria-label="${pretty(f)} priority">
+      <div class="pval" id="cpval-${f}">${cprio[f]}</div>`;
     el.appendChild(row);
   }
   el.querySelectorAll("input[type=range]").forEach(inp=>{
     inp.addEventListener("input",e=>{const f=e.target.dataset.f;
-      priorities[f]=+e.target.value; document.getElementById("pval-"+f).textContent=priorities[f]; render();});
+      cprio[f]=+e.target.value; document.getElementById("cpval-"+f).textContent=cprio[f]; crender();});
   });
 }
-function fmt(n){return typeof n==="number"?n.toLocaleString():n;}
-function render(){
-  const m=MATCHUPS[current], r=compare(m,priorities);
+function crender(){
+  const m=CMATCH[ccur], r=ccompare(m,cprio);
   document.getElementById("segA").style.width=r.pctA+"%";
   document.getElementById("segB").style.width=r.pctB+"%";
   document.getElementById("pctA").textContent=r.pctA.toFixed(1)+"%";
@@ -428,34 +467,142 @@ function render(){
   r.rows.forEach(row=>{
     const arrow=row.winner==="A"?"◄──":row.winner==="B"?"──►":"═══";
     const d=document.createElement("div"); d.className="row w-"+row.winner;
-    d.innerHTML=`<div class="field-name">${DISPLAY[row.field]||row.field} · priority ${row.p}${row.lower?" · lower wins":""}</div>
+    d.innerHTML=`<div class="field-name">${pretty(row.field)} · priority ${row.p}${row.lower?" · lower wins":""}</div>
       <div class="va">${fmt(row.va)}</div><div class="arrow">${arrow}</div><div class="vb">${fmt(row.vb)}</div>`;
     sc.appendChild(d);
   });
 }
-function loadMatchup(){
-  const m=MATCHUPS[current];
+function cload(){
+  const m=CMATCH[ccur];
   document.getElementById("nameA").textContent=m.a.name;
   document.getElementById("nameB").textContent=m.b.name;
-  buildTabs(); buildControls(); render();
+  cbuildTabs(); cbuildControls(); crender();
 }
-loadMatchup();
 
-/* copy buttons */
+/* ===================== RANK demo (N items, method B) ===================== */
+const RSET = {
+  fighters:{label:"Fighters", num:"01", lowerBetter:[],
+    fields:["power","attack","defense","speed"],
+    defaults:{power:5, attack:4, defense:3, speed:2},
+    items:[
+      {name:"Goku",    power:9100,  attack:88, defense:60, speed:92},
+      {name:"Vegeta",  power:9000,  attack:90, defense:55, speed:88},
+      {name:"Piccolo", power:8700,  attack:80, defense:78, speed:70},
+      {name:"Frieza",  power:10500, attack:86, defense:72, speed:95},
+      {name:"Gohan",   power:9300,  attack:84, defense:65, speed:80},
+    ]},
+  laptops:{label:"Laptops", num:"02", lowerBetter:["price"],
+    fields:["ram_gb","storage_gb","battery_hrs","price"],
+    defaults:{ram_gb:5, price:4, battery_hrs:3, storage_gb:2},
+    items:[
+      {name:"Aero 14",   ram_gb:16, storage_gb:512,  battery_hrs:10, price:1200},
+      {name:"Vortex 15", ram_gb:32, storage_gb:1024, battery_hrs:8,  price:1500},
+      {name:"Nimbus 13", ram_gb:16, storage_gb:256,  battery_hrs:14, price:1000},
+      {name:"Titan 17",  ram_gb:64, storage_gb:2048, battery_hrs:6,  price:2200},
+      {name:"Drift 14",  ram_gb:24, storage_gb:512,  battery_hrs:12, price:1350},
+    ]},
+  cars:{label:"Roadsters", num:"03", lowerBetter:["price"],
+    fields:["horsepower","mpg","range_mi","price"],
+    defaults:{horsepower:4, mpg:3, range_mi:3, price:5},
+    items:[
+      {name:"F-150",   horsepower:400, mpg:19, range_mi:480, price:45000},
+      {name:"Tacoma",  horsepower:278, mpg:23, range_mi:520, price:38000},
+      {name:"Mustang", horsepower:450, mpg:21, range_mi:400, price:42000},
+      {name:"Civic",   horsepower:158, mpg:36, range_mi:560, price:27000},
+      {name:"Bronco",  horsepower:330, mpg:20, range_mi:440, price:40000},
+    ]}
+};
+const ROWH = 62;           // row height + gap, px
+let rcur="fighters", rprio={}, rrows={};
+function rrank(set, prio){
+  const lower=new Set(set.lowerBetter), N=set.items.length;
+  const scores={}; set.items.forEach(it=>scores[it.name]=0);
+  for(const f of set.fields){
+    const p=prio[f];
+    const present=set.items.map(it=>[it.name, it[f]]);
+    present.sort((x,y)=> lower.has(f) ? x[1]-y[1] : y[1]-x[1]);  // best first
+    const M=present.length;
+    const pts=r=> M>1 ? p*(M-1-r)/(M-1) : p;
+    let i=0;
+    while(i<M){                       // average ties
+      let j=i; while(j<M && present[j][1]===present[i][1]) j++;
+      let avg=0; for(let r=i;r<j;r++) avg+=pts(r); avg/=(j-i);
+      for(let r=i;r<j;r++) scores[present[r][0]]+=avg;
+      i=j;
+    }
+  }
+  const order=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const max=order[0][1]||1;
+  return order.map(([name,sc],idx)=>({name,score:sc,rank:idx+1,pct:sc/max*100}));
+}
+function rbuildTabs(){
+  const el=document.getElementById("rtabs"); el.innerHTML="";
+  for(const k in RSET){const s=RSET[k];
+    const b=document.createElement("button"); b.className="tab"+(k===rcur?" active":"");
+    b.innerHTML=`<span class="num">${s.num} /</span>${s.label}`;
+    b.onclick=()=>{rcur=k; rload();}; el.appendChild(b);}
+}
+function rbuildControls(){
+  const s=RSET[rcur]; rprio=Object.assign({},s.defaults);
+  const el=document.getElementById("rcontrols"); el.innerHTML="";
+  for(const f of s.fields){
+    const tag=s.lowerBetter.includes(f)?`<span class="tag">lower wins</span>`:"";
+    const row=document.createElement("div"); row.className="ctrl";
+    row.innerHTML=`<div class="label">${pretty(f)}${tag}</div>
+      <input type="range" min="1" max="5" step="1" value="${rprio[f]}" data-f="${f}" aria-label="${pretty(f)} priority">
+      <div class="pval" id="rpval-${f}">${rprio[f]}</div>`;
+    el.appendChild(row);
+  }
+  el.querySelectorAll("input[type=range]").forEach(inp=>{
+    inp.addEventListener("input",e=>{const f=e.target.dataset.f;
+      rprio[f]=+e.target.value; document.getElementById("rpval-"+f).textContent=rprio[f]; rrender();});
+  });
+}
+function rbuildBoard(){
+  const s=RSET[rcur]; const board=document.getElementById("board");
+  board.innerHTML=""; rrows={};
+  board.style.height=(s.items.length*ROWH-8)+"px";
+  s.items.forEach(it=>{
+    const row=document.createElement("div"); row.className="brow";
+    row.innerHTML=`<span class="badge">–</span><span class="nm">${it.name}</span>
+      <span class="barwrap"><span class="bar" style="width:0%"></span></span><span class="sc">0.0</span>`;
+    board.appendChild(row); rrows[it.name]=row;
+  });
+}
+function rrender(){
+  const s=RSET[rcur]; const ranked=rrank(s,rprio);
+  ranked.forEach(e=>{
+    const row=rrows[e.name];
+    row.style.top=((e.rank-1)*ROWH)+"px";
+    row.className="brow"+(e.rank<=3?" r"+e.rank:"");
+    row.querySelector(".badge").textContent=e.rank;
+    row.querySelector(".bar").style.width=Math.max(4,e.pct)+"%";
+    row.querySelector(".sc").textContent=e.score.toFixed(1);
+  });
+}
+function rload(){ rbuildTabs(); rbuildControls(); rbuildBoard(); rrender(); }
+document.getElementById("shuffleBtn").addEventListener("click",()=>{
+  const s=RSET[rcur];
+  s.fields.forEach(f=>{
+    rprio[f]=1+Math.floor(Math.random()*5);
+    document.getElementById("rpval-"+f).textContent=rprio[f];
+    const inp=document.querySelector(`#rcontrols input[data-f="${f}"]`); if(inp) inp.value=rprio[f];
+  });
+  rrender();
+});
+
+/* ===================== boot + copy buttons ===================== */
+cload();
+rload();
 document.querySelectorAll(".codeblock .copy").forEach(btn=>{
   btn.addEventListener("click",()=>{
     const code=btn.parentElement.querySelector("pre").innerText;
-    navigator.clipboard.writeText(code).then(()=>{
-      const t=btn.textContent; btn.textContent="copied"; setTimeout(()=>btn.textContent=t,1200);
-    });
+    navigator.clipboard.writeText(code).then(()=>{const t=btn.textContent; btn.textContent="copied"; setTimeout(()=>btn.textContent=t,1200);});
   });
 });
 const ip=document.getElementById("installPill");
-ip.addEventListener("click",e=>{
-  e.preventDefault();
-  navigator.clipboard.writeText("pip install ablevlabs").then(()=>{
-    const t=ip.textContent; ip.textContent="copied to clipboard"; setTimeout(()=>ip.textContent=t,1200);
-  });
+ip.addEventListener("click",e=>{e.preventDefault();
+  navigator.clipboard.writeText("pip install ablevlabs").then(()=>{const t=ip.textContent; ip.textContent="copied to clipboard"; setTimeout(()=>ip.textContent=t,1200);});
 });
 </script>
 </body>
