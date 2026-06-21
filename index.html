@@ -228,11 +228,20 @@ section { position: relative; z-index: 1; }
   margin-bottom: 2.5rem; display: flex; align-items: center; gap: 1rem;
 }
 .books-hdr::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,.05); }
-.books-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,.05); }
+.books-grid {
+  display: flex; gap: 1px; background: rgba(255,255,255,.05);
+  overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin; scrollbar-color: rgba(0,212,255,.3) transparent;
+}
+.books-grid::-webkit-scrollbar { height: 6px; }
+.books-grid::-webkit-scrollbar-track { background: transparent; }
+.books-grid::-webkit-scrollbar-thumb { background: rgba(0,212,255,.28); border-radius: 3px; }
+.books-grid::-webkit-scrollbar-thumb:hover { background: rgba(0,212,255,.5); }
 .book {
   background: var(--bg); padding: 2rem;
   transition: background .22s; display: flex; flex-direction: column;
   text-decoration: none; color: inherit;
+  flex: 0 0 300px; scroll-snap-align: start;
 }
 .book:hover { background: #0c0f18; }
 .book:hover .book-spine { height: 72px; }
@@ -300,7 +309,7 @@ footer {
   footer { padding: 1.5rem; }
   .hero-title { font-size: clamp(3.5rem, 16vw, 6rem); }
   .hero-bg-num { display: none; }
-  .books-grid { grid-template-columns: 1fr; }
+  .book { flex-basis: 78vw; }
   .proj-item { grid-template-columns: 40px 1fr; }
   .proj-right { display: none; }
   .hero-btns { flex-direction: column; }
