@@ -586,6 +586,22 @@ window.addEventListener('scroll', () => {
   nav.style.background = window.scrollY > 50
     ? 'rgba(4,5,10,.97)' : 'rgba(4,5,10,.88)';
 });
+
+/* ── BOOK ROW: mouse wheel scrolls sideways ── */
+(function () {
+  const row = document.querySelector('.books-grid');
+  if (!row) return;
+  row.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;      // ignore real sideways swipes
+    const max = row.scrollWidth - row.clientWidth;
+    if (max <= 0) return;                                      // nothing to scroll
+    const atStart = row.scrollLeft <= 0 && e.deltaY < 0;
+    const atEnd   = row.scrollLeft >= max - 1 && e.deltaY > 0;
+    if (atStart || atEnd) return;                              // at an edge: let the page scroll
+    e.preventDefault();
+    row.scrollLeft += e.deltaY;
+  }, { passive: false });
+})();
 </script>
 </body>
 </html>
