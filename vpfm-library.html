@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>vpfm — proximity-to-failure engine · AbleVLabs</title>
+<meta name="description" content="vpfm: a Python library that computes reps in reserve set by set, tracks within-session fatigue, and prescribes sets to a target proximity to failure. The Vivanco Proximity-to-Failure Model." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#07090E; --bg2:#0D1117; --surface:#121821; --surface2:#0B0F16;
+    --line:rgba(255,255,255,0.08); --line2:rgba(255,255,255,0.15);
+    --ink:#ECF1F8; --ink-soft:#B7C0CE; --muted:#808B9D; --muted2:#5A6475;
+    --teal:#2DD4BF; --teal-deep:#14B8A6; --green:#45E0A0; --amber:#E0A33E;
+    --glow:rgba(45,212,191,0.34);
+    --maxw:1140px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; color:var(--ink-soft);
+    font-family:"Spectral", Georgia, serif;
+    font-size:18px; line-height:1.7; -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1100px 620px at 84% -8%, rgba(45,212,191,0.08), transparent 60%),
+      radial-gradient(820px 520px at 2% 6%, rgba(69,224,160,0.04), transparent 55%),
+      var(--bg);
+  }
+  body::before{ content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:36px 36px; opacity:.7; }
+  .wrap{ position:relative; z-index:1; max-width:var(--maxw); margin:0 auto; padding:0 clamp(18px,4vw,40px); }
+  a{ color:inherit; }
+  ::selection{ background:rgba(45,212,191,0.26); color:#fff; }
+  .mono{ font-family:"Space Mono", monospace; }
+
+  /* nav */
+  header.nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+    padding:14px clamp(18px,4vw,40px); background:rgba(7,9,14,0.74); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+  .brand{ font-family:"Syne",sans-serif; font-weight:800; font-size:18px; letter-spacing:0.02em; text-decoration:none;
+    color:var(--ink); display:flex; align-items:center; gap:9px; }
+  .brand b{ color:var(--teal); }
+  .brand .dot{ width:9px;height:9px;border-radius:50%;background:var(--teal);box-shadow:0 0 14px var(--glow); }
+  .nav-right{ display:flex; gap:22px; align-items:center; }
+  .nav-right a{ font-family:"Space Mono",monospace; font-size:12.5px; color:var(--muted); text-decoration:none; transition:color .2s; }
+  .nav-right a:hover{ color:var(--teal); }
+  @media (max-width:680px){ .nav-right a.hide-sm{ display:none; } }
+
+  /* hero */
+  .hero{ padding:clamp(46px,8vw,90px) 0 clamp(26px,4vw,44px); }
+  .hero-grid{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(30px,5vw,60px); align-items:center; }
+  @media (max-width:900px){ .hero-grid{ grid-template-columns:1fr; } }
+  .eyebrow{ font-family:"Space Mono",monospace; font-size:12px; letter-spacing:0.24em; text-transform:uppercase; color:var(--teal); }
+  .pill{ display:inline-flex; align-items:center; gap:8px; font-family:"Space Mono",monospace; font-size:11.5px;
+    letter-spacing:0.05em; color:var(--amber); border:1px solid rgba(224,163,62,0.32); background:rgba(224,163,62,0.06);
+    padding:6px 12px; border-radius:999px; margin:16px 0 18px; }
+  .pill::before{ content:""; width:6px;height:6px;border-radius:50%;background:var(--amber); }
+  .title-rule{ width:46px; height:3px; background:var(--teal); border-radius:2px; margin:18px 0 18px; }
+  h1.wordmark{ font-family:"Space Mono",monospace; font-weight:700; font-size:clamp(46px,9vw,84px); line-height:1;
+    letter-spacing:-0.01em; color:var(--ink); margin:0 0 16px; }
+  h1.wordmark .t{ color:var(--teal); }
+  .descriptor{ font-family:"Spectral",serif; font-weight:400; font-style:italic; font-size:clamp(18px,2.3vw,23px); color:var(--ink);
+    letter-spacing:0; margin:0 0 14px; }
+  .sub{ font-size:clamp(16px,2vw,18px); color:var(--ink-soft); max-width:46ch; margin:0 0 24px; }
+  .install{ display:flex; align-items:stretch; max-width:380px; border:1px solid var(--line2); border-radius:12px;
+    overflow:hidden; background:var(--surface2); margin-bottom:11px; }
+  .install code{ font-family:"Space Mono",monospace; font-size:14px; color:var(--ink); padding:13px 16px; flex:1;
+    white-space:nowrap; overflow-x:auto; }
+  .install code .pmt{ color:var(--teal); }
+  .install button{ border:none; border-left:1px solid var(--line); background:transparent; color:var(--muted);
+    font-family:"Space Mono",monospace; font-size:12px; padding:0 16px; cursor:pointer; transition:color .2s,background .2s; }
+  .install button:hover{ color:var(--teal); background:rgba(45,212,191,0.06); }
+  .install-note{ font-family:"Space Mono",monospace; font-size:12px; color:var(--muted); }
+  .install-note .g{ color:var(--green); }
+
+  /* terminal */
+  .term{ border:1px solid var(--line2); border-radius:16px; overflow:hidden; background:var(--surface2);
+    box-shadow:0 40px 90px -52px #000, 0 0 56px -30px var(--glow); }
+  .term-bar{ display:flex; align-items:center; gap:10px; padding:11px 16px; border-bottom:1px solid var(--line);
+    background:rgba(255,255,255,0.02); font-family:"Space Mono",monospace; font-size:11.5px; color:var(--muted); letter-spacing:0.06em; }
+  .term-bar::before{ content:"›_"; color:var(--teal); font-weight:700; }
+  .term pre{ margin:0; padding:18px 20px; font-family:"Space Mono",monospace; font-size:13px; line-height:1.75;
+    color:var(--ink-soft); overflow-x:auto; }
+  .cur{ display:inline-block; width:8px; height:15px; background:var(--teal); vertical-align:-2px; animation:blink 1.1s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .c{ color:var(--muted2); font-style:italic; } .o{ color:var(--green); } .tk{ color:var(--teal); } .kw{ color:#C08CE6; }
+
+  /* placeholder note */
+  .pnote{ border:1px solid var(--line); border-left:3px solid var(--teal); border-radius:0 12px 12px 0;
+    background:var(--surface); padding:18px 22px; margin:8px 0 0; }
+  .pnote .l{ font-family:"Space Mono",monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--teal); margin-bottom:7px; }
+  .pnote p{ margin:0; font-size:15px; color:var(--ink-soft); }
+  .pnote code{ font-family:"Space Mono",monospace; color:var(--teal); font-size:13.5px; }
+
+  /* sections */
+  section{ padding:clamp(40px,7vw,78px) 0; }
+  .sec-tag{ font-family:"Space Mono",monospace; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--teal); margin-bottom:14px; }
+  h2{ font-family:"Syne",sans-serif; font-weight:700; font-size:clamp(25px,3.6vw,38px); line-height:1.07; letter-spacing:-0.015em; color:var(--ink); margin:0 0 14px; }
+  .lead{ font-size:clamp(16px,1.9vw,18.5px); color:var(--ink-soft); max-width:62ch; }
+  .reveal{ opacity:0; transform:translateY(20px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  .cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:32px; }
+  @media (max-width:820px){ .cards{ grid-template-columns:1fr; } }
+  .card{ border:1px solid var(--line); border-radius:16px; padding:26px 24px; background:linear-gradient(180deg,var(--surface),rgba(18,24,33,0.4)); }
+  .card .num{ font-family:"Space Mono",monospace; font-size:12px; color:var(--teal); margin-bottom:14px; letter-spacing:0.08em; }
+  .card h3{ font-family:"Syne",sans-serif; font-weight:700; font-size:19px; color:var(--ink); margin:0 0 9px; }
+  .card p{ margin:0; font-size:15px; color:var(--ink-soft); }
+
+  .ex{ display:grid; grid-template-columns:0.88fr 1.12fr; gap:clamp(22px,4vw,44px); align-items:center; margin-top:34px; }
+  .ex.flip{ grid-template-columns:1.12fr 0.88fr; }
+  @media (max-width:900px){ .ex, .ex.flip{ grid-template-columns:1fr; } }
+  .ex-txt .who{ font-family:"Space Mono",monospace; font-size:12px; color:var(--teal); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px; }
+  .ex-txt h3{ font-family:"Syne",sans-serif; font-weight:700; font-size:22px; color:var(--ink); margin:0 0 10px; }
+  .ex-txt p{ margin:0 0 12px; font-size:15.5px; color:var(--ink-soft); }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{ font-family:"Space Mono",monospace; font-size:11.5px; color:var(--muted); border:1px solid var(--line); border-radius:7px; padding:4px 10px; }
+  .codeblk{ background:var(--surface2); border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+    font-family:"Space Mono",monospace; font-size:12.8px; line-height:1.72; overflow-x:auto; color:var(--ink-soft); }
+  .codeblk pre{ margin:0; }
+
+  .capwrap{ border:1px solid var(--line); border-radius:16px; background:linear-gradient(180deg,var(--surface),rgba(11,15,22,0.6)); padding:22px clamp(18px,3vw,28px); margin-top:32px; }
+  .capwrap svg{ width:100%; height:auto; display:block; }
+  .capwrap .cap{ font-family:"Space Mono",monospace; font-size:12px; color:var(--muted); text-align:center; margin-top:10px; }
+
+  .boundary{ border:1px solid var(--line2); border-radius:14px; background:var(--surface); padding:22px 24px; margin-top:26px; }
+  .boundary .h{ font-family:"Space Mono",monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink); margin-bottom:12px; }
+  .boundary .row{ display:flex; gap:12px; margin-bottom:10px; font-size:15px; }
+  .boundary .row:last-child{ margin-bottom:0; }
+  .boundary .yes{ color:var(--teal); font-family:"Space Mono",monospace; font-size:12px; min-width:54px; padding-top:2px; }
+  .boundary .no{ color:var(--amber); font-family:"Space Mono",monospace; font-size:12px; min-width:54px; padding-top:2px; }
+  .boundary .row span{ color:var(--ink-soft); }
+
+  .fns{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:30px; }
+  @media (max-width:760px){ .fns{ grid-template-columns:1fr; } }
+  .fn{ border:1px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--surface); transition:border-color .2s, transform .2s; }
+  .fn:hover{ border-color:rgba(45,212,191,0.4); transform:translateY(-2px); }
+  .fn code{ font-family:"Space Mono",monospace; font-size:13px; color:var(--teal); display:block; margin-bottom:6px; }
+  .fn span{ font-size:14.5px; color:var(--ink-soft); }
+
+  .status{ border:1px solid var(--line2); background:var(--surface); border-radius:16px; padding:24px clamp(20px,3vw,30px); margin-top:28px; }
+  .status .h{ font-family:"Space Mono",monospace; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); margin-bottom:12px; }
+  .status p{ margin:0 0 10px; font-size:15.5px; color:var(--ink-soft); }
+  .status p:last-child{ margin:0; }
+  .status b{ color:var(--ink); }
+
+  .cta{ text-align:center; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:clamp(48px,8vw,82px) 0; }
+  .cta h2{ margin-bottom:16px; }
+  .btns{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:24px; }
+  .btn{ font-family:"Space Mono",monospace; font-size:13px; text-decoration:none; padding:13px 22px; border-radius:10px; transition:transform .2s, box-shadow .2s; }
+  .btn.primary{ background:var(--teal); color:#04231F; font-weight:700; box-shadow:0 0 30px -8px var(--glow); }
+  .btn.primary:hover{ transform:translateY(-2px); box-shadow:0 0 40px -6px var(--glow); }
+  .btn.ghost{ border:1px solid var(--line2); color:var(--ink); }
+  .btn.ghost:hover{ border-color:var(--teal); color:var(--teal); }
+
+  footer{ padding:34px clamp(18px,4vw,40px); }
+  footer .fw{ max-width:var(--maxw); margin:0 auto; display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; align-items:flex-end; }
+  footer .fb{ font-family:"Syne",sans-serif; font-weight:800; font-size:20px; color:var(--ink); }
+  footer .fm{ font-family:"Space Mono",monospace; font-size:12px; color:var(--muted); line-height:1.7; }
+  footer .fm .a{ color:var(--teal); }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } .reveal{ opacity:1; transform:none; } .cur{ opacity:1; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="#"><span class="dot"></span>Able<b>V</b>Labs</a>
+  <div class="nav-right">
+    <a href="#overview" class="hide-sm">Overview</a>
+    <a href="#session" class="hide-sm">Examples</a>
+    <a href="#programming" class="hide-sm">Programming</a>
+    <a href="#functions" class="hide-sm">Reference</a>
+    <a href="#get">Install</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero"><div class="wrap"><div class="hero-grid">
+  <div>
+    <span class="eyebrow">AbleVLabs · Python library</span>
+    <div class="title-rule" aria-hidden="true"></div>
+    <h1 class="wordmark">vpfm</h1>
+    <div class="descriptor">The Vivanco Proximity-to-Failure Model — implemented in Python.</div>
+    <p class="sub">Calibrate a lifter once, then compute precise reps in reserve on every set — with within-session fatigue tracked automatically, so the estimate holds from the first warm-up to the last working set.</p>
+    <span class="pill">v0.4 · research preview</span>
+    <div class="install">
+      <code><span class="pmt">$</span> pip install ablevlabs</code>
+      <button id="copyBtn" type="button">copy</button>
+    </div>
+    <div class="install-note"><span class="g">from</span> ablevlabs <span class="g">import</span> vpfm</div>
+  </div>
+
+  <div>
+    <div class="term">
+      <div class="term-bar">python — vpfm</div>
+<pre><span class="kw">from</span> ablevlabs <span class="kw">import</span> vpfm
+
+<span class="c"># Two all-out sets calibrate the lifter's curve.</span>
+king_cold = vpfm.LoadRepCurve.<span class="tk">from_two_sets</span>((315, 5), (275, 9))
+king_cold.one_rep_max                       <span class="o"># 361 lb</span>
+
+session = vpfm.<span class="tk">Session</span>(king_cold)
+top = session.<span class="tk">do_set</span>(reps=5, load=295, rest=180)
+top.rir                                     <span class="o"># 1.9  reps in reserve</span>
+
+<span class="c"># Prescribe the next set to a target effort:</span>
+session.<span class="tk">reps_for_rir</span>(target_rir=2, load=295)   <span class="o"># 4.5</span><span class="cur"></span></pre>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" style="margin-top:26px;">
+  <div class="pnote">
+    <div class="l">Reading the examples</div>
+    <p><code>king_cold</code> is only a variable name — put the lifter's own name (or any label) in its place; it changes nothing. The inputs that actually drive the model are the <strong>sets</strong>: every <code>(weight, reps)</code> pair you record is what it reads.</p>
+  </div>
+</div>
+</div>
+
+<!-- OVERVIEW -->
+<section id="overview"><div class="wrap reveal">
+  <div class="sec-tag">// overview</div>
+  <h2>Proximity to failure, quantified.</h2>
+  <p class="lead">Reps in reserve is the most useful number in a serious session — and the hardest to judge by feel, especially when fresh. vpfm replaces the estimate with a calculation, and keeps it accurate as fatigue accumulates.</p>
+  <div class="cards">
+    <div class="card"><div class="num">01</div><h3>Calibrate once</h3><p>Two all-out sets to failure define the lifter's strength curve. No max attempt, no lab — two sets, entered a single time.</p></div>
+    <div class="card"><div class="num">02</div><h3>Measure every set</h3><p>Each logged set returns reps in reserve, proximity to failure as a percentage, and an estimated max at that load.</p></div>
+    <div class="card"><div class="num">03</div><h3>Fatigue-aware</h3><p>A running <b style="color:var(--ink)">capacity</b> falls as work accumulates and recovers on rest, so a late set is judged against a lower ceiling than an early one.</p></div>
+  </div>
+</div></section>
+
+<!-- CALIBRATION -->
+<section id="calibration"><div class="wrap reveal">
+  <div class="sec-tag">// calibration</div>
+  <h2>One curve per lifter, from two sets.</h2>
+  <div class="ex">
+    <div class="ex-txt">
+      <div class="who">King_Cold · weighted</div>
+      <h3>Any loaded exercise</h3>
+      <p>Bench, squat, a dumbbell press, a cable row — the engine reads only weight and reps, so the equipment never matters.</p>
+      <p>Two hard sets produce a calibrated load-rep curve and an estimated one-rep max — with no max attempt required.</p>
+      <div class="chips"><span class="chip">barbell</span><span class="chip">dumbbell</span><span class="chip">cable</span><span class="chip">machine</span><span class="chip">kettlebell</span></div>
+    </div>
+    <div class="codeblk"><pre><span class="kw">from</span> ablevlabs <span class="kw">import</span> vpfm
+
+<span class="c"># king_cold -> the lifter's name (label only)</span>
+king_cold = vpfm.LoadRepCurve.<span class="tk">from_two_sets</span>((315, 5), (275, 9))
+
+king_cold.one_rep_max          <span class="o"># 361 lb   (estimated)</span>
+king_cold.fresh_reps(225)      <span class="o"># 14.9     (fresh reps at 225)</span></pre></div>
+  </div>
+</div></section>
+
+<!-- SESSION -->
+<section id="session"><div class="wrap reveal">
+  <div class="sec-tag">// logging a session</div>
+  <h2>Log the work. Read it back.</h2>
+  <p class="lead">Every set you record returns a result — reps in reserve, effort, the fatigued max, and the updated capacity. Log an identical set later and it comes back with less in reserve: the fatigue model, doing its job.</p>
+  <div class="ex" style="margin-top:32px;">
+    <div class="codeblk"><pre>session = vpfm.<span class="tk">Session</span>(king_cold)
+
+session.<span class="tk">do_set</span>(reps=8, load=135, rest=120)   <span class="c"># warm-up</span>
+work1 = session.<span class="tk">do_set</span>(reps=5, load=295, rest=180)
+work2 = session.<span class="tk">do_set</span>(reps=5, load=295, rest=0)
+
+work1.rir         <span class="o"># 1.8   reps in reserve</span>
+work1.effort      <span class="o"># 0.73  proximity to failure</span>
+work2.rir         <span class="o"># 1.4   same set, fewer left</span>
+session.capacity  <span class="o"># 0.73  capacity spent</span></pre></div>
+    <div class="ex-txt">
+      <div class="who">SetResult</div>
+      <h3>What comes back</h3>
+      <p>Each set hands you a result object with the fields you actually train on: <span class="mono" style="color:var(--teal)">.rir</span>, <span class="mono" style="color:var(--teal)">.effort</span>, <span class="mono" style="color:var(--teal)">.fatigued_max</span>, and the capacity readings before and after.</p>
+      <p>The two identical 295&times;5 sets tell the story — 1.8 reps in reserve, then 1.4, because the session has worn the lifter down.</p>
+    </div>
+  </div>
+
+  <div class="capwrap">
+    <svg id="capSvg" viewBox="0 0 640 260" role="img" aria-label="Capacity across King_Cold's session, draining on sets and recovering on rest.">
+      <defs>
+        <linearGradient id="capFill" x1="0" y1="0" x2="0" y2="260" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#2DD4BF" stop-opacity="0.28"/><stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="cglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <g id="capAxes"></g>
+      <path id="capArea" fill="url(#capFill)"></path>
+      <polyline id="capLine" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round" filter="url(#cglow)"></polyline>
+      <g id="capDots"></g>
+    </svg>
+    <div class="cap">Capacity (0–1) across King_Cold's session — the warm-up barely dents it; the two hard top sets do the work.</div>
+  </div>
+</div></section>
+
+<!-- BODYWEIGHT -->
+<section id="bodyweight"><div class="wrap reveal">
+  <div class="sec-tag">// bodyweight</div>
+  <h2>Calisthenics need no weight at all.</h2>
+  <div class="ex flip">
+    <div class="codeblk"><pre><span class="c"># Master Roshi -- one measured fresh max, no load</span>
+roshi = vpfm.LoadRepCurve.<span class="tk">fixed</span>(15)     <span class="c"># 15 pull-ups</span>
+
+session = vpfm.<span class="tk">Session</span>(roshi)
+session.<span class="tk">do_set</span>(reps=10, rest=120).rir    <span class="o"># 5.0</span>
+session.<span class="tk">do_set</span>(reps=10, rest=0).rir      <span class="o"># 3.75</span>
+
+<span class="c"># Weighted variation: bodyweight + belt, one axis</span>
+vpfm.<span class="tk">total_load</span>(155, vpfm.BODYWEIGHT_FRACTION[<span style="color:#E6C07B">"pullup"</span>], 35)
+                                     <span class="o"># 190</span></pre></div>
+    <div class="ex-txt">
+      <div class="who">Master Roshi · bodyweight</div>
+      <h3>Pure calisthenics</h3>
+      <p>Pull-ups, push-ups, dips — the load is fixed, so there is no curve to fit. Supply one fresh max and the model runs unchanged.</p>
+      <p>The second identical set returns less in reserve — the same fatigue tracking, applied to bodyweight. For weighted or assisted variations, <span class="mono" style="color:var(--teal)">total_load</span> places bodyweight and added plates on a single axis.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- PREDICTION -->
+<section id="prediction"><div class="wrap reveal">
+  <div class="sec-tag">// prediction</div>
+  <h2>Predict a set before it happens — with honest error bars.</h2>
+  <div class="ex">
+    <div class="ex-txt">
+      <div class="who">Look ahead</div>
+      <h3>Estimate, then a range</h3>
+      <p>Ask what a set will cost before you attempt it, and get the answer as a range rather than false precision: a median reps in reserve plus an 80% interval.</p>
+      <p>That interval is what makes the model honest — and, later, testable against real outcomes.</p>
+    </div>
+    <div class="codeblk"><pre>session.<span class="tk">predicted_rir</span>(reps=5, load=295)
+                                  <span class="o"># 1.9   single estimate</span>
+
+vpfm.<span class="tk">rir_interval</span>(king_cold, reps=5, load=295)
+                                  <span class="o"># (1.8, -0.2, 4.0)</span>
+                                  <span class="o"># median, low, high (80%)</span></pre></div>
+  </div>
+</div></section>
+
+<!-- PROGRAMMING -->
+<section id="programming"><div class="wrap reveal">
+  <div class="sec-tag">// programming</div>
+  <h2>From measurement to prescription.</h2>
+  <p class="lead">Measuring proximity to failure is half the value. Because vpfm can invert its own model, it also prescribes — which makes it a programming tool, not just a meter.</p>
+  <p style="max-width:62ch; margin-top:14px; color:var(--ink-soft);">Training effect is governed largely by proximity to failure: productive work lives in a target reps-in-reserve band. <span class="mono" style="color:var(--teal)">reps_for_rir</span> returns the exact rep count that lands a given load at the effort you choose — so every working set is written to a deliberate proximity to failure instead of a guess. And because capacity falls across the session, the prescription adapts: hold the target fixed, and the reps come down as fatigue rises.</p>
+
+  <div class="ex" style="margin-top:30px;">
+    <div class="codeblk"><pre><span class="c"># Hold every working set at 2 RIR on bench (295 lb)</span>
+session = vpfm.<span class="tk">Session</span>(king_cold)
+
+session.<span class="tk">reps_for_rir</span>(target_rir=2, load=295)  <span class="o"># 4.9  -> 5 reps, fresh</span>
+session.<span class="tk">do_set</span>(reps=5, load=295, rest=180)
+
+session.<span class="tk">reps_for_rir</span>(target_rir=2, load=295)  <span class="o"># 4.5  -> fatigue, 4 reps</span>
+session.<span class="tk">do_set</span>(reps=4, load=295, rest=180)
+
+session.<span class="tk">reps_for_rir</span>(target_rir=2, load=295)  <span class="o"># 4.4  -> holds the target</span></pre></div>
+    <div class="ex-txt">
+      <div class="who">Autoregulation</div>
+      <h3>The same effort, every set</h3>
+      <p>Same target proximity to failure, set after set — the reps come down as fatigue rises, keeping each one productive instead of drifting into junk volume or unplanned failure.</p>
+      <p>That is the controlled, repeatable stimulus serious programming is built on.</p>
+    </div>
+  </div>
+
+  <div class="boundary">
+    <div class="h">What it does, and doesn't, do</div>
+    <div class="row"><span class="yes">DOES</span><span>Model strength and fatigue <b style="color:var(--ink)">within a session</b>, and control the stimulus — proximity to failure, set by set — with precision.</span></div>
+    <div class="row"><span class="no">NOT YET</span><span>Model <b style="color:var(--ink)">between-session adaptation</b> — the multi-week process of getting stronger. That is a separate fitness–fatigue layer, on the roadmap.</span></div>
+    <div class="row"><span class="yes">SO</span><span>Used with a consistent target RIR, progressive load, and periodic re-calibration as the lifter changes, it delivers exactly the stimulus that progressive overload depends on.</span></div>
+  </div>
+</div></section>
+
+<!-- FUNCTIONS -->
+<section id="functions"><div class="wrap reveal">
+  <div class="sec-tag">// reference</div>
+  <h2>The whole surface.</h2>
+  <p class="lead">Small and readable by design — everything needed to calibrate, log, predict, prescribe, and quantify uncertainty.</p>
+  <div class="fns">
+    <div class="fn"><code>LoadRepCurve.from_two_sets(...)</code><span>Calibrate a strength curve from two all-out sets.</span></div>
+    <div class="fn"><code>LoadRepCurve.fixed(...)</code><span>Bodyweight mode — one measured fresh max, no load axis.</span></div>
+    <div class="fn"><code>Session.do_set(reps, load, rest)</code><span>Log a set; returns reps in reserve, effort, and capacity.</span></div>
+    <div class="fn"><code>Session.predicted_rir(...)</code><span>Estimate a set before performing it.</span></div>
+    <div class="fn"><code>Session.reps_for_rir(target, load)</code><span>Prescribe reps to a target proximity to failure.</span></div>
+    <div class="fn"><code>rir_interval(...)</code><span>RIR as a median plus an 80% interval.</span></div>
+    <div class="fn"><code>total_load(bw, fraction, added)</code><span>Bodyweight plus added load on a single axis.</span></div>
+    <div class="fn"><code>curve.one_rep_max</code><span>An estimated 1RM — no max attempt required.</span></div>
+  </div>
+</div></section>
+
+<!-- STATUS -->
+<section id="status"><div class="wrap reveal">
+  <div class="sec-tag">// research status</div>
+  <h2>Where it stands.</h2>
+  <div class="status">
+    <div class="h">Research preview</div>
+    <p>The <b>engine is complete and tested</b> — a clean, proven core with a passing test suite, backed by the formal Vivanco Proximity-to-Failure Model and its derivations.</p>
+    <p>What remains open: the fatigue constants ship as <b>sensible defaults, not yet fit to real training data</b>. The reps-in-reserve figures are therefore well-formed estimates, not calibrated truth — a precise starting point, treated as such.</p>
+    <p>Fitting and validating those constants against measured reps-to-failure is the roadmap, and the path from a sound tool to an industry standard.</p>
+  </div>
+</div></section>
+
+<!-- CTA -->
+<div class="cta" id="get"><div class="wrap reveal">
+  <div class="sec-tag" style="text-align:center">// get started</div>
+  <h2>Put a number on the last rep.</h2>
+  <p class="lead" style="margin:0 auto;">Built on a formal, proven model. Part of the <b style="color:var(--ink)">ablevlabs</b> package — alongside <span class="mono" style="color:var(--teal)">lana</span> and <span class="mono" style="color:var(--teal)">kami</span>.</p>
+  <div class="install" style="margin:24px auto 0;">
+    <code><span class="pmt">$</span> pip install ablevlabs</code>
+    <button id="copyBtn2" type="button">copy</button>
+  </div>
+  <div class="btns">
+    <a class="btn primary" href="#">Read the docs</a>
+    <a class="btn ghost" href="#">View the model paper</a>
+  </div>
+</div></div>
+
+<footer>
+  <div class="fw">
+    <div>
+      <div class="fb">Able<span style="color:var(--teal)">V</span>Labs</div>
+      <div class="fm">Strength science &amp; data tools</div>
+    </div>
+    <div class="fm">
+      vpfm · proximity-to-failure engine<br>
+      by <span class="a">Carlos Abel Vivanco</span> · 2026<br>
+      research preview — parameters pending validation
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  function wireCopy(id){
+    var b=document.getElementById(id); if(!b) return;
+    b.addEventListener("click",function(){
+      var t="pip install ablevlabs";
+      var done=function(){ var o=b.textContent; b.textContent="copied"; b.style.color="var(--green)"; setTimeout(function(){ b.textContent=o; b.style.color=""; },1300); };
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done).catch(done); } else { done(); }
+    });
+  }
+  wireCopy("copyBtn"); wireCopy("copyBtn2");
+
+  (function(){
+    var pts=[1.000,0.986,0.925,0.725], labels=["START","WARM-UP","SET 1","SET 2"];
+    var W=640,H=260,m={l:46,r:20,t:24,b:38},px0=m.l,px1=W-m.r,py0=m.t,py1=H-m.b;
+    var sx=function(i){return px0+i/(pts.length-1)*(px1-px0);}, sy=function(c){return py1-c*(py1-py0);};
+    var ax="";
+    [0,0.25,0.5,0.75,1.0].forEach(function(c){var y=sy(c);
+      ax+='<line x1="'+px0+'" y1="'+y+'" x2="'+px1+'" y2="'+y+'" stroke="rgba(255,255,255,0.07)"/>';
+      ax+='<text x="'+(px0-9)+'" y="'+(y+3)+'" text-anchor="end" font-family="Space Mono,monospace" font-size="9" fill="#5A6475">'+c.toFixed(2)+'</text>';});
+    pts.forEach(function(c,i){ax+='<text x="'+sx(i)+'" y="'+(py1+16)+'" text-anchor="middle" font-family="Space Mono,monospace" font-size="9" fill="#808B9D" letter-spacing="0.05em">'+labels[i]+'</text>';});
+    document.getElementById("capAxes").innerHTML=ax;
+    var poly="",dots="",area="M"+sx(0).toFixed(1)+","+sy(0).toFixed(1)+" ";
+    pts.forEach(function(c,i){var x=sx(i).toFixed(1),y=sy(c).toFixed(1);
+      poly+=x+","+y+" "; area+="L"+x+","+y+" ";
+      dots+='<circle cx="'+x+'" cy="'+y+'" r="4" fill="#07090E" stroke="#2DD4BF" stroke-width="2.5"/>';
+      dots+='<text x="'+x+'" y="'+(parseFloat(y)-12)+'" text-anchor="middle" font-family="Space Mono,monospace" font-size="10" fill="#2DD4BF">'+c.toFixed(2)+'</text>';});
+    area+="L"+sx(pts.length-1).toFixed(1)+","+sy(0).toFixed(1)+" Z";
+    document.getElementById("capLine").setAttribute("points",poly.trim());
+    document.getElementById("capArea").setAttribute("d",area);
+    document.getElementById("capDots").innerHTML=dots;
+  })();
+
+  (function(){
+    var els=document.querySelectorAll(".reveal");
+    if(!("IntersectionObserver" in window)){ els.forEach(function(e){e.classList.add("in");}); return; }
+    var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target);}});},{threshold:0.12});
+    els.forEach(function(e){io.observe(e);});
+  })();
+})();
+</script>
+</body>
+</html>
