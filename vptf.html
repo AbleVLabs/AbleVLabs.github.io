@@ -118,6 +118,8 @@ window.MathJax = {
   .meta-rows .k{ color:var(--muted-2); min-width:96px; letter-spacing:0.04em; }
   .meta-rows .v{ color:var(--ink-body); }
   .meta-rows .v.author{ color:var(--warm-deep); }
+  .meta-rows .v a{ color:var(--teal); text-decoration:none; border-bottom:1px solid rgba(28,110,97,0.4); }
+  .meta-rows .v a:hover{ border-color:var(--teal); }
 
   .status-badge{
     display:inline-flex; align-items:center; gap:9px;
@@ -348,6 +350,7 @@ window.MathJax = {
           <div class="row"><span class="k">Designation</span><span class="v">VPFM · Version 1.0</span></div>
           <div class="row"><span class="k">Published</span><span class="v">June 24, 2026</span></div>
           <div class="row"><span class="k">Field</span><span class="v">Resistance-training autoregulation</span></div>
+          <div class="row"><span class="k">Implementation</span><span class="v"><a href="/vita.html">VITA · pip install ablevlabs</a></span></div>
         </div>
 
         <div class="status-badge">Theoretical formulation — empirical validation pending</div>
@@ -418,8 +421,8 @@ window.MathJax = {
         <p>Three families of tools dominate current practice, and each leaves the same gap.</p>
         <p><strong>Static load–rep charts.</strong> Standard tables map a percentage of one-rep maximum to an expected number of repetitions. They are built on population averages and assume a rested lifter. They cannot represent the large differences in rep endurance between individuals, exercises, and muscle groups, and they say nothing about how earlier sets change later ones.</p>
         <p><strong>Subjective RIR / RPE self-report.</strong> The repetitions-in-reserve-based rating scale<a href="#refs" class="ref-sup">[2]</a><a href="#refs" class="ref-sup">[3]</a> asks the lifter to report how many reps they had left. It is practical and widely used, but it is subjective and experience-dependent: a scoping review of prediction accuracy found that estimates are systematically less reliable when training farther from failure and at higher repetition ranges<a href="#refs" class="ref-sup">[1]</a>. Self-report is also a biased ruler — validating a model against perceived RIR measures it against the very error it should correct.</p>
-        <p><strong>One-rep-max formulas.</strong> The classical estimators<a href="#refs" class="ref-sup">[7]</a><a href="#refs" class="ref-sup">[8]</a> predict a single point — the maximum — from a submaximal set. They are well validated for that purpose, but they describe only one location on the load–rep curve and contain no notion of within-session fatigue or mid-set proximity to failure.</p>
-        <p>The missing ingredient is common to all three: a model of <strong>fatigue accumulation</strong> that updates the prediction continuously. The reconstitution of work capacity during recovery has been modelled rigorously in endurance physiology — the W′ balance model describes a finite capacity that is spent above a threshold and refilled exponentially during easier efforts<a href="#refs" class="ref-sup">[5]</a>. The VPFM adapts that structure to inter-set rest in resistance training, and pairs it with an individualized load–rep law and, optionally, the well-documented relationship between bar velocity and effort<a href="#refs" class="ref-sup">[6]</a>.</p>
+        <p><strong>One-rep-max formulas.</strong> The classical estimators<a href="#refs" class="ref-sup">[6]</a><a href="#refs" class="ref-sup">[7]</a> predict a single point — the maximum — from a submaximal set. They are well validated for that purpose, but they describe only one location on the load–rep curve and contain no notion of within-session fatigue or mid-set proximity to failure.</p>
+        <p>The missing ingredient is common to all three: a model of <strong>fatigue accumulation</strong> that updates the prediction continuously. The reconstitution of work capacity during recovery has been modelled rigorously in endurance physiology — the W′ balance model describes a finite capacity that is spent above a threshold and refilled exponentially during easier efforts<a href="#refs" class="ref-sup">[4]</a>. The VPFM adapts that structure to inter-set rest in resistance training, and pairs it with an individualized load–rep law and, optionally, the well-documented relationship between bar velocity and effort<a href="#refs" class="ref-sup">[5]</a>.</p>
       </section>
 
       <!-- 3 THE MODEL -->
@@ -528,18 +531,18 @@ window.MathJax = {
 
         <div class="callout"><div class="label">Case B — variable load (weighted / assisted)</div><p>With added load varying, \(w=b\,m+a\) takes two or more values and Theorem 3 applies directly to the totals. The axis must be total effective load: using added weight alone would place a bodyweight set at \(a=0\) and force \(\rho(0)=\infty\). The offset \(b\,m\) is what regularizes the axis.</p></div>
 
-        <p>A worked Case A example — pull-ups at a measured fresh max of \(\rho_{\mathrm{BW}}=12\), with \(k=0.4,\ \gamma=2,\ T_{\mathrm{rec}}=180\,\mathrm{s}\); no load is ever entered:</p>
+        <p>A worked Case A example — pull-ups at a measured fresh max of \(\rho_{\mathrm{BW}}=12\), with \(k=0.4,\ \gamma=2,\ T_{\mathrm{rec}}=180\,\mathrm{s}\) and 120&nbsp;s of rest between sets; no load is ever entered:</p>
 
         <div class="tbl-wrap">
           <table class="trace">
-            <thead><tr><th>Set</th><th>Reps</th><th>F(C)</th><th>Effort e</th><th>RIR Φ</th><th>C after</th></tr></thead>
+            <thead><tr><th>Set</th><th>Reps</th><th>C&nbsp;before</th><th>F(C)</th><th>Effort e</th><th>RIR Φ</th><th>C after</th></tr></thead>
             <tbody>
-              <tr><td class="setname">Set 1</td><td>8</td><td>12.00</td><td>0.667</td><td class="rir">4.00</td><td>0.837</td></tr>
-              <tr><td class="setname">Set 2</td><td>8</td><td>11.00</td><td>0.728</td><td class="rir">3.00</td><td>0.742</td></tr>
+              <tr><td class="setname">Set 1</td><td>8</td><td>1.000</td><td>12.00</td><td>0.667</td><td class="rir">4.00</td><td>0.837</td></tr>
+              <tr><td class="setname">Set 2</td><td>8</td><td>0.917</td><td>11.00</td><td>0.728</td><td class="rir">3.00</td><td>0.742</td></tr>
             </tbody>
           </table>
         </div>
-        <p>Two sets of eight strict pull-ups: the first leaves four reps in reserve, the second only three, because the first set drained the battery — and the model needed nothing but the one measured fresh max. For very high-rep bodyweight work the limiter becomes endurance rather than strength, the same scope caveat noted in §5.</p>
+        <p>Two sets of eight strict pull-ups: the first leaves four reps in reserve, the second only three, because the first set spent capacity faster than the rest restored it (the second set begins at \(C=0.917\), not \(1\)) — and the model needed nothing but the one measured fresh max. For very high-rep bodyweight work the limiter becomes endurance rather than strength, the same scope caveat noted in §5.</p>
       </section>
 
       <!-- 4 EXAMPLE -->
@@ -562,7 +565,7 @@ window.MathJax = {
           </table>
         </div>
 
-        <p>Two things the static tools cannot show are visible here. First, the warm-up at low effort barely touches capacity — it nets out near \(0.99\) after rest — because the convex cost in A4 places easy sets on the flat part of the curve. Second, the <em>identical</em> set, \(205\times 6\), returns less reserve the second time (\(2.26\) versus \(2.76\)) because the battery has drained between them. That difference is the entire contribution of the model.</p>
+        <p>Two things the static tools cannot show are visible here. First, the warm-up at low effort barely touches capacity — it nets out near \(0.99\) after rest — because the convex cost in A4 places easy sets on the flat part of the curve. Second, the <em>identical</em> set, \(205\times 6\), returns less reserve the second time (\(2.26\) versus \(2.76\)) because capacity has drained between them. That difference is the entire contribution of the model.</p>
 
         <div class="cap-fig">
           <svg id="capSvg" viewBox="0 0 600 240" role="img" aria-label="Capacity across the session, draining on sets and partially recovering during rest.">
@@ -579,6 +582,8 @@ window.MathJax = {
           </svg>
           <div class="cap">Capacity \(C\) across the session — each set draws it down; each rest reconstitutes it exponentially toward full.</div>
         </div>
+
+        <div class="callout note"><div class="label">Reference implementation</div><p>Every figure in this section is reproduced by a tested implementation of the model: the <a class="link" href="/vita.html">VITA</a> Python library (<span class="mono">pip install ablevlabs</span>), which performs the same calibration, capacity tracking, and reps-in-reserve computation described here.</p></div>
       </section>
 
       <!-- 5 LIMITATIONS -->
@@ -617,14 +622,14 @@ window.MathJax = {
         <div class="sec-head"><span class="sec-num">06</span><h2>Future work</h2></div>
         <ul class="future">
           <li><b>Two-state fatigue.</b> Replace the single scalar with a strength capacity that scales the ceiling \(L_0\) and an endurance capacity that scales the rate \(\tau\), so the model can represent a heavy single surviving after metabolic work is exhausted, and the reverse.</li>
-          <li><b>Velocity as a real-time observable.</b> Bar velocity declines predictably toward failure<a href="#refs" class="ref-sup">[6]</a>; using it to update the capacity state in real time would let the curve be estimated from submaximal sets and reduce the need to train to failure for calibration.</li>
+          <li><b>Velocity as a real-time observable.</b> Bar velocity declines predictably toward failure<a href="#refs" class="ref-sup">[5]</a>; using it to update the capacity state in real time would let the curve be estimated from submaximal sets and reduce the need to train to failure for calibration.</li>
           <li><b>Continuous-time formulation.</b> Recast the per-set recursion as an ODE for \(C(t)\) over the whole session, and characterize the boundary between sustainable and collapsing set sequences — predicting in advance the set on which a prescribed target will be missed.</li>
           <li><b>Data collection and fitting.</b> Log calibration and working sets across lifters and lifts; fit \(k,\gamma,T_{\mathrm{rec}}\) by regression and machine learning rather than assumption; build per-exercise parameter libraries.</li>
         </ul>
 
         <div class="cite-this">
           <div class="lab">Cite this work</div>
-          <code>Vivanco, C. A. (2026). The Vivanco Proximity-to-Failure Model (VPFM), Version 1.0. AbleVLabs. https://ablevlabs.com/vpfm</code>
+          <code>Vivanco, C. A. (2026). The Vivanco Proximity-to-Failure Model (VPFM), Version 1.0. AbleVLabs. https://ablevlabs.com/vptf.html</code>
         </div>
       </section>
 
