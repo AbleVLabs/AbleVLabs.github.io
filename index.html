@@ -297,6 +297,30 @@ section { position: relative; z-index: 1; }
 .pill-soon   { color: var(--dim);    border-color: var(--dim); }
 .proj-arrow  { font-size: 1rem; color: var(--dim); transition: color .2s, transform .2s; }
 
+/* ── PROJECTS GRID (logo tiles) ── */
+.pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+.pcard { display: flex; align-items: center; gap: 16px; background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 15px 17px; text-decoration: none; color: inherit; position: relative; overflow: hidden;
+  transition: transform .18s, border-color .18s, box-shadow .18s; }
+.pcard::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .2s;
+  background: radial-gradient(360px 120px at 0% 0%, var(--pc, rgba(0,212,255,.14)), transparent 70%); }
+.pcard:hover { transform: translateY(-5px); border-color: rgba(0,212,255,.42); box-shadow: 0 18px 46px -20px rgba(0,212,255,.55); }
+.pcard:hover::after { opacity: 1; }
+.pcard.soon { cursor: default; opacity: .5; pointer-events: none; }
+.tile { width: 74px; height: 74px; flex: 0 0 auto; border-radius: 15px; overflow: hidden; position: relative;
+  border: 1px solid rgba(255,255,255,.09); box-shadow: 0 6px 18px -6px rgba(0,0,0,.7); background: #0b0f1a; }
+.tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tile .ph { width: 100%; height: 100%; align-items: center; justify-content: center;
+  font-family: 'Anton', sans-serif; font-size: 1.9rem; color: #fff; }
+.pcard:hover .tile { box-shadow: 0 0 0 1px rgba(0,212,255,.5), 0 6px 22px -6px rgba(0,212,255,.5); }
+.pbody { flex: 1; min-width: 0; }
+.pname { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.26rem; color: #fff; letter-spacing: .01em; line-height: 1.1; }
+.psub { font-family: 'Space Mono', monospace; color: var(--muted); font-size: .64rem; letter-spacing: .03em; margin-top: 6px; line-height: 1.5; }
+.pright { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; flex: 0 0 auto; }
+.arr { font-size: 1.05rem; color: var(--muted); transition: transform .2s, color .2s; }
+.pcard:hover .arr { color: var(--accent); transform: translate(3px, -3px); }
+@media (max-width: 560px) { .pgrid { grid-template-columns: 1fr; } .pright { flex-direction: row; } }
+
 /* ── BOOKS ────────────────────────────────────────────────────────────────── */
 #books {
   padding: 4.5rem 0 5rem;
@@ -674,104 +698,65 @@ footer {
   <div class="wrap">
     <div class="proj-header rv">
       <span class="section-label">Projects</span>
-      <span class="proj-count">07</span>
+      <span class="proj-count">08</span>
     </div>
-    <div class="proj-list">
+    <div class="pgrid">
 
-      <a href="https://ablevlabs.pythonanywhere.com" target="_blank" rel="noopener" class="proj-item rv" style="--d:.0s">
-        <span class="proj-num">01</span>
-        <div>
-          <div class="proj-name">Signal Atlas</div>
-          <div class="proj-sub">Workout Tracking &middot; Research Tool &middot; Data Collection</div>
-        </div>
-        <div class="proj-right">
-          <span class="pill pill-live">&#9679; Live</span>
-          <span class="proj-arrow">&#8599;</span>
-        </div>
+      <!-- Trust the Goose (formerly Signal Atlas). Hold these for the app's About page later:
+           "Why Goose? Because geese are irrationally confident. Ours just happens to be right most of the time."
+           "The Goose has analyzed 14,382 training sessions. The Goose recommends adding 5 lb." -->
+      <a href="https://ablevlabs.pythonanywhere.com" target="_blank" rel="noopener" class="pcard rv" style="--pc:#2fd6b033; --d:.0s">
+        <div class="tile"><img src="logos/trust-the-goose.png" alt="Trust the Goose" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none;background:linear-gradient(135deg,#2fd6b033,#2fd6b011)">G</div></div>
+        <div class="pbody"><div class="pname">Trust the Goose</div><div class="psub">Workout Analytics &middot; Data. Insight. Performance.</div></div>
+        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
       </a>
 
-      <a href="https://noether-patterns.streamlit.app" target="_blank" rel="noopener" class="proj-item rv" style="--d:.05s">
-        <span class="proj-num">02</span>
-        <div>
-          <div class="proj-name">Noether Patterns</div>
-          <div class="proj-sub">Data Analytics Platform &middot; Upload &amp; Explore Data &middot; Open Beta</div>
-        </div>
-        <div class="proj-right">
-          <span class="pill pill-live">&#9679; Live</span>
-          <span class="proj-arrow">&#8599;</span>
-        </div>
+      <a href="https://noether-patterns.streamlit.app" target="_blank" rel="noopener" class="pcard rv" style="--pc:#00ff8833; --d:.05s">
+        <div class="tile"><img src="logos/noether-patterns.png" alt="Noether Patterns" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none;background:linear-gradient(135deg,#00ff8833,#00ff8811)">N</div></div>
+        <div class="pbody"><div class="pname">Noether Patterns</div><div class="psub">Data Analytics Platform &middot; Upload &amp; Explore &middot; Open Beta</div></div>
+        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
       </a>
 
-      <a href="https://etherdex.ablevlabs.com" target="_blank" rel="noopener" class="proj-item rv" style="--d:.1s">
-        <span class="proj-num">03</span>
-        <div>
-          <div class="proj-name">EtherDex</div>
-          <div class="proj-sub">Multi-TCG Collection Tracker &middot; Pok&eacute;mon, MTG, Yu-Gi-Oh &amp; One Piece &middot; Live Prices</div>
-        </div>
-        <div class="proj-right">
-          <span class="pill pill-live">&#9679; Live</span>
-          <span class="proj-arrow">&#8599;</span>
-        </div>
+      <a href="https://etherdex.ablevlabs.com" target="_blank" rel="noopener" class="pcard rv" style="--pc:#4aa3ff33; --d:.1s">
+        <div class="tile"><img src="logos/etherdex.png" alt="EtherDex" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none;background:linear-gradient(135deg,#4aa3ff33,#4aa3ff11)">E</div></div>
+        <div class="pbody"><div class="pname">EtherDex</div><div class="psub">Multi-TCG Collection Tracker &middot; Pok&eacute;mon, MTG, Yu-Gi-Oh &amp; One Piece &middot; Live Prices</div></div>
+        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
       </a>
 
-      <a href="/lana.html" class="proj-item rv" style="--d:.15s">
-        <span class="proj-num">04</span>
-        <div>
-          <div class="proj-name">Lana</div>
-          <div class="proj-sub">Logical Attribute Node Aligner &middot; Python Library &middot; pip install ablevlabs</div>
-        </div>
-        <div class="proj-right">
-          <span class="pill pill-live">&#9679; Live</span>
-          <span class="proj-arrow">&#8599;</span>
-        </div>
+      <a href="/lana.html" class="pcard rv" style="--pc:#8b6cf033; --d:.15s">
+        <div class="tile"><img src="logos/lana.png" alt="Lana" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none;background:linear-gradient(135deg,#8b6cf033,#8b6cf011)">L</div></div>
+        <div class="pbody"><div class="pname">Lana</div><div class="psub">Logical Attribute Node Aligner &middot; pip install ablevlabs</div></div>
+        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
       </a>
 
-      <a href="/kami.html" class="proj-item rv" style="--d:.2s">
-        <span class="proj-num">05</span>
-        <div>
-          <div class="proj-name">Kami</div>
-          <div class="proj-sub">Machine-Learning Tutor &middot; Python Library &middot; Explains Every Step</div>
-        </div>
-        <div class="proj-right">
-          <span class="pill pill-live">&#9679; Live</span>
-          <span class="proj-arrow">&#8599;</span>
-        </div>
+      <a href="/kami.html" class="pcard rv" style="--pc:#b0a0e833; --d:.2s">
+        <div class="tile"><img src="logos/kami.png" alt="Kami" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none;background:linear-gradient(135deg,#b0a0e833,#b0a0e811)">K</div></div>
+        <div class="pbody"><div class="pname">Kami</div><div class="psub">Machine-Learning Tutor &middot; Explains Every Step</div></div>
+        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
       </a>
 
-      <a href="/vptf.html" class="proj-item rv" style="--d:.25s">
-        <span class="proj-num">06</span>
-        <div>
-          <div class="proj-name">Vivanco Proximity-to-Failure Model</div>
-          <div class="proj-sub">Exercise Science &middot; Formal Derivation &middot; Open Research</div>
-        </div>
-        <div class="proj-right">
-          <span class="pill pill-live">&#9679; Live</span>
-          <span class="proj-arrow">&#8599;</span>
-        </div>
+      <a href="/vptf.html" class="pcard rv" style="--pc:#7f93b833; --d:.25s">
+        <div class="tile"><img src="logos/vptf.png" alt="Vivanco Proximity-to-Failure Model" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none;background:linear-gradient(135deg,#7f93b833,#7f93b811)">V</div></div>
+        <div class="pbody"><div class="pname">Vivanco Proximity-to-Failure</div><div class="psub">Exercise Science &middot; Formal Derivation &middot; Open Research</div></div>
+        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
       </a>
 
-      <a href="/vita.html" class="proj-item rv" style="--d:.3s">
-        <span class="proj-num">07</span>
-        <div>
-          <div class="proj-name">VITA</div>
-          <div class="proj-sub">Vivanco Intelligent Training Assistant &middot; Python Library &middot; pip install ablevlabs</div>
-        </div>
-        <div class="proj-right">
-          <span class="pill pill-live">&#9679; Live</span>
-          <span class="proj-arrow">&#8599;</span>
-        </div>
+      <a href="/vita.html" class="pcard rv" style="--pc:#00c2a833; --d:.3s">
+        <div class="tile"><img src="logos/vita.png" alt="VITA" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none;background:linear-gradient(135deg,#00c2a833,#00c2a811)">V</div></div>
+        <div class="pbody"><div class="pname">VITA</div><div class="psub">Vivanco Intelligent Training Assistant &middot; pip install ablevlabs</div></div>
+        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
       </a>
 
-      <div class="proj-item rv" style="--d:.35s; cursor:default; pointer-events:none;">
-        <span class="proj-num">08</span>
-        <div>
-          <div class="proj-name">[ Classified ]</div>
-          <div class="proj-sub">Awaiting deployment</div>
-        </div>
-        <div class="proj-right">
-          <span class="pill pill-soon">&#9675; Soon</span>
-          <span class="proj-arrow" style="opacity:.2">&#8599;</span>
-        </div>
+      <a href="https://github.com/AbleVLabs/paranoid-penguin" target="_blank" rel="noopener" class="pcard rv" style="--pc:#6c3fff33; --d:.35s">
+        <div class="tile"><img src="logos/paranoid-penguin.png" alt="Paranoid Penguin" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="ph" style="display:none;background:linear-gradient(135deg,#6c3fff33,#6c3fff11)">P</div></div>
+        <div class="pbody"><div class="pname">Paranoid Penguin</div><div class="psub">Personal Security Scanner &middot; A&ndash;F Grade + MITRE ATT&amp;CK</div></div>
+        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+      </a>
+
+      <div class="pcard soon rv" style="--d:.4s">
+        <div class="tile"><div class="ph" style="display:flex;background:linear-gradient(135deg,#5a648033,#5a648011)">?</div></div>
+        <div class="pbody"><div class="pname">[ Classified ]</div><div class="psub">Awaiting deployment</div></div>
+        <div class="pright"><span class="pill pill-soon">&#9675; Soon</span><span class="arr" style="opacity:.3">&#8599;</span></div>
       </div>
 
     </div>
@@ -1134,9 +1119,9 @@ const so = new IntersectionObserver(entries => {
 (function () {
   const el = document.getElementById('tickerText');
   if (!el) return;
-  const items = ['Signal Atlas — live', 'Noether Patterns — live', 'EtherDex — live',
+  const items = ['Trust the Goose — live', 'Noether Patterns — live', 'EtherDex — live',
                  'Lana — pip install', 'Kami — pip install', 'VITA — pip install',
-                 'Let the Devil Walk — vol. i–vi', 'RPG — compiling'];
+                 'Paranoid Penguin — watching', 'Let the Devil Walk — vol. i–vi', 'RPG — compiling'];
   if (REDUCED) { el.textContent = items[0]; return; }
   let i = 0, j = 0, del = false;
   (function tick() {
