@@ -3,466 +3,382 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="vita — Vivanco Intelligent Training Assistant. A Python library that reads how close every set is to failure: reps in reserve, effort, and exactly what to do next. By AbleV Labs.">
+<meta name="theme-color" content="#060d12">
+<meta property="og:title" content="vita · AbleVLabs">
+<meta property="og:description" content="Read the set. Understand the story. Coach the next. A Python training assistant that reads your proximity to failure on every set.">
+<meta property="og:url" content="https://ablevlabs.com/vita.html">
 <title>vita · AbleVLabs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#04060c; --bg2:#080b16; --panel:rgba(12,17,30,.7);
-    --ink:#eaf2ff; --muted:#7f8dab; --dim:#4a5670;
-    --accent:#2ff3ff; --accent2:#8b5cff; --warm:#ffb020; --hot:#ff5a3c;
-    --border:rgba(120,160,220,.14); --border2:rgba(120,160,220,.28);
-    --glow:rgba(47,243,255,.32);
-    --display:'Orbitron', sans-serif;
-    --mono:'Share Tech Mono', monospace;
-    --body:'Rajdhani', sans-serif;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--bg); color:var(--ink); font-family:var(--body);
-    overflow-x:hidden; line-height:1.6; -webkit-font-smoothing:antialiased;
-  }
-  #stars{position:fixed; inset:0; z-index:0; pointer-events:none;}
-  .glowfog{
-    position:fixed; z-index:0; pointer-events:none; filter:blur(90px); opacity:.5;
-  }
-  .glowfog.a{top:-10%; left:-8%; width:46vw; height:46vw;
-    background:radial-gradient(circle, rgba(47,243,255,.18), transparent 68%);}
-  .glowfog.b{bottom:-14%; right:-10%; width:52vw; height:52vw;
-    background:radial-gradient(circle, rgba(139,92,255,.16), transparent 68%);}
-  .wrap{position:relative; z-index:1;}
-  section{position:relative; z-index:1;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060d12;--bg2:#0b151c;--ink:#16232f;
+  --teal:#2bb89b;--teal2:#33d1a8;--cyan:#00d4ff;--accent:#2bb89b;
+  --warm:#ff8a4c;--green:#33d1a8;
+  --text:#e9f1ef;--muted:#6d8189;--dim:#26363f;
+  --border:rgba(43,184,155,.14);--card:rgba(11,21,28,.72);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;position:relative;
+  background-image:radial-gradient(ellipse at 50% -8%,rgba(43,184,155,.08),transparent 55%)}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(43,184,155,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(43,184,155,.02) 1px,transparent 1px);
+  background-size:74px 74px}
+a{color:inherit}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 3rem;background:rgba(6,13,18,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#fff;text-decoration:none}
+.logo b{color:var(--teal)}
+.nav-r{display:flex;align-items:center;gap:1.8rem}
+.nav-r a{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-r a:hover{color:var(--teal)}
+.ver{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--teal);border:1px solid var(--border);border-radius:20px;padding:4px 11px}
+.wrap{position:relative;z-index:1;max-width:1140px;margin:0 auto;padding:0 3rem}
+section{position:relative;z-index:1}
 
-  /* NAV */
-  nav{
-    position:fixed; top:0; left:0; right:0; z-index:50;
-    display:flex; align-items:center; justify-content:space-between;
-    padding:1.1rem clamp(1.2rem,5vw,3.5rem);
-    background:rgba(4,6,12,.72); backdrop-filter:blur(14px);
-    border-bottom:1px solid var(--border);
-  }
-  .nav-logo{
-    font-family:var(--display); font-weight:900; font-size:1.15rem;
-    letter-spacing:.14em; color:var(--ink); text-decoration:none;
-  }
-  .nav-logo b{color:var(--accent); font-weight:900;}
-  .nav-right{display:flex; align-items:center; gap:clamp(1rem,3vw,2rem);}
-  .nav-right a{
-    font-family:var(--mono); font-size:.72rem; letter-spacing:.16em;
-    text-transform:uppercase; color:var(--muted); text-decoration:none;
-    transition:color .2s;
-  }
-  .nav-right a:hover{color:var(--accent);}
-  .nav-ver{
-    font-family:var(--mono); font-size:.66rem; letter-spacing:.14em;
-    color:var(--accent); border:1px solid var(--border2);
-    padding:.25rem .6rem; border-radius:2px;
-  }
+/* HERO — logo centerpiece */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8rem 3rem 4rem}
+.kicker{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--teal);margin-bottom:2rem;animation:rise .8s both}
+.crest{position:relative;animation:rise .9s .05s both cubic-bezier(.2,.85,.25,1)}
+.crest .halo{position:absolute;inset:-10%;border-radius:40px;background:radial-gradient(circle at 50% 45%,rgba(43,184,155,.4),transparent 68%);filter:blur(26px);animation:breathe 5.5s ease-in-out infinite;z-index:0}
+.logo-badge{position:relative;z-index:1;display:inline-block;background:#f5f4ef;border-radius:26px;padding:14px;line-height:0;
+  box-shadow:0 30px 80px -26px rgba(43,184,155,.55),0 0 0 1px rgba(43,184,155,.28)}
+.logo-badge img{width:min(360px,74vw);height:auto;display:block;border-radius:14px}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.hero-line{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.6rem,6vw,4.6rem);line-height:.92;letter-spacing:.02em;color:#fff;margin-top:2rem;animation:rise .9s .15s both}
+.hero-line .c{color:var(--teal)}
+.hero-sub{font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:var(--muted);max-width:56ch;line-height:1.65;margin:1.2rem auto 0;animation:rise .9s .25s both}
+.hero-sub em{font-style:normal;color:var(--text)}
+.btns{display:flex;gap:1rem;margin-top:2.1rem;flex-wrap:wrap;justify-content:center;align-items:center;animation:rise .9s .35s both}
+.btn{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.08em;padding:.9rem 1.7rem;text-decoration:none;border:1px solid;transition:.2s;cursor:pointer;display:inline-block}
+.btn-fill{background:var(--teal);color:#03120d;border-color:var(--teal)}
+.btn-fill:hover{background:#fff;border-color:#fff;box-shadow:0 0 30px -6px rgba(43,184,155,.75)}
+.btn-ghost{background:transparent;color:var(--muted);border-color:var(--dim);text-transform:uppercase;font-size:.62rem;letter-spacing:.12em}
+.btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,.25)}
+.scroll-cue{margin-top:2.8rem;font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;animation:float 2.8s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-  /* HERO */
-  .hero{
-    min-height:100vh; display:grid; align-items:center;
-    grid-template-columns:1.05fr .95fr; gap:clamp(2rem,5vw,4rem);
-    padding:8rem clamp(1.2rem,5vw,3.5rem) 4rem;
-    max-width:1240px; margin:0 auto;
-  }
-  .eyebrow{
-    font-family:var(--mono); font-size:.72rem; letter-spacing:.32em;
-    text-transform:uppercase; color:var(--accent);
-    display:inline-flex; align-items:center; gap:.7rem; margin-bottom:1.8rem;
-  }
-  .eyebrow::before{content:""; width:34px; height:1px; background:var(--accent); opacity:.7;}
-  .wordmark{
-    font-family:var(--display); font-weight:900;
-    font-size:clamp(4.5rem,15vw,9rem); line-height:.9; letter-spacing:.02em;
-    background:linear-gradient(105deg,#ffffff 0%,#bfe9ff 40%,var(--accent) 72%,var(--accent2) 100%);
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-    text-shadow:0 0 60px var(--glow); margin-bottom:.4rem;
-    filter:drop-shadow(0 6px 40px rgba(47,243,255,.15));
-  }
-  .lede{
-    font-family:var(--display); font-weight:500;
-    font-size:clamp(1.4rem,3.2vw,2.15rem); line-height:1.25; color:var(--ink);
-    margin:1.4rem 0 1.2rem; letter-spacing:.01em; max-width:22ch;
-  }
-  .lede .ini{color:var(--accent);}
-  .lede em{color:var(--accent); font-style:normal;}
-  .sub{
-    font-size:clamp(1.02rem,1.6vw,1.18rem); color:var(--muted); font-weight:400;
-    max-width:46ch; margin-bottom:2.4rem; line-height:1.65;
-  }
-  .expand{
-    font-family:var(--mono); font-size:.74rem; letter-spacing:.14em;
-    color:var(--muted); margin-bottom:2.2rem;
-  }
-  .expand b{color:var(--accent2);}
-  .cta{display:flex; gap:.9rem; flex-wrap:wrap; align-items:center;}
-  .btn{
-    font-family:var(--mono); font-size:.82rem; letter-spacing:.06em;
-    padding:.85rem 1.4rem; border-radius:3px; cursor:pointer; text-decoration:none;
-    display:inline-flex; align-items:center; gap:.6rem; border:1px solid transparent;
-    transition:all .2s; background:none; color:inherit;
-  }
-  .btn-primary{
-    background:linear-gradient(100deg,var(--accent),#22c9ff);
-    color:#02121a; font-weight:400; border-color:var(--accent);
-    box-shadow:0 0 26px rgba(47,243,255,.28);
-  }
-  .btn-primary:hover{box-shadow:0 0 40px rgba(47,243,255,.5); transform:translateY(-1px);}
-  .btn-primary .tag{color:#02323f; opacity:.65;}
-  .btn-ghost{border-color:var(--border2); color:var(--muted);}
-  .btn-ghost:hover{color:var(--accent); border-color:var(--accent);}
-  .copied{color:var(--accent)!important;}
+/* section header */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 1.6rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.sec-label{font-family:'Space Mono',monospace;font-size:.74rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.sec-num{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:transparent;-webkit-text-stroke:1px var(--dim);line-height:1}
+.pad{padding:4.2rem 0}
+.lead{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:clamp(1.7rem,3.6vw,2.4rem);line-height:1.15;color:#fff;max-width:22ch;margin-bottom:1rem}
+.lead .c{color:var(--teal)}
+.lead-p{color:var(--muted);font-size:1.08rem;line-height:1.65;max-width:60ch}
+.lead-p em{font-style:normal;color:var(--text)}
 
-  /* GAUGE (the signature) */
-  .gauge{position:relative; width:100%; max-width:440px; margin:0 auto;}
-  .gauge-svg{width:100%; height:auto; display:block; overflow:visible;}
-  .gauge-readout{
-    position:absolute; left:0; right:0; top:52%; text-align:center; pointer-events:none;
-  }
-  .gauge-value{
-    font-family:var(--display); font-weight:900; font-size:3.4rem; line-height:1;
-    color:var(--ink); text-shadow:0 0 24px var(--glow);
-  }
-  .gauge-unit{
-    font-family:var(--mono); font-size:.8rem; letter-spacing:.28em; color:var(--accent);
-    margin-top:.15rem;
-  }
-  .gauge-label{
-    font-family:var(--mono); font-size:.64rem; letter-spacing:.2em;
-    text-transform:uppercase; color:var(--muted); margin-top:.35rem;
-  }
-  .gauge-ends{
-    display:flex; justify-content:space-between; margin-top:-.5rem;
-    padding:0 .3rem;
-  }
-  .gauge-ends span{
-    font-family:var(--mono); font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
-  }
-  .gauge-ends span:first-child{color:var(--accent);}
-  .gauge-ends span:last-child{color:var(--hot);}
+/* CALIBRATE — the load-rep curve showpiece */
+.viz{display:grid;grid-template-columns:1.1fr .9fr;gap:2.2rem;align-items:center;margin-top:1.4rem}
+.chartcard{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;backdrop-filter:blur(6px);box-shadow:0 30px 80px -44px rgba(43,184,155,.5)}
+.chartcard .ct{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.chartcard svg{width:100%;height:auto;display:block}
+.curve-path{fill:none;stroke:url(#cg);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 2.1s ease-out .3s forwards}
+.band{fill:url(#bandg);opacity:.5}
+.caldot{animation:pop .5s ease-out both}
+.caldot.d2{animation-delay:1.5s}.caldot.d1{animation-delay:1.2s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+.viz-copy h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.4rem;color:#fff;margin-bottom:.7rem}
+.viz-copy p{color:var(--muted);font-size:1.04rem;line-height:1.65}
+.viz-copy p em{font-style:normal;color:var(--text)}
+.viz-copy .conf{margin-top:1rem;display:inline-flex;align-items:center;gap:.6rem;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--teal);border:1px solid var(--border);border-radius:20px;padding:6px 13px}
+.viz-copy .conf b{color:#fff}
 
-  /* SECTION SHELL */
-  .section-pad{padding:clamp(4rem,9vw,7rem) clamp(1.2rem,5vw,3.5rem); max-width:1180px; margin:0 auto;}
-  .kicker{
-    font-family:var(--mono); font-size:.72rem; letter-spacing:.3em; text-transform:uppercase;
-    color:var(--accent); margin-bottom:1rem;
-  }
-  .section-title{
-    font-family:var(--display); font-weight:700; font-size:clamp(1.7rem,4vw,2.6rem);
-    line-height:1.1; letter-spacing:.01em; margin-bottom:1rem;
-  }
-  .section-intro{color:var(--muted); max-width:52ch; font-size:1.08rem;}
+/* effort meter */
+.meter-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;backdrop-filter:blur(6px);margin-top:1.4rem}
+.mc-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.6rem;margin-bottom:14px}
+.mc-set{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted)}.mc-set b{color:#fff}
+.mc-rir{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;color:var(--teal)}
+.meter{height:14px;border-radius:8px;background:linear-gradient(90deg,var(--teal) 0%,var(--cyan) 34%,#e8c66a 68%,var(--warm) 100%);position:relative}
+.meter .pin{position:absolute;top:-6px;width:20px;height:20px;border-radius:50%;background:#fff;border:4px solid var(--cyan);left:66%;transform:translateX(-50%);box-shadow:0 0 16px rgba(0,212,255,.6)}
+.meter-scale{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-top:8px}
+.mc-call{margin-top:14px;padding:12px 15px;border:1px solid rgba(51,209,168,.3);background:rgba(51,209,168,.06);border-radius:10px;font-size:1.02rem}
+.mc-call b{color:var(--green)}
 
-  /* FEATURES */
-  .features{
-    display:grid; grid-template-columns:repeat(2,1fr); gap:1px;
-    margin-top:3rem; background:var(--border); border:1px solid var(--border);
-    border-radius:8px; overflow:hidden;
-  }
-  .feat{
-    background:var(--bg); padding:2rem 1.8rem; transition:background .25s;
-    position:relative;
-  }
-  .feat:hover{background:var(--bg2);}
-  .feat::before{
-    content:""; position:absolute; left:0; top:0; width:2px; height:0;
-    background:linear-gradient(var(--accent),var(--accent2)); transition:height .3s;
-  }
-  .feat:hover::before{height:100%;}
-  .feat-tag{
-    font-family:var(--mono); font-size:.72rem; letter-spacing:.2em; color:var(--accent);
-    margin-bottom:.9rem; display:block;
-  }
-  .feat h3{font-family:var(--display); font-weight:700; font-size:1.15rem; letter-spacing:.02em; margin-bottom:.6rem;}
-  .feat p{color:var(--muted); font-size:1.02rem; line-height:1.55;}
+/* capability cards with icons */
+.caps{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:1.4rem}
+.cap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;transition:.18s;backdrop-filter:blur(6px)}
+.cap:hover{transform:translateY(-4px);border-color:rgba(43,184,155,.45);box-shadow:0 16px 40px -22px rgba(43,184,155,.55)}
+.cap .ic{width:34px;height:34px;margin-bottom:12px;color:var(--teal)}
+.cap .n{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.cap h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.28rem;color:#fff;margin-bottom:7px}
+.cap p{color:var(--muted);font-size:1rem;line-height:1.55}
+.cap p em{font-style:normal;color:var(--text)}
 
-  /* RIR SCALE */
-  .scale-band{border-top:1px solid var(--border); border-bottom:1px solid var(--border);
-    background:linear-gradient(180deg,rgba(8,11,22,.5),transparent);}
-  .heatbar{
-    height:14px; border-radius:8px; margin:2.4rem 0 1rem;
-    background:linear-gradient(90deg,var(--accent) 0%,#57c8ff 22%,var(--accent2) 52%,var(--warm) 78%,var(--hot) 100%);
-    box-shadow:0 0 30px rgba(47,243,255,.15),0 0 30px rgba(255,90,60,.12);
-  }
-  .zones{display:flex; justify-content:space-between; gap:.5rem; flex-wrap:wrap;}
-  .zone{flex:1; min-width:80px; text-align:center;}
-  .zone .z-name{font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink);}
-  .zone .z-rir{font-family:var(--mono); font-size:.64rem; color:var(--muted); margin-top:.2rem;}
+/* RIR scale */
+.scale{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:1.6rem}
+.step{border:1px solid var(--dim);border-radius:10px;padding:15px 12px;background:#08110e;transition:.16s;position:relative;overflow:hidden}
+.step::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:currentColor;opacity:.7}
+.step:hover{transform:translateY(-3px);border-color:rgba(43,184,155,.4)}
+.step .r{font-family:'Bebas Neue',sans-serif;font-size:2.1rem;line-height:1}
+.step .lab{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.s5{color:var(--teal)}.s4{color:#3fc9b0}.s3{color:#58ccc0}.s2{color:#e8c66a}.s1{color:#f0a05a}.s0{color:var(--warm)}
+.step .r{color:currentColor}
+@media(max-width:720px){.scale{grid-template-columns:repeat(3,1fr)}}
 
-  /* QUICKSTART */
-  .code-card{
-    margin-top:2.6rem; background:linear-gradient(180deg,#070a13,#05070e);
-    border:1px solid var(--border2); border-radius:10px; overflow:hidden;
-    box-shadow:0 30px 80px -30px rgba(0,0,0,.8),0 0 60px -20px var(--glow);
-  }
-  .code-head{
-    display:flex; align-items:center; gap:.5rem; padding:.8rem 1.1rem;
-    border-bottom:1px solid var(--border); background:rgba(255,255,255,.02);
-  }
-  .dot{width:11px; height:11px; border-radius:50%;}
-  .dot.r{background:#ff5f56;} .dot.y{background:#ffbd2e;} .dot.g{background:#27c93f;}
-  .code-file{font-family:var(--mono); font-size:.72rem; color:var(--muted); margin-left:.6rem; letter-spacing:.08em;}
-  pre{padding:1.5rem 1.4rem; overflow-x:auto;}
-  code{font-family:var(--mono); font-size:.86rem; line-height:1.85; color:#cfe6ff;}
-  .c-key{color:var(--accent2);} .c-fn{color:var(--accent);} .c-str{color:#8fe6a8;}
-  .c-com{color:var(--muted); font-style:italic;} .c-num{color:var(--warm);}
+/* code block */
+.codewrap{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:1.4rem;backdrop-filter:blur(6px)}
+.codebar{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--border);font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.codebar .dots{display:flex;gap:5px}.codebar .dots i{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+pre{padding:20px 22px;overflow-x:auto;font-family:'Space Mono',monospace;font-size:.86rem;line-height:1.75;color:#c7d6d2}
+pre .cm{color:var(--muted)}pre .kw{color:var(--teal)}pre .fn{color:var(--cyan)}pre .st{color:#f0a05a}
 
-  /* FOOTER */
-  footer{
-    border-top:1px solid var(--border); margin-top:3rem;
-    padding:2.4rem clamp(1.2rem,5vw,3.5rem); max-width:1180px; margin-left:auto; margin-right:auto;
-    display:flex; align-items:center; justify-content:space-between; gap:1.2rem; flex-wrap:wrap;
-  }
-  .foot-mark{font-family:var(--display); font-weight:700; letter-spacing:.1em; font-size:.95rem;}
-  .foot-mark b{color:var(--accent);}
-  .foot-tag{font-family:var(--mono); font-size:.74rem; letter-spacing:.14em; color:var(--muted);}
-  .foot-links{display:flex; gap:1.4rem;}
-  .foot-links a{font-family:var(--mono); font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); text-decoration:none; transition:color .2s;}
-  .foot-links a:hover{color:var(--accent);}
+/* two-col */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:1.4rem}
+.cols h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.2rem;color:#fff;margin-bottom:.8rem}
+.cols p,.cols li{color:var(--muted);font-size:1rem;line-height:1.7}
+.cols ul{list-style:none}
+.cols li{padding-left:1.2rem;position:relative;margin-bottom:.6rem}
+.cols li::before{content:'▹';position:absolute;left:0;color:var(--teal)}
+.cols b{color:var(--text)}
+.stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:1rem}
+.stack span{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.06em;color:var(--muted);border:1px solid var(--dim);border-radius:20px;padding:5px 12px}
 
-  /* RESPONSIVE */
-  @media (max-width:860px){
-    .hero{grid-template-columns:1fr; text-align:center; padding-top:7rem; gap:2.5rem;}
-    .eyebrow{justify-content:center;} .lede,.sub{margin-left:auto; margin-right:auto;}
-    .cta{justify-content:center;} .gauge{max-width:360px;}
-    .features{grid-template-columns:1fr;}
-    .nav-right a:not(.nav-ver){display:none;}
-  }
-  @media (max-width:480px){
-    .wordmark{font-size:clamp(4rem,26vw,6rem);}
-    footer{flex-direction:column; text-align:center;}
-  }
+/* cta */
+.cta{text-align:center;padding:5.5rem 0 3.5rem}
+.cta h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,5vw,3.8rem);color:#fff;letter-spacing:.03em;margin-bottom:1.2rem}
+.cta h2 .c{color:var(--teal)}
+.cta p{color:var(--muted);max-width:52ch;margin:0 auto 1.8rem;line-height:1.6}
+.cta .btns{justify-content:center}
 
-  @media (prefers-reduced-motion:reduce){
-    *{animation:none!important; transition:none!important;}
-    html{scroll-behavior:auto;}
-  }
+footer{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem;border-top:1px solid rgba(255,255,255,.05);flex-wrap:wrap;gap:1rem}
+.ft{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.12em;color:var(--dim)}
+.ft a{text-decoration:none;transition:color .2s;margin-left:1.4rem}.ft a:hover{color:var(--teal)}
+
+@media(max-width:860px){
+  nav{padding:1rem 1.4rem}.nav-r{gap:1rem}.nav-r a:not(.ver){display:none}
+  .wrap{padding:0 1.4rem}#hero{padding:6.5rem 1.4rem 3rem}
+  .viz{grid-template-columns:1fr}.cols{grid-template-columns:1fr}footer{padding:1.5rem 1.4rem}
+}
 </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
-<div class="glowfog a"></div>
-<div class="glowfog b"></div>
+<div class="grid"></div>
 
 <nav>
-  <a href="https://ablevlabs.com" class="nav-logo">ABLEV<b>LABS</b></a>
-  <div class="nav-right">
-    <a href="#what">Capabilities</a>
+  <a href="https://ablevlabs.com/" class="logo">Able<b>V</b>Labs</a>
+  <div class="nav-r">
+    <a href="#what">What it does</a>
+    <a href="#calibrate">The model</a>
     <a href="#start">Quickstart</a>
-    <a href="https://pypi.org/project/ablevlabs/">PyPI</a>
-    <span class="nav-ver">vita v0.6.3</span>
+    <a href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">PyPI</a>
+    <span class="ver">vita v0.6.3</span>
   </div>
 </nav>
 
-<div class="wrap">
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-text">
-      <span class="eyebrow">AbleVLabs · Training Intelligence</span>
-      <h1 class="wordmark">vita</h1>
-      <p class="lede"><span class="ini">V</span>ivanco <span class="ini">I</span>ntelligent <span class="ini">T</span>raining <span class="ini">A</span>ssistant</p>
-      <p class="sub">Calibrate a lift once. From then on, vita reads your proximity to failure on every set: reps in reserve, effort, and exactly what to do next.</p>
-      <div class="cta">
-        <button class="btn btn-primary" id="copyBtn"><span class="tag">$</span> pip install ablevlabs</button>
-        <a class="btn btn-ghost" href="https://pypi.org/project/ablevlabs/">View on PyPI</a>
-      </div>
+<!-- HERO -->
+<section id="hero">
+  <div class="kicker">AbleVLabs &middot; Training Intelligence</div>
+  <div class="crest">
+    <div class="halo"></div>
+    <!-- Real logo. Tries logos/vita.png, then the .png.png double-extension, then an
+         inline SVG mark + wordmark so the hero never looks broken. -->
+    <span class="logo-badge" id="logo-badge">
+      <img id="logo-img" src="logos/vita.png" alt="vita — Vivanco Intelligent Training Assistant"
+           onerror="if(this.src.slice(-8)!=='.png.png'){this.src=this.src+'.png'}else{document.getElementById('logo-badge').style.display='none';document.getElementById('logo-fallback').style.display='block'}">
+    </span>
+    <div id="logo-fallback" style="display:none">
+      <svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg" style="width:200px;height:auto;filter:drop-shadow(0 14px 40px rgba(43,184,155,.4))">
+        <defs><linearGradient id="vg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#16232f"/><stop offset="100%" stop-color="#2bb89b"/></linearGradient></defs>
+        <path d="M40 20 L95 120 L110 120 L60 20 Z" fill="#16232f"/>
+        <path d="M180 20 L125 120 L110 120 L160 20 Z" fill="#2bb89b"/>
+        <polyline points="70,96 92,80 110,86 132,58 150,40" fill="none" stroke="#00d4ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="150" cy="40" r="5" fill="#00d4ff"/>
+      </svg>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:.14em;color:#16232f;margin-top:.4rem">VITA</div>
     </div>
+  </div>
+  <h1 class="hero-line">Read the set. <span class="c">Coach the next.</span></h1>
+  <p class="hero-sub">A Python library that stops <em>counting</em> your sets and starts <em>reading</em> them &mdash;
+    calibrate a lift once, and vita tells you how close every set was to failure and exactly what to do next.</p>
+  <div class="btns">
+    <a href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener" class="btn btn-fill">$ pip install ablevlabs</a>
+    <a href="#what" class="btn btn-ghost">How it works</a>
+  </div>
+  <div class="scroll-cue">Scroll</div>
+</section>
 
-    <div class="hero-gauge">
-      <div class="gauge">
-        <svg class="gauge-svg" viewBox="0 0 400 240" role="img" aria-label="Proximity-to-failure gauge reading two reps in reserve">
-          <defs>
-            <linearGradient id="rirGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#2ff3ff"/>
-              <stop offset="0.45" stop-color="#8b5cff"/>
-              <stop offset="0.74" stop-color="#ffb020"/>
-              <stop offset="1" stop-color="#ff5a3c"/>
-            </linearGradient>
-            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="4" result="b"/>
-              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
-          <path d="M50 200 A150 150 0 0 1 350 200" fill="none" stroke="rgba(120,160,220,.12)" stroke-width="16" stroke-linecap="round"/>
-          <path d="M50 200 A150 150 0 0 1 350 200" fill="none" stroke="url(#rirGrad)" stroke-width="9" stroke-linecap="round" opacity=".92" filter="url(#glow)"/>
-          <!-- ticks -->
-          <g stroke="rgba(180,205,240,.35)" stroke-width="2">
-            <line x1="50" y1="200" x2="66" y2="200"/>
-            <line x1="126" y1="72" x2="139" y2="83"/>
-            <line x1="200" y1="50" x2="200" y2="67"/>
-            <line x1="274" y1="72" x2="261" y2="83"/>
-            <line x1="350" y1="200" x2="334" y2="200"/>
-          </g>
-          <g class="gauge-needle" transform="rotate(-60 200 200)">
-            <line x1="200" y1="200" x2="332" y2="200" stroke="#eaf2ff" stroke-width="3.5" stroke-linecap="round" filter="url(#glow)"/>
-          </g>
-          <circle cx="200" cy="200" r="13" fill="#04060c" stroke="rgba(120,160,220,.4)" stroke-width="2"/>
-          <circle cx="200" cy="200" r="5" fill="#2ff3ff"/>
-        </svg>
-        <div class="gauge-readout">
-          <div class="gauge-value" id="gaugeVal">2</div>
-          <div class="gauge-unit">RIR</div>
-          <div class="gauge-label">reps in reserve</div>
-        </div>
-        <div class="gauge-ends"><span>Fresh</span><span>Failure</span></div>
-      </div>
+<!-- WHAT IT DOES -->
+<section id="what" class="pad"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">What it does</span><span class="sec-num">01</span></div>
+  <div class="lead">A coach that reads the set, <span class="c">not just counts it.</span></div>
+  <p class="lead-p">Rep counting tells you what happened &mdash; not how hard it was, how much you had left, or what to do
+    next. vita turns a couple of your hard sets into a model of your strength, then reads <em>proximity to failure</em>
+    on everything after. The same autoregulation good coaches run by feel, in numbers you can log and trust.</p>
+
+  <div class="caps">
+    <div class="cap">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r=".8" fill="currentColor"/></svg>
+      <div class="n">Calibrate</div><h3>Map your strength once</h3><p>Two all-out sets pin your load&ndash;rep curve. Add more and the fit sharpens, with a <em>confidence score</em> that says how far to trust it.</p>
     </div>
-  </section>
-
-  <!-- WHAT IT DOES -->
-  <section id="what" class="section-pad">
-    <div class="kicker">// What it does</div>
-    <h2 class="section-title">A coach that reads the set,<br>not just counts it.</h2>
-    <p class="section-intro">vita is a Python library. It turns a couple of your hard sets into a model of your strength, then uses it to guide every set you do after.</p>
-
-    <div class="features">
-      <div class="feat">
-        <span class="feat-tag">CALIBRATE</span>
-        <h3>Map your strength once</h3>
-        <p>Two all-out sets pin your load-rep curve. Add more sets and the fit sharpens, with a confidence score that tells you how far to trust it.</p>
-      </div>
-      <div class="feat">
-        <span class="feat-tag">COACH</span>
-        <h3>Every set, in plain words</h3>
-        <p>Reps in reserve, RPE, and a call to push or hold, on every set. Log what you did and your fatigue updates for the next one.</p>
-      </div>
-      <div class="feat">
-        <span class="feat-tag">PLAN</span>
-        <h3>Prescribe or ramp</h3>
-        <p>Hold a target effort across your sets, or ramp the weight set by set, 135 up to 275. vita simulates the fatigue either way.</p>
-      </div>
-      <div class="feat">
-        <span class="feat-tag">TUNE</span>
-        <h3>Fit the model to you</h3>
-        <p>Feed vita your own logged sessions and it fits the fatigue model to your body, then validates the fit against held-out sets.</p>
-      </div>
+    <div class="cap">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v11H9l-4 4z" stroke-linejoin="round"/><path d="M8 10h8M8 13h5"/></svg>
+      <div class="n">Coach</div><h3>Every set, in plain words</h3><p>Reps in reserve, RPE, and a call to <em>push or hold</em> on every set. Log what you did and your fatigue updates for the next one.</p>
     </div>
-  </section>
-
-  <!-- RIR SCALE -->
-  <section class="scale-band">
-    <div class="section-pad">
-      <div class="kicker">// One scale</div>
-      <h2 class="section-title">How close are you to failure?</h2>
-      <p class="section-intro">Every set lands somewhere on the same line, from a fresh warm-up to a rep you could not have finished. That is the number vita coaches you on.</p>
-      <div class="heatbar"></div>
-      <div class="zones">
-        <div class="zone"><div class="z-name">Warm-up</div><div class="z-rir">5+ RIR</div></div>
-        <div class="zone"><div class="z-name">Easy</div><div class="z-rir">4 RIR</div></div>
-        <div class="zone"><div class="z-name">Moderate</div><div class="z-rir">3 RIR</div></div>
-        <div class="zone"><div class="z-name">Hard set</div><div class="z-rir">2 RIR</div></div>
-        <div class="zone"><div class="z-name">Near failure</div><div class="z-rir">1 RIR</div></div>
-        <div class="zone"><div class="z-name">Failure</div><div class="z-rir">0 RIR</div></div>
-      </div>
+    <div class="cap">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 20V12M12 20V6M19 20v-5"/></svg>
+      <div class="n">Plan</div><h3>Prescribe or ramp</h3><p>Hold a target effort across your sets, or ramp the weight set by set &mdash; 135 up to 275. vita simulates the fatigue either way.</p>
     </div>
-  </section>
-
-  <!-- QUICKSTART -->
-  <section id="start" class="section-pad">
-    <div class="kicker">// Quickstart</div>
-    <h2 class="section-title">Four lines to your first<br>coached session.</h2>
-    <p class="section-intro">Runs anywhere Python runs. New to it? Call <code style="color:var(--accent)">vita.tour()</code> for a guided walkthrough.</p>
-
-    <div class="code-card">
-      <div class="code-head">
-        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-        <span class="code-file">first_session.py</span>
-      </div>
-<pre><code><span class="c-com"># pip install ablevlabs</span>
-<span class="c-key">from</span> ablevlabs <span class="c-key">import</span> vita
-
-<span class="c-com"># teach vita one lift, from two hard sets</span>
-bench = vita.<span class="c-fn">calibrate</span>(weight1=<span class="c-num">315</span>, reps1=<span class="c-num">5</span>,
-                       weight2=<span class="c-num">275</span>, reps2=<span class="c-num">9</span>, name=<span class="c-str">"Bench"</span>)
-
-w = vita.<span class="c-fn">Workout</span>(bench)
-w.<span class="c-fn">log_set</span>(weight=<span class="c-num">275</span>, reps=<span class="c-num">8</span>)              <span class="c-com"># coached in real time</span>
-w.<span class="c-fn">build_plan</span>(weights=[<span class="c-num">135</span>, <span class="c-num">185</span>, <span class="c-num">225</span>, <span class="c-num">275</span>])  <span class="c-com"># ramp the load</span></code></pre>
+    <div class="cap">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+      <div class="n">Tune</div><h3>Fit the model to you</h3><p>Feed vita your own logged sessions and it fits the fatigue model to <em>your</em> body, then validates it against held-out sets.</p>
     </div>
-  </section>
+  </div>
+</div></section>
 
-  <footer>
-    <div class="foot-mark">vita <span style="color:var(--muted);font-weight:400">·</span> part of <b>AbleVLabs</b></div>
-    <div class="foot-tag">Everything leaves a pattern.</div>
-    <div class="foot-links">
-      <a href="https://ablevlabs.com">Home</a>
-      <a href="https://pypi.org/project/ablevlabs/">PyPI</a>
-      <a href="https://github.com/AbleVLabs">GitHub</a>
+<!-- CALIBRATE VISUAL -->
+<section id="calibrate" class="pad" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">The model</span><span class="sec-num">02</span></div>
+  <div class="viz">
+    <div class="chartcard">
+      <div class="ct">bench &mdash; your load&ndash;rep curve</div>
+      <svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Load-rep curve fitted from two calibration sets">
+        <defs>
+          <linearGradient id="cg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2bb89b"/><stop offset="100%" stop-color="#00d4ff"/></linearGradient>
+          <linearGradient id="bandg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#2bb89b" stop-opacity=".18"/><stop offset="100%" stop-color="#00d4ff" stop-opacity=".05"/></linearGradient>
+        </defs>
+        <!-- axes -->
+        <line x1="64" y1="30" x2="64" y2="272" stroke="#26363f" stroke-width="1.5"/>
+        <line x1="64" y1="272" x2="572" y2="272" stroke="#26363f" stroke-width="1.5"/>
+        <!-- y ticks -->
+        <g font-family="'Space Mono',monospace" font-size="11" fill="#6d8189">
+          <text x="56" y="52" text-anchor="end">315</text>
+          <text x="56" y="118" text-anchor="end">275</text>
+          <text x="56" y="184" text-anchor="end">225</text>
+          <text x="56" y="250" text-anchor="end">185</text>
+          <text x="30" y="150" text-anchor="middle" transform="rotate(-90 30 150)" fill="#516069" letter-spacing="1">LOAD (lb)</text>
+        </g>
+        <!-- x ticks -->
+        <g font-family="'Space Mono',monospace" font-size="11" fill="#6d8189" text-anchor="middle">
+          <text x="114" y="290">2</text><text x="248" y="290">5</text><text x="336" y="290">7</text><text x="426" y="290">9</text><text x="560" y="290">12</text>
+          <text x="318" y="311" fill="#516069" letter-spacing="1">REPS</text>
+        </g>
+        <!-- confidence band -->
+        <path class="band" d="M100 22 C180 46 210 54 248 62 C330 84 380 100 426 114 C500 138 540 150 566 160 L566 176 C540 166 500 154 426 130 C380 116 330 100 248 78 C210 70 180 62 100 38 Z"/>
+        <!-- fitted curve -->
+        <path class="curve-path" d="M100 30 C180 54 210 62 248 70 C330 92 380 108 426 122 C500 146 540 158 566 168"/>
+        <!-- calibration points -->
+        <g>
+          <circle class="caldot d1" cx="248" cy="70" r="8" fill="#060d12" stroke="#2bb89b" stroke-width="3.5"/>
+          <circle class="caldot d2" cx="426" cy="122" r="8" fill="#060d12" stroke="#00d4ff" stroke-width="3.5"/>
+        </g>
+        <g font-family="'Space Mono',monospace" font-size="10.5" fill="#e9f1ef">
+          <text x="248" y="52" text-anchor="middle">315&times;5</text>
+          <text x="426" y="104" text-anchor="middle">275&times;9</text>
+        </g>
+      </svg>
     </div>
-  </footer>
+    <div class="viz-copy">
+      <h3>Two hard sets become a curve</h3>
+      <p>Give vita a couple of all-out sets &mdash; here <em>315&times;5</em> and <em>275&times;9</em> &mdash; and it fits
+        the relationship between <em>load and reps</em>. From that curve it reads how many reps you had left on any set,
+        and the <em>fatigue model</em> layered on top predicts how each set drains the next. Every set you log pulls the
+        fit tighter.</p>
+      <span class="conf">confidence <b>84%</b> &middot; 2 sets in</span>
+    </div>
+  </div>
 
-</div>
+  <!-- effort meter -->
+  <div class="meter-card">
+    <div class="mc-top"><span class="mc-set">Set 3 logged: <b>275 lb &times; 8 reps</b></span><span class="mc-rir">2 REPS IN RESERVE &middot; RPE 8</span></div>
+    <div class="meter"><span class="pin"></span></div>
+    <div class="meter-scale"><span>Fresh &middot; 5+ RIR</span><span>Hard &middot; 2 RIR</span><span>Failure &middot; 0 RIR</span></div>
+    <div class="mc-call">Call: <b>push</b> &mdash; one more rep in the tank. Fatigue updated for set 4.</div>
+  </div>
+</div></section>
+
+<!-- THE SCALE -->
+<section class="pad" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">One scale</span><span class="sec-num">03</span></div>
+  <div class="lead">How close are you <span class="c">to failure?</span></div>
+  <p class="lead-p">Every set lands on the same line, from a fresh warm-up to a rep you couldn't have finished.
+    <em>Reps in reserve</em> is that distance &mdash; and it's the number vita coaches on. Lower is harder.</p>
+  <div class="scale">
+    <div class="step s5"><div class="r">5+</div><div class="lab">Warm-up</div></div>
+    <div class="step s4"><div class="r">4</div><div class="lab">Easy</div></div>
+    <div class="step s3"><div class="r">3</div><div class="lab">Moderate</div></div>
+    <div class="step s2"><div class="r">2</div><div class="lab">Hard set</div></div>
+    <div class="step s1"><div class="r">1</div><div class="lab">Near failure</div></div>
+    <div class="step s0"><div class="r">0</div><div class="lab">Failure</div></div>
+  </div>
+</div></section>
+
+<!-- QUICKSTART -->
+<section id="start" class="pad" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">Quickstart</span><span class="sec-num">04</span></div>
+  <div class="lead">Four lines to your first <span class="c">coached session.</span></div>
+  <p class="lead-p">Pure Python &mdash; runs anywhere Python runs, no account, no cloud. New to it? Call <b>vita.tour()</b>.</p>
+  <div class="codewrap">
+    <div class="codebar"><span class="dots"><i></i><i></i><i></i></span> first_session.py</div>
+<pre><span class="cm"># pip install ablevlabs</span>
+<span class="kw">from</span> ablevlabs <span class="kw">import</span> vita
+
+<span class="cm"># teach vita one lift, from two hard sets</span>
+bench = vita.<span class="fn">calibrate</span>(weight1=<span class="st">315</span>, reps1=<span class="st">5</span>,
+                       weight2=<span class="st">275</span>, reps2=<span class="st">9</span>, name=<span class="st">"Bench"</span>)
+
+w = vita.<span class="fn">Workout</span>(bench)
+w.<span class="fn">log_set</span>(weight=<span class="st">275</span>, reps=<span class="st">8</span>)              <span class="cm"># coached in real time</span>
+w.<span class="fn">build_plan</span>(weights=[<span class="st">135</span>, <span class="st">185</span>, <span class="st">225</span>, <span class="st">275</span>])  <span class="cm"># ramp the load</span>
+</pre>
+  </div>
+</div></section>
+
+<!-- UNDER THE HOOD -->
+<section class="pad" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">Under the hood</span><span class="sec-num">05</span></div>
+  <div class="cols">
+    <div>
+      <h3>How it thinks</h3>
+      <p>vita fits a <b>load&ndash;rep curve</b> from your hard sets, then layers a <b>fatigue model</b> on top so it can
+      predict how each set drains the next. From the curve it reads reps in reserve; from the fatigue model it decides
+      push or hold. Every set feeds back, so the picture tightens as you train.</p>
+      <div class="stack"><span>Python</span><span>load&ndash;rep curve</span><span>fatigue model</span><span>RIR / RPE</span><span>held-out validation</span></div>
+    </div>
+    <div>
+      <h3>Where I'm honest about it</h3>
+      <ul>
+        <li>Two calibration sets get you going, but early sessions carry a <b>lower confidence score</b> on purpose &mdash; the fit sharpens as you log real sets.</li>
+        <li>It models <b>your</b> strength from <b>your</b> data. A training assistant, not a replacement for coaching judgment or a warm-up.</li>
+        <li>Still pre-1.0 (<b>v0.6.3</b>) &mdash; the API can shift between versions as the model earns its keep.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- CTA -->
+<section class="cta"><div class="wrap">
+  <h2>Read the set. <span class="c">Understand the story.</span></h2>
+  <p>vita is free and open, and installs in one line. Teach it a lift and let it read every set from there.</p>
+  <div class="btns">
+    <a href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener" class="btn btn-fill">$ pip install ablevlabs</a>
+    <a href="https://ablevlabs.com/#projects" class="btn btn-ghost">More projects</a>
+  </div>
+</div></section>
+
+<footer>
+  <span class="ft">vita &middot; part of AbleVLabs &mdash; everything leaves a pattern.</span>
+  <span class="ft">
+    <a href="https://ablevlabs.com/">Home</a>
+    <a href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">PyPI &#8599;</a>
+    <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
+  </span>
+</footer>
 
 <script>
-  // ---- starfield (subtle, ambient) ----
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const cv = document.getElementById('stars');
-  const ctx = cv.getContext('2d');
-  let stars = [];
-  function sizeStars(){
-    cv.width = innerWidth; cv.height = innerHeight;
-    const n = Math.min(150, Math.floor(innerWidth*innerHeight/12000));
-    stars = Array.from({length:n}, () => ({
-      x:Math.random()*cv.width, y:Math.random()*cv.height,
-      r:Math.random()*1.3+.2, a:Math.random()*.6+.15,
-      tw:Math.random()*.02+.004, drift:Math.random()*.06+.01
-    }));
-  }
-  function drawStars(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    for(const s of stars){
-      s.a += s.tw; const alpha = .35 + Math.abs(Math.sin(s.a))*.5;
-      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,7);
-      ctx.fillStyle = `rgba(180,215,255,${alpha*.7})`; ctx.fill();
-      s.y += s.drift; if(s.y>cv.height){ s.y=0; s.x=Math.random()*cv.width; }
-    }
-    requestAnimationFrame(drawStars);
-  }
-  sizeStars();
-  if(reduce){ drawStarsOnce(); } else { drawStars(); }
-  function drawStarsOnce(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    for(const s of stars){ ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,7);
-      ctx.fillStyle=`rgba(180,215,255,${s.a*.7})`; ctx.fill(); }
-  }
-  addEventListener('resize', () => { sizeStars(); if(reduce) drawStarsOnce(); });
-
-  // ---- gauge needle sweep + count-up ----
-  const needle = document.querySelector('.gauge-needle');
-  const val = document.getElementById('gaugeVal');
-  const START = -180, END = -60;                 // -180 = 6 RIR (fresh), -60 = 2 RIR
-  const degToRir = d => (-d/180)*6;
-  function setGauge(d){
-    needle.setAttribute('transform', `rotate(${d} 200 200)`);
-    val.textContent = degToRir(d).toFixed(0);
-  }
-  if(reduce){ setGauge(END); }
-  else{
-    let t0=null; const dur=1500;
-    const ease = x => 1-Math.pow(1-x,3);
-    function step(ts){
-      if(!t0) t0=ts; const p=Math.min((ts-t0)/dur,1);
-      setGauge(START+(END-START)*ease(p));
-      if(p<1) requestAnimationFrame(step);
-    }
-    setGauge(START);
-    setTimeout(()=>requestAnimationFrame(step), 350);
-  }
-
-  // ---- copy install ----
-  const btn = document.getElementById('copyBtn');
-  btn.addEventListener('click', () => {
-    navigator.clipboard.writeText('pip install ablevlabs').then(()=>{
-      const html = btn.innerHTML;
-      btn.innerHTML = '<span class="tag">✓</span> copied';
-      btn.classList.add('copied');
-      setTimeout(()=>{ btn.innerHTML=html; btn.classList.remove('copied'); }, 1600);
-    });
-  });
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');let W,H,st=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;st=[];for(let i=0;i<150;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:.3+Math.random()*1.3,p:Math.random()*6.28,s:.003+Math.random()*.006});}
+rs();addEventListener('resize',rs);
+(function loop(){cx.clearRect(0,0,W,H);st.forEach(s=>{s.p+=s.s;const a=.1+Math.sin(s.p)*.16;cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.28);cx.fillStyle='rgba(140,220,200,'+a+')';cx.fill();});requestAnimationFrame(loop);})();
+addEventListener('mousemove',e=>{const ox=e.clientX/innerWidth-.5,oy=e.clientY/innerHeight-.5;document.querySelector('.grid').style.transform='translate('+(ox*-14)+'px,'+(oy*-14)+'px)';});
+addEventListener('scroll',()=>{document.querySelector('nav').style.background=scrollY>50?'rgba(6,13,18,.97)':'rgba(6,13,18,.86)';});
 </script>
 </body>
 </html>
