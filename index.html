@@ -780,11 +780,11 @@ footer {
       <div class="cat-head rv"><span class="cat-name">Games &amp; Hobby</span><span class="cat-count">03</span><span class="cat-line"></span></div>
       <div class="pgrid">
 
-        <div class="pcard rv" style="--pc:#2fd6b033; --d:.0s">
+        <a href="/trust-the-goose.html" class="pcard rv" style="--pc:#2fd6b033; --d:.0s">
           <div class="tile"><img src="logos/trust-the-goose.png" alt="Trust the Goose" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#2fd6b033,#2fd6b011)">G</div></div>
           <div class="pbody"><div class="pname">Trust the Goose</div><div class="psub">Golf Shot Tracker &middot; Club Caddie with Confidence Tiers &middot; Honest Statistics</div></div>
-          <div class="pright"><span class="pill pill-soon">&#9684; In the lab</span><span class="arr" style="opacity:.3">&#8599;</span></div>
-        </div>
+          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
 
         <a href="https://etherdex.ablevlabs.com" target="_blank" rel="noopener" class="pcard rv" style="--pc:#4aa3ff33; --d:.06s">
           <div class="tile"><img src="logos/etherdex.png" alt="EtherDex" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#4aa3ff33,#4aa3ff11)">E</div></div>
@@ -1159,7 +1159,7 @@ const so = new IntersectionObserver(entries => {
 (function () {
   const el = document.getElementById('tickerText');
   if (!el) return;
-  const items = ['Trust the Goose — in the lab', 'Noether Patterns — live', 'EtherDex — live',
+  const items = ['Trust the Goose — live', 'Noether Patterns — live', 'EtherDex — live',
                  'Lana — pip install', 'Kami — pip install', 'VITA — pip install',
                  'Paranoid Penguin — watching', 'Let the Devil Walk — vol. i–vi', 'RPG — compiling'];
   if (REDUCED) { el.textContent = items[0]; return; }
