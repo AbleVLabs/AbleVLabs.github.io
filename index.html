@@ -299,6 +299,12 @@ section { position: relative; z-index: 1; }
 
 /* ── PROJECTS GRID (logo tiles) ── */
 .pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(470px, 1fr)); gap: 20px; }
+.cat-group { margin-bottom: .4rem; }
+.cat-head { display: flex; align-items: center; gap: 1.1rem; margin: 3rem 0 1.4rem; }
+.cat-group:first-child .cat-head { margin-top: .4rem; }
+.cat-name { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.5rem; color: #fff; letter-spacing: .03em; white-space: nowrap; }
+.cat-count { font-family: 'Space Mono', monospace; font-size: .74rem; color: var(--accent); letter-spacing: .1em; }
+.cat-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0,212,255,.18), transparent); }
 .pcard { display: flex; align-items: center; gap: 16px; background: var(--card); border: 1px solid var(--border);
   border-radius: 16px; padding: 15px 17px; text-decoration: none; color: inherit; position: relative; overflow: hidden;
   transition: transform .18s, border-color .18s, box-shadow .18s; }
@@ -703,65 +709,93 @@ footer {
       <span class="section-label">Projects</span>
       <span class="proj-count">08</span>
     </div>
-    <div class="pgrid">
+    <!-- ===== Fitness & Well-being ===== -->
+    <div class="cat-group">
+      <div class="cat-head rv"><span class="cat-name">Fitness &amp; Well-being</span><span class="cat-count">03</span><span class="cat-line"></span></div>
+      <div class="pgrid">
 
-      <!-- Trust the Goose (formerly Signal Atlas). Hold these for the app's About page later:
-           "Why Goose? Because geese are irrationally confident. Ours just happens to be right most of the time."
-           "The Goose has analyzed 14,382 training sessions. The Goose recommends adding 5 lb." -->
-      <a href="https://ablevlabs.pythonanywhere.com" target="_blank" rel="noopener" class="pcard rv" style="--pc:#2fd6b033; --d:.0s">
-        <div class="tile"><img src="logos/trust-the-goose.png" alt="Trust the Goose" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#2fd6b033,#2fd6b011)">G</div></div>
-        <div class="pbody"><div class="pname">Trust the Goose</div><div class="psub">Workout Analytics &middot; Data. Insight. Performance.</div></div>
-        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
-      </a>
+        <!-- Trust the Goose (formerly Signal Atlas). Hold these for the app's About page later:
+             "Why Goose? Because geese are irrationally confident. Ours just happens to be right most of the time."
+             "The Goose has analyzed 14,382 training sessions. The Goose recommends adding 5 lb." -->
+        <a href="https://ablevlabs.pythonanywhere.com" target="_blank" rel="noopener" class="pcard rv" style="--pc:#2fd6b033; --d:.0s">
+          <div class="tile"><img src="logos/trust-the-goose.png" alt="Trust the Goose" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#2fd6b033,#2fd6b011)">G</div></div>
+          <div class="pbody"><div class="pname">Trust the Goose</div><div class="psub">Workout Analytics &middot; Data. Insight. Performance.</div></div>
+          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
 
-      <a href="https://noether-patterns.streamlit.app" target="_blank" rel="noopener" class="pcard rv" style="--pc:#00ff8833; --d:.05s">
-        <div class="tile"><img src="logos/noether-patterns.png" alt="Noether Patterns" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#00ff8833,#00ff8811)">N</div></div>
-        <div class="pbody"><div class="pname">Noether Patterns</div><div class="psub">Data Analytics Platform &middot; Upload &amp; Explore &middot; Open Beta</div></div>
-        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
-      </a>
+        <a href="/vita.html" class="pcard rv" style="--pc:#00c2a833; --d:.06s">
+          <div class="tile"><img src="logos/vita.png" alt="VITA" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#00c2a833,#00c2a811)">V</div></div>
+          <div class="pbody"><div class="pname">VITA</div><div class="psub">Vivanco Intelligent Training Assistant &middot; pip install ablevlabs</div></div>
+          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
 
-      <a href="https://etherdex.ablevlabs.com" target="_blank" rel="noopener" class="pcard rv" style="--pc:#4aa3ff33; --d:.1s">
-        <div class="tile"><img src="logos/etherdex.png" alt="EtherDex" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#4aa3ff33,#4aa3ff11)">E</div></div>
-        <div class="pbody"><div class="pname">EtherDex</div><div class="psub">Multi-TCG Collection Tracker &middot; Pok&eacute;mon, MTG, Yu-Gi-Oh &amp; One Piece &middot; Live Prices</div></div>
-        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
-      </a>
+        <a href="/vptf.html" class="pcard rv" style="--pc:#7f93b833; --d:.12s">
+          <div class="tile"><img src="logos/vptf.png" alt="Vivanco Proximity-to-Failure Model" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#7f93b833,#7f93b811)">V</div></div>
+          <div class="pbody"><div class="pname">Vivanco Proximity-to-Failure</div><div class="psub">Exercise Science &middot; Formal Derivation &middot; Open Research</div></div>
+          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
 
-      <a href="/lana.html" class="pcard rv" style="--pc:#8b6cf033; --d:.15s">
-        <div class="tile"><img src="logos/lana.png" alt="Lana" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#8b6cf033,#8b6cf011)">L</div></div>
-        <div class="pbody"><div class="pname">Lana</div><div class="psub">Logical Attribute Node Aligner &middot; pip install ablevlabs</div></div>
-        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
-      </a>
-
-      <a href="/kami.html" class="pcard rv" style="--pc:#b0a0e833; --d:.2s">
-        <div class="tile"><img src="logos/kami.png" alt="Kami" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#b0a0e833,#b0a0e811)">K</div></div>
-        <div class="pbody"><div class="pname">Kami</div><div class="psub">Machine-Learning Tutor &middot; Explains Every Step</div></div>
-        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
-      </a>
-
-      <a href="/vptf.html" class="pcard rv" style="--pc:#7f93b833; --d:.25s">
-        <div class="tile"><img src="logos/vptf.png" alt="Vivanco Proximity-to-Failure Model" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#7f93b833,#7f93b811)">V</div></div>
-        <div class="pbody"><div class="pname">Vivanco Proximity-to-Failure</div><div class="psub">Exercise Science &middot; Formal Derivation &middot; Open Research</div></div>
-        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
-      </a>
-
-      <a href="/vita.html" class="pcard rv" style="--pc:#00c2a833; --d:.3s">
-        <div class="tile"><img src="logos/vita.png" alt="VITA" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#00c2a833,#00c2a811)">V</div></div>
-        <div class="pbody"><div class="pname">VITA</div><div class="psub">Vivanco Intelligent Training Assistant &middot; pip install ablevlabs</div></div>
-        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
-      </a>
-
-      <a href="/paranoid-penguin.html" class="pcard rv" style="--pc:#6c3fff33; --d:.35s">
-        <div class="tile"><img src="logos/paranoid-penguin.png" alt="Paranoid Penguin" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#6c3fff33,#6c3fff11)">P</div></div>
-        <div class="pbody"><div class="pname">Paranoid Penguin</div><div class="psub">Personal Security Scanner &middot; A&ndash;F Grade + MITRE ATT&amp;CK</div></div>
-        <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
-      </a>
-
-      <div class="pcard soon rv" style="--d:.4s">
-        <div class="tile"><div class="ph" style="display:flex;background:linear-gradient(135deg,#5a648033,#5a648011)">?</div></div>
-        <div class="pbody"><div class="pname">[ Classified ]</div><div class="psub">Awaiting deployment</div></div>
-        <div class="pright"><span class="pill pill-soon">&#9675; Soon</span><span class="arr" style="opacity:.3">&#8599;</span></div>
       </div>
+    </div>
 
+    <!-- ===== Data Science & Tools ===== -->
+    <div class="cat-group">
+      <div class="cat-head rv"><span class="cat-name">Data Science &amp; Tools</span><span class="cat-count">03</span><span class="cat-line"></span></div>
+      <div class="pgrid">
+
+        <a href="https://noether-patterns.streamlit.app" target="_blank" rel="noopener" class="pcard rv" style="--pc:#00ff8833; --d:.0s">
+          <div class="tile"><img src="logos/noether-patterns.png" alt="Noether Patterns" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#00ff8833,#00ff8811)">N</div></div>
+          <div class="pbody"><div class="pname">Noether Patterns</div><div class="psub">Data Analytics Platform &middot; Upload &amp; Explore &middot; Open Beta</div></div>
+          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
+
+        <a href="/lana.html" class="pcard rv" style="--pc:#8b6cf033; --d:.06s">
+          <div class="tile"><img src="logos/lana.png" alt="Lana" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#8b6cf033,#8b6cf011)">L</div></div>
+          <div class="pbody"><div class="pname">Lana</div><div class="psub">Logical Attribute Node Aligner &middot; pip install ablevlabs</div></div>
+          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
+
+        <a href="/kami.html" class="pcard rv" style="--pc:#b0a0e833; --d:.12s">
+          <div class="tile"><img src="logos/kami.png" alt="Kami" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#b0a0e833,#b0a0e811)">K</div></div>
+          <div class="pbody"><div class="pname">Kami</div><div class="psub">Machine-Learning Tutor &middot; Explains Every Step</div></div>
+          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ===== Security & Systems ===== -->
+    <div class="cat-group">
+      <div class="cat-head rv"><span class="cat-name">Security &amp; Systems</span><span class="cat-count">01</span><span class="cat-line"></span></div>
+      <div class="pgrid">
+
+        <a href="/paranoid-penguin.html" class="pcard rv" style="--pc:#6c3fff33; --d:.0s">
+          <div class="tile"><img src="logos/paranoid-penguin.png" alt="Paranoid Penguin" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#6c3fff33,#6c3fff11)">P</div></div>
+          <div class="pbody"><div class="pname">Paranoid Penguin</div><div class="psub">Personal Security Scanner &middot; A&ndash;F Grade + MITRE ATT&amp;CK</div></div>
+          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- ===== Games & Hobby ===== -->
+    <div class="cat-group">
+      <div class="cat-head rv"><span class="cat-name">Games &amp; Hobby</span><span class="cat-count">02</span><span class="cat-line"></span></div>
+      <div class="pgrid">
+
+        <a href="https://etherdex.ablevlabs.com" target="_blank" rel="noopener" class="pcard rv" style="--pc:#4aa3ff33; --d:.0s">
+          <div class="tile"><img src="logos/etherdex.png" alt="EtherDex" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#4aa3ff33,#4aa3ff11)">E</div></div>
+          <div class="pbody"><div class="pname">EtherDex</div><div class="psub">Multi-TCG Collection Tracker &middot; Pok&eacute;mon, MTG, Yu-Gi-Oh &amp; One Piece &middot; Live Prices</div></div>
+          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
+
+        <div class="pcard soon rv" style="--d:.06s">
+          <div class="tile"><div class="ph" style="display:flex;background:linear-gradient(135deg,#5a648033,#5a648011)">?</div></div>
+          <div class="pbody"><div class="pname">[ Classified ]</div><div class="psub">Awaiting deployment</div></div>
+          <div class="pright"><span class="pill pill-soon">&#9675; Soon</span><span class="arr" style="opacity:.3">&#8599;</span></div>
+        </div>
+
+      </div>
     </div>
   </div>
 </section>
