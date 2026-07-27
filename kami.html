@@ -395,7 +395,7 @@ pip install -U ablevlabs
       <pre>df = kami.<span class="fn">load</span>(<span class="str">"houses.csv"</span>)
 df = kami.<span class="fn">clean</span>(df)
 result = kami.<span class="fn">train</span>(df, target=<span class="str">"price"</span>)   <span class="c"># trains + explains</span>
-champ  = kami.<span class="fn">bakeoff</span>(df, target=<span class="str">"price"</span>)  <span class="c"># races models, picks a winner</span></pre>
+champ  = kami.<span class="fn">bakeoff</span>(df, target=<span class="str">"price"</span>)  <span class="c"># races models, ranks them, names a winner</span></pre>
     </div>
 
     <div class="codeblock">
@@ -418,6 +418,7 @@ kami.<span class="fn">suggest_charts</span>(df)           <span class="c"># whic
       <p class="cap">learn the craft</p>
       <button class="copy">copy</button>
       <pre>kami.<span class="fn">learn</span>(<span class="str">"GradientBoosting"</span>)   <span class="c"># a lesson on any model</span>
+kami.<span class="fn">learn</span>(<span class="str">"TabPFN"</span>)             <span class="c"># what's new in tabular ML right now</span>
 kami.<span class="fn">translate</span>(<span class="str">"R2"</span>)             <span class="c"># any jargon term, decoded</span>
 kami.<span class="fn">roadmap</span>()                  <span class="c"># the whole workflow, step by step</span></pre>
     </div>
@@ -430,6 +431,23 @@ kami.<span class="fn">roadmap</span>()                  <span class="c"># the wh
       <tr><td><code>missing</code></td><td><code>'fill'</code> (default) or <code>'drop'</code> for rows with gaps.</td></tr>
       <tr><td><code>ignore</code></td><td>A list of columns to leave out of the model.</td></tr>
     </table>
+
+      <table class="opts" style="margin-top:26px">
+        <tr><th>bakeoff() argument</th><th>what it does</th></tr>
+        <tr><td><code>target</code></td><td>The column you want to predict. Required.</td></tr>
+        <tr><td><code>rank_by</code></td><td>Which metric decides the winner. <code>'auto'</code> (default) uses
+          accuracy for classification and R&sup2; for regression &mdash; but switches to <code>'f1'</code> by itself
+          when your categories are lopsided, and tells you why. Or name one: <code>'accuracy'</code>,
+          <code>'precision'</code>, <code>'recall'</code>, <code>'f1'</code>, <code>'roc_auc'</code>,
+          <code>'r2'</code>, <code>'mae'</code>, <code>'rmse'</code>.</td></tr>
+        <tr><td><code>models</code></td><td><code>'default'</code> races the full roster. Pass a list of model names to
+          race just those. On big tables the default roster swaps in the faster histogram booster for you.</td></tr>
+        <tr><td><code>medals</code></td><td><code>True</code> (default) prints the podium above the metric table.</td></tr>
+        <tr><td><code>explain</code></td><td>Same as <code>train()</code> &mdash; <code>'silent'</code>,
+          <code>'guide'</code> (default), or <code>'teacher'</code>.</td></tr>
+        <tr><td><code>missing</code> / <code>ignore</code></td><td>Same meaning as in <code>train()</code>, applied to
+          every model in the race.</td></tr>
+      </table>
   </section>
 
   <!-- START HERE -->
