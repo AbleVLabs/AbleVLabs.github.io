@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>agoge — your reps-in-reserve training coach · AbleVLabs</title>
+<meta name="description" content="agoge: a Python training coach that estimates how many reps you have left, tracks fatigue across a session, and prescribes what comes next. Powered by the Vivanco Proximity-to-Failure Model.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="agoge — train. track. transcend.">
+<meta property="og:description" content="Know how many reps you have left. A reps-in-reserve training coach in Python.">
+<meta property="og:url" content="https://ablevlabs.com/agoge.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08070a; --panel:#100e12; --panel-2:#16131a; --panel-3:#1c1820;
+    --line:rgba(201,169,97,.16); --line-strong:rgba(201,169,97,.36);
+    --ink:#f0ece4; --muted:#8a8175; --muted-2:#6b6459;
+    --gold:#c9a961; --gold-bright:#e9d3a0; --bronze:#8c6f3f;
+    --steel:#cfd3d8; --blood:#8c3b2f;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Rajdhani',system-ui,sans-serif;line-height:1.6;
+    overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(70% 45% at 50% 0%,   rgba(201,169,97,.09), transparent 72%),
+      radial-gradient(55% 40% at 50% 100%, rgba(140,111,63,.06), transparent 72%)}
+  /* hairline vertical rules, like a stele */
+  body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background:repeating-linear-gradient(90deg,
+      transparent 0 119px, rgba(201,169,97,.035) 119px 120px)}
+  .wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 24px}
+
+  /* ---- Greek key meander, pure CSS ---- */
+  .meander{height:12px;margin:0;border:0;
+    background-image:
+      linear-gradient(90deg, var(--gold) 2px, transparent 2px),
+      linear-gradient(0deg,  var(--gold) 2px, transparent 2px);
+    background-size:24px 12px, 24px 6px;
+    background-repeat:repeat-x;opacity:.26}
+
+  nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);
+    background:rgba(8,7,10,.85);border-bottom:1px solid var(--line)}
+  nav .bar{max-width:960px;margin:0 auto;padding:14px 24px;display:flex;
+    justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  nav a{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.1em;
+    color:var(--muted);text-decoration:none;transition:.15s}
+  nav a:hover{color:var(--gold)}
+  nav .home{color:var(--ink);font-weight:700}
+  nav .navlinks{display:flex;gap:17px;flex-wrap:wrap}
+
+  /* ---- hero ---- */
+  header{padding:58px 0 14px;text-align:center;position:relative}
+  .crest{max-width:330px;width:68%;height:auto;margin:0 auto 2px;display:block;
+    filter:drop-shadow(0 0 40px rgba(201,169,97,.18))}
+  h1{font-family:'Cinzel',serif;font-weight:900;
+    font-size:clamp(46px,10vw,96px);line-height:1;letter-spacing:.15em;
+    margin:0;padding-left:.15em;
+    background:linear-gradient(180deg,#fdf6e6 0%,var(--gold-bright) 42%,var(--gold) 68%,var(--bronze) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .tagline{font-family:'Cinzel',serif;font-size:clamp(12px,2.3vw,17px);
+    letter-spacing:.36em;color:var(--gold);margin:18px 0 0;text-transform:uppercase;
+    padding-left:.36em}
+  .rule-lam{display:flex;align-items:center;gap:14px;justify-content:center;margin:22px 0 0}
+  .rule-lam i{height:1px;width:90px;background:linear-gradient(90deg,transparent,var(--line-strong))}
+  .rule-lam i.r{background:linear-gradient(90deg,var(--line-strong),transparent)}
+  .rule-lam span{font-family:'Cinzel',serif;color:var(--gold);font-size:18px}
+  .lede{font-size:clamp(17px,2.6vw,20px);max-width:62ch;margin:24px auto 0;
+    color:var(--ink);text-align:left}
+  .lede b{color:var(--gold-bright);font-weight:600}
+  .links{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 0;
+    justify-content:center;align-items:center}
+  .pill{font-family:'Space Mono',monospace;font-size:13px;
+    border:1px solid var(--line-strong);border-radius:2px;padding:10px 15px;
+    color:var(--ink);text-decoration:none;display:inline-flex;gap:8px;
+    align-items:center;background:var(--panel);transition:.18s}
+  .pill.install{color:var(--gold)}
+  .pill.install::before{content:"$";color:var(--muted-2)}
+  .pill:hover{border-color:var(--gold);color:var(--gold-bright);
+    box-shadow:0 0 22px rgba(201,169,97,.14)}
+
+  /* ---- sections ---- */
+  section{padding:56px 0;border-top:1px solid var(--line)}
+  .seclabel{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 10px;
+    display:flex;align-items:baseline;gap:12px}
+  .num{font-family:'Cinzel',serif;font-weight:700;font-size:13px;color:var(--gold);
+    border:1px solid var(--line-strong);border-radius:2px;padding:2px 9px;
+    letter-spacing:.08em;flex:none}
+  h2{font-family:'Cinzel',serif;font-weight:600;font-size:clamp(26px,4.6vw,40px);
+    line-height:1.16;letter-spacing:.03em;margin:0 0 18px;color:var(--ink)}
+  p.body{font-size:17px;max-width:66ch;margin:0 0 16px}
+  p.body b{color:var(--gold-bright);font-weight:600}
+  strong{color:var(--ink);font-weight:700}
+
+  /* ---- code + console ---- */
+  .codeblock{position:relative;margin:0 0 20px}
+  .codeblock .cap{font-family:'Space Mono',monospace;font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 7px;
+    display:flex;align-items:center;gap:8px}
+  .codeblock .cap::before{content:"\39B";color:var(--gold);font-family:'Cinzel',serif}
+  .codeblock pre{font-family:'Space Mono',monospace;font-size:13px;line-height:1.75;
+    color:var(--ink);background:var(--panel);border:1px solid var(--line);
+    border-left:2px solid var(--gold);border-radius:3px;padding:18px 16px;
+    overflow:auto;margin:0}
+  .term{border:1px solid var(--line-strong);border-radius:4px;overflow:hidden;
+    background:var(--panel);margin:0 0 20px;box-shadow:0 0 30px rgba(201,169,97,.05)}
+  .term .head{display:flex;align-items:center;gap:9px;padding:10px 14px;
+    border-bottom:1px solid var(--line);background:var(--panel-2);
+    font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted)}
+  .term .head .lam{color:var(--gold);font-family:'Cinzel',serif;font-size:13px}
+  .term pre{margin:0;padding:18px 16px;overflow:auto;
+    font-family:'Space Mono',monospace;font-size:12.5px;line-height:1.72;color:var(--ink)}
+  pre .c{color:var(--muted-2)} pre .kw{color:#c9a0e8} pre .fn{color:var(--gold)}
+  pre .str{color:#a9c9a0} pre .num2{color:var(--gold-bright)}
+  pre .hl{color:var(--gold-bright);font-weight:700} pre .dim{color:var(--muted)}
+  pre .steel{color:var(--steel)} pre .warn{color:#d8a24a}
+
+  /* ---- figures ---- */
+  figure{margin:0 0 20px;border:1px solid var(--line);border-radius:3px;
+    background:var(--panel);padding:20px 16px 12px}
+  figure svg{display:block;width:100%;height:auto}
+  figcaption{font-family:'Space Mono',monospace;font-size:11.5px;color:var(--muted);
+    letter-spacing:.06em;margin-top:12px;text-align:center}
+  .draw{stroke-dasharray:1400;stroke-dashoffset:1400;
+    animation:draw 2.4s .3s ease-out forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .pop{opacity:0;animation:pop .5s ease-out forwards}
+  .pop.d1{animation-delay:1.9s} .pop.d2{animation-delay:2.15s}
+  @keyframes pop{to{opacity:1}}
+  .grow{transform-origin:center bottom;transform:scaleY(0);
+    animation:grow .7s cubic-bezier(.2,.8,.3,1) forwards}
+  .grow.b1{animation-delay:.15s} .grow.b2{animation-delay:.3s}
+  .grow.b3{animation-delay:.45s} .grow.b4{animation-delay:.6s}
+  .grow.b5{animation-delay:.75s}
+  @keyframes grow{to{transform:scaleY(1)}}
+
+  /* ---- mode cards ---- */
+  .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:6px 0 20px}
+  .mode{border:1px solid var(--line);border-radius:3px;background:var(--panel);
+    padding:20px 18px;transition:.2s}
+  .mode:hover{border-color:var(--line-strong);background:var(--panel-2);
+    box-shadow:0 0 26px rgba(201,169,97,.08)}
+  .mode .n{font-family:'Cinzel',serif;font-size:15px;color:var(--gold);letter-spacing:.1em}
+  .mode h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:18px;
+    margin:8px 0 6px;letter-spacing:.02em}
+  .mode p{font-size:14.5px;color:var(--muted);margin:0}
+
+  .feats{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:4px}
+  .feats .f{border:1px solid var(--line);border-radius:3px;background:var(--panel);
+    padding:15px 16px;transition:.2s}
+  .feats .f:hover{border-color:var(--line-strong);background:var(--panel-2)}
+  .feats .f b{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15.5px;
+    color:var(--gold);letter-spacing:.02em;display:block}
+  .feats .f span{display:block;color:var(--muted);font-size:14.5px;margin-top:5px}
+
+  .note{margin-top:20px;font-size:15px;color:var(--muted);
+    border-left:2px solid var(--line-strong);padding-left:15px}
+  .note code{font-family:'Space Mono',monospace;color:var(--gold);font-size:13px}
+  .note a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--line-strong)}
+  .note a:hover{color:var(--gold-bright)}
+
+  table.opts{width:100%;border-collapse:collapse;margin-top:6px;font-size:14.5px}
+  table.opts th,table.opts td{text-align:left;padding:11px 12px;
+    border-bottom:1px solid var(--line);vertical-align:top}
+  table.opts th{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--muted)}
+  table.opts td code{font-family:'Space Mono',monospace;color:var(--gold);font-size:13px}
+
+  footer{padding:34px 0 66px;border-top:1px solid var(--line);
+    font-family:'Space Mono',monospace;font-size:12px;color:var(--muted)}
+  footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;
+    gap:12px;align-items:center}
+  footer a{color:var(--muted);text-decoration:none;transition:.15s}
+  footer a:hover{color:var(--gold)}
+
+  @media (max-width:680px){
+    .modes{grid-template-columns:1fr}
+    .feats{grid-template-columns:1fr}
+    body::after{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;scroll-behavior:auto}
+    .draw,.pop,.grow{animation:none!important;stroke-dashoffset:0!important;
+      opacity:1!important;transform:none!important}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="bar">
+    <a class="home" href="https://ablevlabs.com">&larr; AbleVLabs</a>
+    <div class="navlinks">
+      <a href="#question">The question</a>
+      <a href="#curve">The curve</a>
+      <a href="#coach">Every set</a>
+      <a href="#fatigue">Fatigue</a>
+      <a href="#plan">Plan</a>
+      <a href="#session">A session</a>
+      <a href="#cheatsheet">Cheat sheet</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header>
+    <img class="crest" src="logos/agoge.png" alt="AGOGE"
+         onerror="this.style.display='none'">
+    <h1>AGOGE</h1>
+    <p class="tagline">Train. Track. Transcend.</p>
+    <div class="rule-lam"><i></i><span>&Lambda;</span><i class="r"></i></div>
+    <p class="lede">Every hard set asks the same question: <b>how many reps did I have left?</b>
+    Guess high and you leave growth on the bar. Guess low and you dig a hole you'll pay for on
+    Thursday. <b>agoge</b> answers it with numbers — from two honest sets it learns your lift,
+    then tells you the cost of every set after that.</p>
+    <div class="links">
+      <a class="pill install" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">pip install ablevlabs</a>
+      <a class="pill" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">PyPI &#8599;</a>
+      <a class="pill" href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
+    </div>
+  </header>
+
+  <hr class="meander">
+
+  <!-- I. THE QUESTION -->
+  <section id="question">
+    <p class="seclabel"><span class="num">I</span> the number every program is written in</p>
+    <h2>RIR decides everything, and people are bad at guessing it.</h2>
+    <p class="body">Reps in reserve — how many you could still have done — is the unit serious
+    programming runs on. It's how you know whether today counted, whether you've recovered, and
+    whether next week goes up or holds.</p>
+    <p class="body">And self-reported RIR is <b>unreliable, in a consistent direction</b>. Lifters
+    routinely stop with more left than they think, and log it as a hard set. Nobody's being lazy —
+    perceived effort simply isn't a calibrated instrument, and it drifts as you fatigue <em>within</em>
+    a session.</p>
+    <p class="body">agoge doesn't ask how it felt. It asks what you <b>lifted</b>, and works backwards
+    from a model of your own lift.</p>
+  </section>
+
+  <!-- II. THE CURVE -->
+  <section id="curve">
+    <p class="seclabel"><span class="num">II</span> two sets in, and it knows the lift</p>
+    <h2>Calibrate once. After that it's arithmetic.</h2>
+    <p class="body">Give it two honest sets at different weights — one heavy and low-rep, one lighter
+    and higher-rep. That's enough to fit the curve joining load to reps for <em>you</em>, on
+    <em>that</em> lift. No 1RM test, no maximal single, no grinding to failure under a loaded bar.</p>
+
+    <div class="codeblock">
+      <p class="cap">calibrate</p>
+      <pre><span class="kw">from</span> ablevlabs <span class="kw">import</span> agoge
+
+bench = agoge.<span class="fn">calibrate</span>(
+    weight1=<span class="num2">315</span>, reps1=<span class="num2">5</span>,     <span class="c"># the heavy set</span>
+    weight2=<span class="num2">275</span>, reps2=<span class="num2">9</span>,     <span class="c"># the lighter one</span>
+    name=<span class="str">"Bench"</span>,
+)</pre>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Load versus reps curve fitted through two calibration sets">
+        <!-- grid -->
+        <g stroke="rgba(201,169,97,.10)" stroke-width="1">
+          <line x1="70" y1="60"  x2="600" y2="60"/>
+          <line x1="70" y1="112" x2="600" y2="112"/>
+          <line x1="70" y1="164" x2="600" y2="164"/>
+          <line x1="70" y1="216" x2="600" y2="216"/>
+        </g>
+        <!-- axes -->
+        <line x1="70" y1="270" x2="600" y2="270" stroke="rgba(201,169,97,.4)" stroke-width="1"/>
+        <line x1="70" y1="40"  x2="70"  y2="270" stroke="rgba(201,169,97,.4)" stroke-width="1"/>
+        <!-- y labels -->
+        <g fill="#8a8175" font-family="Space Mono, monospace" font-size="10">
+          <text x="52" y="64"  text-anchor="end">20</text>
+          <text x="52" y="116" text-anchor="end">15</text>
+          <text x="52" y="168" text-anchor="end">10</text>
+          <text x="52" y="220" text-anchor="end">5</text>
+          <text x="52" y="274" text-anchor="end">0</text>
+          <text x="70"  y="290" text-anchor="middle">225</text>
+          <text x="274" y="290" text-anchor="middle">275</text>
+          <text x="437" y="290" text-anchor="middle">315</text>
+          <text x="600" y="290" text-anchor="middle">355</text>
+        </g>
+        <!-- axis titles -->
+        <text x="335" y="311" fill="#6b6459" font-family="Space Mono, monospace"
+              font-size="10" text-anchor="middle" letter-spacing="1.5">WEIGHT (LB)</text>
+        <text x="18" y="160" fill="#6b6459" font-family="Space Mono, monospace"
+              font-size="10" text-anchor="middle" letter-spacing="1.5"
+              transform="rotate(-90 18 160)">REPS</text>
+
+        <!-- the fitted curve -->
+        <polyline class="draw" fill="none" stroke="#c9a961" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round"
+          points="70,59 111,83 151,105 192,125 233,143 274,160 315,176 355,191
+                  396,205 437,218 478,230 518,242 559,252 600,263"/>
+
+        <!-- the two calibration points -->
+        <g class="pop d1">
+          <circle cx="274" cy="167" r="6" fill="#08070a" stroke="#e9d3a0" stroke-width="2.5"/>
+          <text x="274" y="150" fill="#e9d3a0" font-family="Space Mono, monospace"
+                font-size="11" text-anchor="middle">275 &times; 9</text>
+        </g>
+        <g class="pop d2">
+          <circle cx="437" cy="213" r="6" fill="#08070a" stroke="#e9d3a0" stroke-width="2.5"/>
+          <text x="437" y="196" fill="#e9d3a0" font-family="Space Mono, monospace"
+                font-size="11" text-anchor="middle">315 &times; 5</text>
+        </g>
+      </svg>
+      <figcaption>Two points define the curve. Everything between and beyond them is inference.</figcaption>
+    </figure>
+
+    <p class="body">Notice the two markers sit slightly <em>off</em> the line. That's not sloppiness —
+    it's the fit. Real sets never lie perfectly on a curve, and a model that passed exactly through
+    both would be describing your two sets rather than your lift.</p>
+
+    <p class="body">agoge also tells you <b>how much to trust the fit</b>. Two sets close together in
+    weight barely constrain the curve; two far apart pin it down. It scores that confidence out loud
+    instead of quietly treating both as equally good, and flags any set that contradicts the pattern
+    the others describe.</p>
+
+    <div class="codeblock">
+      <p class="cap">ask it anything on the curve</p>
+      <pre><span class="c"># I've never benched 295. What should I expect?</span>
+bench.<span class="fn">reps_at</span>(<span class="num2">295</span>)              <span class="c"># reps if taken to failure</span>
+bench.<span class="fn">weight_for</span>(reps=<span class="num2">12</span>)        <span class="c"># the load for a 12-rep set</span>
+bench.<span class="fn">rir_at</span>(weight=<span class="num2">275</span>, reps=<span class="num2">7</span>) <span class="c"># what a 275x7 actually cost</span></pre>
+    </div>
+  </section>
+
+  <hr class="meander">
+
+  <!-- III. COACHING -->
+  <section id="coach">
+    <p class="seclabel"><span class="num">III</span> a readout on every set</p>
+    <h2>Log the set. Get told what it cost you.</h2>
+    <p class="body">You did 275 for 8. Was that a hard set, or a warm-up wearing a hard set's clothes?
+    agoge answers in RIR and RPE, labels it in plain language, and tells you what to do with the next one.</p>
+
+    <div class="codeblock">
+      <p class="cap">start a session, log a set</p>
+      <pre>w = agoge.<span class="fn">Workout</span>(bench)
+
+w.<span class="fn">target_reps</span>(weight=<span class="num2">275</span>, rir=<span class="num2">2</span>)   <span class="c"># how many to leave 2 in the tank, right now</span>
+w.<span class="fn">log_set</span>(weight=<span class="num2">275</span>, reps=<span class="num2">8</span>)      <span class="c"># log it, get coached</span>
+w.<span class="fn">log_set</span>(weight=<span class="num2">275</span>, reps=<span class="num2">7</span>)
+w.<span class="fn">log_set</span>(weight=<span class="num2">275</span>, reps=<span class="num2">6</span>)
+
+w.<span class="fn">summary</span>()                          <span class="c"># the whole session, totalled</span></pre>
+    </div>
+
+    <p class="body"><b>Right now</b> is doing real work in that first line. Your fifth set is not your
+    first set. agoge tracks fatigue as the session accumulates, so the rep target at set five is lower
+    than the one at set one — because by then you are, measurably, a different athlete. A program
+    written on paper can't know that.</p>
+  </section>
+
+  <!-- IV. FATIGUE -->
+  <section id="fatigue">
+    <p class="seclabel"><span class="num">IV</span> set five is not set one</p>
+    <h2>The same RIR costs fewer reps every set.</h2>
+    <p class="body">Ask for RIR 2 across five sets at a fixed weight and the honest answer isn't
+    "8, 8, 8, 8, 8." It's a staircase down. Holding the reps constant instead means each set creeps
+    closer to failure than the last — which is exactly how a session that looked reasonable on paper
+    turns into a week of bad recovery.</p>
+
+    <figure>
+      <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Target reps declining across five sets at a constant RIR of 2">
+        <line x1="60" y1="210" x2="610" y2="210" stroke="rgba(201,169,97,.4)" stroke-width="1"/>
+        <g stroke="rgba(201,169,97,.09)" stroke-width="1">
+          <line x1="60" y1="60"  x2="610" y2="60"/>
+          <line x1="60" y1="110" x2="610" y2="110"/>
+          <line x1="60" y1="160" x2="610" y2="160"/>
+        </g>
+        <g fill="#8a8175" font-family="Space Mono, monospace" font-size="10">
+          <text x="48" y="64"  text-anchor="end">9</text>
+          <text x="48" y="114" text-anchor="end">6</text>
+          <text x="48" y="164" text-anchor="end">3</text>
+          <text x="48" y="214" text-anchor="end">0</text>
+        </g>
+
+        <!-- bars: 8, 7, 7, 6, 5 reps at RIR 2 -->
+        <g>
+          <rect class="grow b1" x="95"  y="77"  width="70" height="133" fill="#c9a961" opacity=".85" rx="1"/>
+          <rect class="grow b2" x="200" y="94"  width="70" height="116" fill="#c9a961" opacity=".72" rx="1"/>
+          <rect class="grow b3" x="305" y="94"  width="70" height="116" fill="#c9a961" opacity=".62" rx="1"/>
+          <rect class="grow b4" x="410" y="110" width="70" height="100" fill="#c9a961" opacity=".5"  rx="1"/>
+          <rect class="grow b5" x="515" y="127" width="70" height="83"  fill="#c9a961" opacity=".4"  rx="1"/>
+        </g>
+        <g fill="#e9d3a0" font-family="Space Mono, monospace" font-size="15" text-anchor="middle">
+          <text x="130" y="68">8</text>
+          <text x="235" y="85">7</text>
+          <text x="340" y="85">7</text>
+          <text x="445" y="101">6</text>
+          <text x="550" y="118">5</text>
+        </g>
+        <g fill="#6b6459" font-family="Space Mono, monospace" font-size="10" text-anchor="middle">
+          <text x="130" y="228">SET 1</text>
+          <text x="235" y="228">SET 2</text>
+          <text x="340" y="228">SET 3</text>
+          <text x="445" y="228">SET 4</text>
+          <text x="550" y="228">SET 5</text>
+        </g>
+        <text x="335" y="250" fill="#8a8175" font-family="Space Mono, monospace"
+              font-size="10" text-anchor="middle" letter-spacing="1.5">275 LB &mdash; HOLDING RIR 2</text>
+      </svg>
+      <figcaption>Illustrative shape. Your actual staircase depends on your fitted fatigue curve.</figcaption>
+    </figure>
+  </section>
+
+  <hr class="meander">
+
+  <!-- V. PLANNING -->
+  <section id="plan">
+    <p class="seclabel"><span class="num">V</span> three ways to write the session</p>
+    <h2>Prescribe the work before you start it.</h2>
+    <p class="body">Tell agoge the shape you want and it fills in the numbers, fatigue already priced in.</p>
+
+    <div class="modes">
+      <div class="mode">
+        <div class="n">&Lambda; I</div>
+        <h3>Hold an RIR</h3>
+        <p>Same proximity to failure every set. Reps fall as fatigue climbs — which is the point,
+        and what a fixed rep target gets wrong.</p>
+      </div>
+      <div class="mode">
+        <div class="n">&Lambda; II</div>
+        <h3>Hold the reps</h3>
+        <p>Straight sets across. agoge tells you what each one costs in RIR, so you can see the
+        last one is far harder than the first.</p>
+      </div>
+      <div class="mode">
+        <div class="n">&Lambda; III</div>
+        <h3>Top set, back-offs</h3>
+        <p>One heavy set, then volume behind it at a load that leaves you standing.</p>
+      </div>
+    </div>
+
+    <div class="codeblock">
+      <p class="cap">all three</p>
+      <pre><span class="c"># I. hold RIR 2 for five sets - reps will step down</span>
+w.<span class="fn">build_plan</span>(weight=<span class="num2">275</span>, target_rir=<span class="num2">2</span>, sets=<span class="num2">5</span>)
+
+<span class="c"># II. five sets of eight - shows what each one costs</span>
+w.<span class="fn">build_plan</span>(weight=<span class="num2">275</span>, reps=<span class="num2">8</span>, sets=<span class="num2">5</span>)
+
+<span class="c"># III. a heavy top set, then back-offs behind it</span>
+w.<span class="fn">build_plan</span>(weight=<span class="num2">315</span>, target_rir=<span class="num2">1</span>, sets=<span class="num2">1</span>,
+             backoff_pct=<span class="num2">0.85</span>, backoff_sets=<span class="num2">3</span>)</pre>
+    </div>
+  </section>
+
+  <!-- VI. A REAL SESSION -->
+  <section id="session">
+    <p class="seclabel"><span class="num">VI</span> start to finish</p>
+    <h2>A whole session, in about ten lines.</h2>
+    <p class="body">Nothing hidden, nothing wrapped in an app. Calibrate, plan, log, review.</p>
+
+    <div class="codeblock">
+      <p class="cap">bench day</p>
+      <pre><span class="kw">from</span> ablevlabs <span class="kw">import</span> agoge
+
+<span class="c"># once, ever - from two sets you already did</span>
+bench = agoge.<span class="fn">calibrate</span>(weight1=<span class="num2">315</span>, reps1=<span class="num2">5</span>,
+                         weight2=<span class="num2">275</span>, reps2=<span class="num2">9</span>, name=<span class="str">"Bench"</span>)
+
+<span class="c"># today</span>
+w = agoge.<span class="fn">Workout</span>(bench)
+w.<span class="fn">build_plan</span>(weight=<span class="num2">275</span>, target_rir=<span class="num2">2</span>, sets=<span class="num2">4</span>)
+
+<span class="c"># as it happens</span>
+w.<span class="fn">log_set</span>(weight=<span class="num2">275</span>, reps=<span class="num2">9</span>)   <span class="c"># beat the target - it adjusts</span>
+w.<span class="fn">log_set</span>(weight=<span class="num2">275</span>, reps=<span class="num2">7</span>)
+w.<span class="fn">log_set</span>(weight=<span class="num2">275</span>, reps=<span class="num2">6</span>)
+w.<span class="fn">log_set</span>(weight=<span class="num2">275</span>, reps=<span class="num2">5</span>)
+
+w.<span class="fn">summary</span>()                        <span class="c"># tonnage, average RIR, fatigue accrued</span></pre>
+    </div>
+
+    <div class="note">
+      Beat the target on set one and agoge doesn't ignore it — that set is evidence, and the
+      remaining targets move accordingly.
+    </div>
+  </section>
+
+  <hr class="meander">
+
+  <!-- VII. FIT TO YOU -->
+  <section id="yours">
+    <p class="seclabel"><span class="num">VII</span> it becomes yours</p>
+    <h2>Feed it your history and the model stops being generic.</h2>
+    <p class="body">The default fatigue curve is a sensible starting point, not a claim about you.
+    Hand agoge your own logged sessions and it fits the model to <em>your</em> data — then, the part
+    that matters, <b>validates it against sets it wasn't allowed to see</b>. If the personalised model
+    doesn't actually beat the default on unseen sets, it says so, instead of flattering you with a
+    curve that only describes the past.</p>
+
+    <div class="codeblock">
+      <p class="cap">fit the fatigue model to your own logs</p>
+      <pre>sessions = [
+    {<span class="str">"weight"</span>: <span class="num2">275</span>, <span class="str">"reps"</span>: <span class="num2">9</span>, <span class="str">"set_number"</span>: <span class="num2">1</span>},
+    {<span class="str">"weight"</span>: <span class="num2">275</span>, <span class="str">"reps"</span>: <span class="num2">7</span>, <span class="str">"set_number"</span>: <span class="num2">2</span>},
+    {<span class="str">"weight"</span>: <span class="num2">275</span>, <span class="str">"reps"</span>: <span class="num2">6</span>, <span class="str">"set_number"</span>: <span class="num2">3</span>},
+    <span class="c"># ... as many as you have</span>
+]
+
+agoge.<span class="fn">fit_fatigue</span>(sessions)      <span class="c"># fits, then validates on held-out sets</span></pre>
+    </div>
+
+    <div class="feats">
+      <div class="f"><b>Confidence, stated</b><span>Every calibration is scored on how much your data
+        actually pins the curve down.</span></div>
+      <div class="f"><b>Outliers flagged</b><span>A set contradicting the others gets called out, not
+        quietly averaged away.</span></div>
+      <div class="f"><b>Within-session fatigue</b><span>Set five is modelled differently from set one,
+        because it is different.</span></div>
+      <div class="f"><b>Held-out validation</b><span>A personalised model must beat the default on
+        unseen sets to earn the swap.</span></div>
+    </div>
+  </section>
+
+  <!-- VIII. THE MODEL -->
+  <section id="model">
+    <p class="seclabel"><span class="num">VIII</span> what's underneath</p>
+    <h2>The Vivanco Proximity-to-Failure Model.</h2>
+    <p class="body">agoge runs on VPFM — a formal model of how close to failure a set puts you, given
+    load, reps, and accumulated fatigue. It's derived and written up in full, openly, so you can
+    disagree with the reasoning rather than accept a number on faith.</p>
+    <p class="body">That's the posture throughout. A coaching tool that won't show its working is
+    asking for trust it hasn't earned. This one hands you the derivation and invites the argument.</p>
+    <div class="note">
+      Read it in full: <a href="https://ablevlabs.com/vptf.html">the Vivanco Proximity-to-Failure Model &#8599;</a>
+    </div>
+  </section>
+
+  <hr class="meander">
+
+  <!-- IX. CHEAT SHEET -->
+  <section id="cheatsheet">
+    <p class="seclabel"><span class="num">IX</span> cheat sheet</p>
+    <h2>Everything you need to use it.</h2>
+
+    <div class="codeblock">
+      <p class="cap">install &amp; import</p>
+      <pre><span class="c"># install or upgrade to the latest</span>
+pip install -U ablevlabs
+
+<span class="kw">from</span> ablevlabs <span class="kw">import</span> agoge</pre>
+    </div>
+
+    <div class="codeblock">
+      <p class="cap">calibrate a lift</p>
+      <pre>bench = agoge.<span class="fn">calibrate</span>(weight1=<span class="num2">315</span>, reps1=<span class="num2">5</span>,
+                         weight2=<span class="num2">275</span>, reps2=<span class="num2">9</span>, name=<span class="str">"Bench"</span>)</pre>
+    </div>
+
+    <div class="codeblock">
+      <p class="cap">run a session</p>
+      <pre>w = agoge.<span class="fn">Workout</span>(bench)
+w.<span class="fn">target_reps</span>(weight=<span class="num2">275</span>, rir=<span class="num2">2</span>)                 <span class="c"># reps to leave 2 in reserve</span>
+w.<span class="fn">log_set</span>(weight=<span class="num2">275</span>, reps=<span class="num2">8</span>)                    <span class="c"># log a set, get coached</span>
+w.<span class="fn">build_plan</span>(weight=<span class="num2">275</span>, target_rir=<span class="num2">2</span>, sets=<span class="num2">5</span>)   <span class="c"># prescribe today's sets</span>
+w.<span class="fn">summary</span>()                                       <span class="c"># the session, totalled</span></pre>
+    </div>
+
+    <div class="codeblock">
+      <p class="cap">learn it</p>
+      <pre>agoge.<span class="fn">help</span>()     <span class="c"># the ideas behind RIR and fatigue, explained</span>
+agoge.<span class="fn">info</span>()     <span class="c"># every function, in plain English</span></pre>
+    </div>
+
+    <table class="opts">
+      <tr><th>calibrate() argument</th><th>what it does</th></tr>
+      <tr><td><code>weight1</code> / <code>reps1</code></td><td>The heavier set — lower reps. Required.</td></tr>
+      <tr><td><code>weight2</code> / <code>reps2</code></td><td>The lighter set — higher reps. The further apart these two are, the more confident the fit.</td></tr>
+      <tr><td><code>name</code></td><td>What to call the lift, so readouts say "Bench" rather than "lift".</td></tr>
+    </table>
+
+    <table class="opts" style="margin-top:26px">
+      <tr><th>build_plan() argument</th><th>what it does</th></tr>
+      <tr><td><code>weight</code></td><td>The load you'll be working at. Required.</td></tr>
+      <tr><td><code>target_rir</code></td><td>Hold this proximity to failure across the sets; reps step down as fatigue builds.</td></tr>
+      <tr><td><code>reps</code></td><td>Hold this rep count instead, and be shown what each set costs in RIR.</td></tr>
+      <tr><td><code>sets</code></td><td>How many working sets to prescribe.</td></tr>
+      <tr><td><code>backoff_pct</code> / <code>backoff_sets</code></td><td>Run a top set, then volume behind it at a fraction of the load.</td></tr>
+    </table>
+  </section>
+
+  <!-- START -->
+  <section id="start">
+    <p class="seclabel"><span class="num">&Lambda;</span> start here</p>
+    <h2>Two sets. Then stop guessing.</h2>
+    <p class="body">Next time you bench, do one heavy set and one lighter one, and write down what
+    you actually got. That's the whole setup. From there agoge can tell you the cost of every set
+    that follows.</p>
+    <div class="links" style="justify-content:flex-start">
+      <a class="pill install" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">pip install ablevlabs</a>
+      <a class="pill" href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
+      <a class="pill" href="https://ablevlabs.com/vptf.html">The model &#8599;</a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; 2026 AbleVLabs &mdash; Carlos Abel Vivanco</span>
+    <span>
+      <a href="https://ablevlabs.com">&larr; AbleVLabs</a> &nbsp;
+      <a href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">PyPI &#8599;</a> &nbsp;
+      <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>
