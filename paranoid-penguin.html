@@ -178,7 +178,9 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
   <div class="hero-tag" style="margin-top:1.4rem">paranoid so you don't have to be</div>
   <p class="hero-sub">A one-click desktop app that checks how locked-down your own computer and home
     network really are, hands you a plain <em>A&ndash;F security grade</em>, and lists exactly what to fix
-    first &mdash; every finding mapped to the <em>MITRE ATT&amp;CK</em> framework real security teams use.</p>
+    first &mdash; every finding mapped to the <em>MITRE ATT&amp;CK</em> framework real security teams use,
+    and organised around the <em>eight CISSP domains</em>, including honest notes on the ones a scanner
+    can't reach.</p>
   <div class="btns">
     <a href="https://github.com/AbleVLabs/paranoid-penguin" target="_blank" rel="noopener" class="btn btn-fill">View on GitHub &#8599;</a>
     <a href="#look" class="btn btn-ghost">See inside</a>
@@ -205,23 +207,27 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
       <div class="chip"><div class="n">02 Endpoint</div><div class="t">Computer Scan</div></div>
       <div class="chip"><div class="n">03 Software</div><div class="t">App Vuln Audit</div></div>
       <div class="chip"><div class="n">04 Config</div><div class="t">Hardening Audit</div></div>
-      <div class="chip"><div class="n">05 Persistence</div><div class="t">Startup Review</div></div>
-      <div class="chip"><div class="n">06 Intrusion</div><div class="t">Login Monitor</div></div>
-      <div class="chip"><div class="n">07 Network</div><div class="t">Network Map</div></div>
-      <div class="chip"><div class="n">08 Live traffic</div><div class="t">Connection Monitor</div></div>
-      <div class="chip"><div class="n">09 Wireless</div><div class="t">Wi-Fi Audit</div></div>
+      <div class="chip"><div class="n">05 Identity &middot; D5</div><div class="t">Identity &amp; Access</div></div>
+      <div class="chip"><div class="n">06 Data &middot; D2</div><div class="t">Asset Security</div></div>
+      <div class="chip"><div class="n">07 Persistence</div><div class="t">Startup Review</div></div>
+      <div class="chip"><div class="n">08 Intrusion</div><div class="t">Login Monitor</div></div>
+      <div class="chip"><div class="n">09 Network</div><div class="t">Network Map</div></div>
+      <div class="chip"><div class="n">10 Live traffic</div><div class="t">Connection Monitor</div></div>
+      <div class="chip"><div class="n">11 Wireless</div><div class="t">Wi-Fi Audit</div></div>
     </div>
   </div>
 </div></section>
 
 <!-- FEATURES -->
 <section class="pad" style="padding-top:0"><div class="wrap">
-  <div class="sec-head"><span class="sec-label">Nine checks, one grade</span><span class="sec-num">02</span></div>
+  <div class="sec-head"><span class="sec-label">Eleven checks, one grade</span><span class="sec-num">02</span></div>
   <div class="feats">
     <div class="feat"><h3>Threat Intelligence</h3><p>Pulls today's list of vulnerabilities being actively exploited in the wild &mdash; straight from CISA KEV and FIRST.org EPSS, the feeds the pros watch.</p></div>
     <div class="feat"><h3>Computer Scan</h3><p>What's installed, which ports are open, whether your firewall and antivirus are actually on &mdash; cross-referenced against the live threat list.</p></div>
     <div class="feat"><h3>App Vulnerability Audit</h3><p>Checks your Python packages against real CVE databases and tells you exactly what to update. Version-accurate, so it's the finding you can trust.</p></div>
     <div class="feat"><h3>Hardening Audit</h3><p>A mini CIS benchmark: disk encryption, UAC, Remote Desktop, the ancient SMBv1 protocol, guest account, update history.</p><span class="mitre">T1210 &middot; T1021 &middot; T1548</span></div>
+    <div class="feat"><h3>Identity &amp; Access Audit</h3><p>Who can get in, and how hard it is once they try: admin rights, password policy, account lockout, autologon, saved credentials. The domain home setups are weakest in, because none of it looks like anything until it matters. <b>It never reads or stores a password</b> &mdash; the autologon check knows Windows keeps that one in the registry in plain text, and deliberately reports only whether the setting is on.</p><span class="mitre">T1078 Valid Accounts &middot; T1110 Brute Force &middot; T1555 Password Stores</span></div>
+    <div class="feat"><h3>Asset Security Audit</h3><p>Not the machine &mdash; the <em>data</em>. Encryption at rest on every drive, backup state, how much you'd actually lose, key and certificate files, what's still sitting in the Recycle Bin. A laptop with no backup and an unencrypted drive passes every other check in this tool. Counts and sizes only; <b>no filename is ever recorded</b>.</p><span class="mitre">T1490 Inhibit Recovery &middot; T1552 Creds in Files</span></div>
     <div class="feat"><h3>Startup Review</h3><p>Everything that launches at boot &mdash; exactly where malware hides to survive a restart. Flags anything running from a temp folder.</p><span class="mitre">T1547 Autostart</span></div>
     <div class="feat"><h3>Login Monitor</h3><p>Reads the Windows event log for bursts of failed sign-ins &mdash; the fingerprint of someone guessing their way in.</p><span class="mitre">T1110 Brute Force</span></div>
     <div class="feat"><h3>Network Map + Alerts</h3><p>Lists every device on your own network and yells when a new one shows up that it hasn't seen before.</p><span class="mitre">T1200 Hardware Additions</span></div>
@@ -230,9 +236,42 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
   </div>
 </div></section>
 
+<!-- CISSP COVERAGE -->
+<section class="pad" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">CISSP domain coverage</span><span class="sec-num">03</span></div>
+  <p style="max-width:70ch;margin:0 0 26px;line-height:1.7">
+    The eight CISSP domains are a map of what a security professional should know &mdash; not a
+    checklist a scanner can tick off. Some a program running on one laptop can assess properly.
+    Some it can assess partly. One it cannot touch at all, because you can't scan a machine to
+    find out whether someone has an incident response plan.
+    <b>Forcing all eight to look equally covered would be dishonest</b>, so the gaps are stated
+    instead. Security teams produce exactly this artifact &mdash; a control coverage assessment
+    &mdash; and the gaps are the interesting part of it.
+  </p>
+
+  <div class="feats">
+    <div class="feat"><h3>1 &middot; Security &amp; Risk Management</h3><p><b style="color:var(--gold)">Partial.</b> A scanner can measure your exposure to vulnerabilities the world is actively exploiting. It cannot tell you whether you have a policy, a recovery plan, or a legal obligation you're failing. Those are decisions and documents, not machine state &mdash; so the tool asks you instead.</p></div>
+    <div class="feat"><h3>2 &middot; Asset Security</h3><p><b style="color:var(--green,#00ff88)">Assessed.</b> Encryption at rest, backup state, data volume, key material, disposal. All readable from the machine.</p></div>
+    <div class="feat"><h3>3 &middot; Architecture &amp; Engineering</h3><p><b style="color:var(--green,#00ff88)">Assessed.</b> A mini CIS Benchmark &mdash; the configuration questions an auditor asks, answered from the registry and system state.</p></div>
+    <div class="feat"><h3>4 &middot; Communication &amp; Network</h3><p><b style="color:var(--green,#00ff88)">Assessed.</b> The strongest coverage here: devices on the network, live outbound connections, wireless encryption, alerts when something new appears.</p></div>
+    <div class="feat"><h3>5 &middot; Identity &amp; Access</h3><p><b style="color:var(--green,#00ff88)">Assessed.</b> Account inventory, privilege, password policy, lockout, second factor, stored credentials.</p></div>
+    <div class="feat"><h3>6 &middot; Assessment &amp; Testing</h3><p><b style="color:var(--gold)">Partial.</b> This tool <em>is</em> an assessment &mdash; that's the domain in action. What it can't do is independent verification: it tests configuration, not whether a control actually stops an attack. And you can't honestly assess yourself on your own machine.</p></div>
+    <div class="feat"><h3>7 &middot; Security Operations</h3><p><b style="color:var(--green,#00ff88)">Assessed.</b> Persistence review, failed sign-in monitoring, live connection watching &mdash; the detection half of operations.</p></div>
+    <div class="feat"><h3>8 &middot; Software Development Security</h3><p><b style="color:var(--gold)">Partial.</b> Dependency scanning is real and version-accurate. But the domain also covers secure coding, review, testing and the build pipeline. It checks what you <em>installed</em>, not what you <em>wrote</em>.</p></div>
+  </div>
+
+  <p class="note" style="margin-top:26px;max-width:70ch;line-height:1.7">
+    <b>Five assessed, three partial.</b> For the parts no program can answer, the dashboard asks
+    directly &mdash; <em>if this machine died right now, what would you lose?</em> &middot;
+    <em>have you ever verified a control works, rather than that it's switched on?</em> &middot;
+    <em>is there anything in your code history that shouldn't be there?</em>
+    Answering those is on you. The tool's job is to ask.
+  </p>
+</div></section>
+
 <!-- UNDER THE HOOD -->
 <section class="pad" style="padding-top:0"><div class="wrap">
-  <div class="sec-head"><span class="sec-label">Under the hood</span><span class="sec-num">03</span></div>
+  <div class="sec-head"><span class="sec-label">Under the hood</span><span class="sec-num">04</span></div>
   <div class="cols">
     <div>
       <h3>How it works</h3>
@@ -245,9 +284,17 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     <div>
       <h3>Where I'm honest about it</h3>
       <ul>
-        <li>The "your software matches a known-exploited product" check matches on <b>names</b>, not version
-          numbers yet &mdash; treat those as "go check whether you're patched," not "you're definitely owned."
-          The app audit <b>does</b> compare versions.</li>
+        <li>The "your software matches a known-exploited product" check <b>cannot confirm you're vulnerable,
+          and never will.</b> The CISA KEV catalog publishes the vendor, product and CVE &mdash; it does
+          <em>not</em> publish which versions are affected. Confirming that needs NVD's CPE data, which this
+          tool doesn't ship. So every row reads "go check whether I'm patched", and the grade deliberately
+          scores it at <b>zero</b>. Matching is on the whole product name with the vendor as a confidence
+          signal, not on any token appearing anywhere &mdash; which is what used to make "Office" match
+          LibreOffice.</li>
+        <li>Every check reports <b>skipped</b> or <b>errored</b>, never a single vague "unknown". Those meant
+          opposite things and shared one grey label: <em>needs admin</em> looked identical to <em>this check
+          broke eight months ago</em>. A scanner that quietly stops checking something is worse than one that
+          never checked it.</li>
         <li>A real posture-management platform runs around the clock on a server watching a whole company.
           This runs on a laptop when you click a button. <b>Same idea, a lot smaller.</b></li>
       </ul>

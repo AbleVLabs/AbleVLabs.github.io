@@ -151,6 +151,7 @@
       <a href="#teaches">It teaches</a>
       <a href="#charts">Charts</a>
       <a href="#safety">Guardrails</a>
+      <a href="#v090">0.9.0</a>
       <a href="#cheatsheet">Cheat sheet</a>
     </div>
   </div>
@@ -356,10 +357,45 @@ What you're looking at: each dot is one row, placed by its 'size_sqft'
       <div class="o"><b>Data leakage</b><span>A column that secretly gives away the answer? Flagged before you trust a fantasy.</span></div>
       <div class="o"><b>ID columns</b><span>It won't let the model "memorise" row numbers and call it learning.</span></div>
       <div class="o"><b>Fake-perfect scores</b><span>100% accuracy on six test rows is Low confidence, not a win.</span></div>
-      <div class="o"><b>Wrong-scale features</b><span>Automatically scales the data for the models that need it.</span></div>
+      <div class="o"><b>Duplicate rows</b><span>Copies land in both the training and test halves, so the model gets graded on rows it memorised. Kami counts them and says the score is too generous.</span></div>
+      <div class="o"><b>Entangled columns</b><span>When two columns carry the same information the model splits the credit arbitrarily &mdash; so kami says the ranking is <em>unstable</em>, not wrong.</span></div>
+      <div class="o"><b>Meaningless rankings</b><span>It refuses to rank raw coefficients. One might be "per dollar" and the next "per year" &mdash; a bigger number would only mean smaller units.</span></div>
+      <div class="o"><b>Wrong-scale features</b><span>Scales the columns for models that measure distance, and for penalised models where scale decides which coefficient gets punished.</span></div>
+      <div class="o"><b>Wrong-scale answers</b><span>SVR and neural nets assume the answer is a small number. Kami scales the target for them, so a house price in the hundred-thousands doesn't look like a broken model.</span></div>
+      <div class="o"><b>Scores with no yardstick</b><span>Every regression result is shown next to the error you'd get by always guessing the average &mdash; including "no better than guessing" when that's the truth.</span></div>
       <div class="o"><b>Messy reality</b><span>Currency symbols, commas, percent signs, mixed dates, blanks &mdash; cleaned without being asked.</span></div>
       <div class="o"><b>Unseen test data</b><span>Always scored on rows the model never saw, so the number is honest.</span></div>
     </div>
+  </section>
+
+  <!-- 0.9.0 -->
+  <section id="v090">
+    <p class="seclabel">// 0.9.0 &mdash; statistical corrections</p>
+    <h2>Some numbers changed. The new ones are the honest ones.</h2>
+    <p class="body">This release fixes results that were being computed correctly and reported
+    misleadingly. If a score or a ranking moves after you upgrade, that's the point &mdash; and
+    it's worth knowing which ones, because one of them now raises an error where it used to
+    print a table.</p>
+
+    <div class="outlist">
+      <div class="o"><b>feature_importance() refuses plain LinearRegression</b><span>It raises instead of ranking. On unscaled data a coefficient's size depends on its column's units, so ranking them measures your choice of units. The error points at <code>model='Ridge'</code> (kami standardizes it) or a tree model.</span></div>
+      <div class="o"><b>Ridge and Lasso tune their own penalty</b><span>sklearn's default <code>alpha=1.0</code> is a placeholder. On a benchmark where the answer was literally a straight line, a default-alpha Lasso scored <b>0.799</b> while LinearRegression scored <b>0.998</b> &mdash; the penalty was eating the signal. Alpha is now chosen by cross-validation.</span></div>
+      <div class="o"><b>SVR and MLP scale the target</b><span>On a dataset where every other model scored 0.98, these two scored <b>&minus;0.008</b> and <b>&minus;29.0</b>. That was never their performance &mdash; it was a units problem being reported as a bad model.</span></div>
+      <div class="o"><b>Scores move on messy data</b><span>Datasets with duplicate rows or entangled columns now come with warnings attached. The numbers didn't get worse; the reporting got honest.</span></div>
+    </div>
+
+    <p class="note" style="margin-top:26px">Verified against a benchmark of eleven datasets whose
+    answers are known by construction &mdash; a straight line, pure noise, a step function, XOR,
+    a 95/5 imbalance and six others. The <b>pure noise</b> case is the one that matters: with no
+    relationship in the data at all, every model must score at or below zero. Anything claiming
+    otherwise has found a leak, not a pattern. 266 tests, including a reproducibility check for
+    every one of the nineteen models.</p>
+
+    <p class="note">One thing deliberately <em>not</em> changed: median imputation happens before
+    cross-validation, which is a real methodological error. It was measured across three dataset
+    sizes and four missingness levels &mdash; the largest gap was <b>0.015 R&sup2;</b> and most were
+    under 0.003. Fixing it is a breaking change to the result object for no measurable benefit, so
+    it waits. Stated here because the mechanism sounds alarming and the magnitude isn't.</p>
   </section>
 
   <!-- HOW IT WORKS -->
@@ -412,6 +448,12 @@ kami.<span class="fn">predict</span>(result, new_row)</pre>
       <pre>kami.<span class="fn">feature_importance</span>(result)   <span class="c"># what mattered, in plain words</span>
 kami.<span class="fn">plot_predictions</span>(result)     <span class="c"># see how close it got</span>
 kami.<span class="fn">suggest_charts</span>(df)           <span class="c"># which charts fit your data</span></pre>
+      <p class="note" style="margin-top:10px">What <code>feature_importance()</code> measures depends on
+      the model, because one method doesn't fit all. Tree models report the share of decisions each
+      column drives. Scaled linear models (<code>Ridge</code>, <code>Lasso</code>,
+      <code>LogisticRegression</code>) report standardized coefficients &mdash; comparable, and signed,
+      so you get direction too. Plain <code>LinearRegression</code> is <b>refused</b>, and KNN and SVR
+      have no per-column weights at all.</p>
     </div>
 
     <div class="codeblock">
