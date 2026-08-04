@@ -681,9 +681,10 @@ footer {
   <a href="#hero" class="logo">Able<b>V</b>Labs</a>
   <ul class="nav-links">
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#updates">Updates</a></li>
     <li><a href="#books">Books</a></li>
-    <li><a href="#about">Next Up</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="#nextup">Next Up</a></li>
     <li><a href="https://buymeacoffee.com/ablevlabs" target="_blank" rel="noopener" style="color:var(--gold)">Coffee</a></li>
   </ul>
 </nav>
@@ -1004,15 +1005,162 @@ footer {
 <div class="rule rv"><span class="rule-label">// next deployment</span></div>
 
 <!-- NEXT UP -->
-<section id="about">
-  <div class="wrap">
-    <div class="about-box rv">
-      <div class="about-status"><span class="about-dot"></span>Next Project &mdash; In Development</div>
-      <div class="about-msg">RPG.<br><span class="ghost">Coming soon.</span><span class="caret">&#9612;</span></div>
-      <p class="about-sub">A role-playing game set in the world of <em>Let the Devil Walk</em> &mdash; skills, systems, and story built from the books up. No date yet. It ships when it&rsquo;s ready.</p>
-    </div>
+
+<!-- RELEASE FEED -->
+<style>
+#updates { padding: 5rem 0 1rem; position: relative; z-index: 1; }
+.up-head { max-width: 1080px; margin: 0 auto 2.6rem; padding: 0 1.5rem; }
+.up-kicker { font-family:'Space Mono',monospace; font-size:.62rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); margin-bottom:.6rem; }
+.up-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2.2rem,5vw,3.4rem);
+  letter-spacing:.02em; color:#fff; line-height:1; }
+.up-sub { color:var(--muted); font-size:1.02rem; line-height:1.6; margin-top:.7rem; max-width:60ch; }
+
+.up-list { max-width:1080px; margin:0 auto; padding:0 1.5rem; position:relative; }
+/* the spine */
+.up-list::before { content:''; position:absolute; left:calc(1.5rem + 6px); top:6px; bottom:34px;
+  width:1px; background:linear-gradient(180deg,rgba(0,212,255,.5),rgba(0,212,255,.04)); }
+
+.up-item { position:relative; padding:0 0 2.1rem 2.5rem; }
+.up-dot { position:absolute; left:0; top:5px; width:13px; height:13px; border-radius:50%;
+  background:#080c14; border:2px solid var(--gold); box-shadow:0 0 0 4px rgba(8,12,20,.9); }
+.up-item.minor .up-dot { border-color:rgba(0,212,255,.55); }
+
+.up-meta { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; margin-bottom:.4rem; }
+.up-date { font-family:'Space Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); }
+.up-tag { font-family:'Space Mono',monospace; font-size:.58rem; letter-spacing:.12em;
+  text-transform:uppercase; padding:.2rem .55rem; border-radius:99px;
+  border:1px solid rgba(0,212,255,.3); color:var(--a,#00d4ff); }
+.up-tag.release { border-color:rgba(232,150,10,.45); color:var(--gold); }
+.up-tag.fix { border-color:rgba(255,255,255,.18); color:var(--muted); }
+
+.up-h { font-size:1.14rem; color:#fff; font-weight:600; line-height:1.35; margin-bottom:.35rem; }
+.up-body { color:var(--muted); font-size:.97rem; line-height:1.65; max-width:68ch; }
+.up-body b { color:#cfe4f2; font-weight:600; }
+.up-link { display:inline-block; margin-top:.55rem; font-family:'Space Mono',monospace;
+  font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--a,#00d4ff);
+  text-decoration:none; border-bottom:1px solid rgba(0,212,255,.3); padding-bottom:2px; }
+.up-link:hover { color:#fff; border-color:#fff; }
+
+.up-more { max-width:1080px; margin:.4rem auto 0; padding:0 1.5rem 0 4rem; }
+.up-more button { font-family:'Space Mono',monospace; font-size:.64rem; letter-spacing:.12em;
+  text-transform:uppercase; background:transparent; color:var(--muted); cursor:pointer;
+  border:1px solid rgba(255,255,255,.14); border-radius:8px; padding:.6rem 1.1rem; transition:.2s; }
+.up-more button:hover { color:#fff; border-color:rgba(0,212,255,.5); }
+@media(max-width:640px){ .up-item{ padding-left:2.1rem } }
+</style>
+
+<section id="updates">
+  <div class="up-head rv">
+    <div class="up-kicker">// build log</div>
+    <h2 class="up-title">The build log</h2>
+    <p class="up-sub">Everything here is still being worked on. This is what actually changed
+      and when &mdash; including the things that turned out to be wrong.</p>
   </div>
+  <div class="up-list" id="up-list"></div>
+  <div class="up-more"><button id="up-toggle">Show earlier &darr;</button></div>
 </section>
+
+<script>
+/* ---------------------------------------------------------------------------
+   Add a new entry at the TOP of this array. Newest first.
+     kind: 'release' (version shipped) | 'feature' | 'fix'
+     shown: first 4 render immediately, the rest behind "show earlier"
+--------------------------------------------------------------------------- */
+const UPDATES = [
+  {
+    date: "3 Aug 2026", kind: "release", project: "kami 0.9.0",
+    title: "Statistical corrections — some numbers changed, and the new ones are honest",
+    body: "Ridge and Lasso were being fitted on unscaled columns, so the penalty punished a " +
+          "feature for its units rather than its usefulness. On a benchmark where the answer " +
+          "was literally a straight line, a default-alpha Lasso scored <b>0.799</b> while " +
+          "LinearRegression scored <b>0.998</b>. Feature importance now refuses to rank raw " +
+          "coefficients instead of printing a ranking with a caveat under it, and flags when " +
+          "entangled columns make a ranking unstable rather than wrong.",
+    link: "kami.html", linkText: "See what changed"
+  },
+  {
+    date: "3 Aug 2026", kind: "feature", project: "Paranoid Penguin",
+    title: "Two new CISSP domains, and an honest map of the six it can't fully reach",
+    body: "Identity &amp; Access and Asset Security added — eleven checks now. The dashboard " +
+          "opens with a coverage map across all eight CISSP domains, stating plainly which a " +
+          "scanner can assess and which it can't. You cannot scan a laptop to find out whether " +
+          "someone has an incident response plan, so it asks instead.",
+    link: "paranoid-penguin.html", linkText: "See the coverage map"
+  },
+  {
+    date: "3 Aug 2026", kind: "fix", project: "Paranoid Penguin",
+    title: "A check that quietly broke used to look exactly like one that needed admin",
+    body: "Every check reported a single grey <b>unknown</b>, which meant three different " +
+          "things at once. Now <b>skipped</b> means the scanner declined to guess, and " +
+          "<b>error</b> means the scanner is broken — costing grade points and landing in the " +
+          "fix list. A tool that silently stops checking something is worse than one that " +
+          "never checked it.",
+    link: "paranoid-penguin.html", linkText: "Read the honest notes"
+  },
+  {
+    date: "2 Aug 2026", kind: "release", project: "agoge 0.8.0",
+    title: "vita became agoge — a resistance-training coach that estimates reps in reserve",
+    body: "Named for the Spartan training system. Fits your own load-versus-reps curve and " +
+          "estimates how many reps you had left in the tank, then tracks fatigue across a " +
+          "training block. Powered by the Vivanco Proximity-to-Failure Model.",
+    link: "agoge.html", linkText: "See agoge"
+  },
+  {
+    date: "28 Jul 2026", kind: "feature", project: "kami 0.7.3",
+    title: "It stopped congratulating models that found nothing",
+    body: "A bakeoff ranked by f1 could crown a winner scoring 0.0% and then explain why it " +
+          "likely won. It now refuses to name a winner when no model found anything, says so " +
+          "loudly, and suggests <b>class_weight='balanced'</b> — because a dead end isn't " +
+          "useful without a way out of it.",
+    link: "kami.html", linkText: "See kami"
+  },
+  {
+    date: "26 Jul 2026", kind: "feature", project: "kami 0.7.2",
+    title: "kami and lana now work together with no glue code",
+    body: "A bakeoff attaches a flat results table to the winner — accuracy, training time and " +
+          "an interpretability rating per model — which feeds straight into lana's weighted " +
+          "ranking. Fastest model and best model are rarely the same one, and now you can " +
+          "weigh that tradeoff explicitly.",
+    link: "lana.html", linkText: "See lana"
+  }
+];
+
+(function () {
+  const list = document.getElementById('up-list');
+  const btn = document.getElementById('up-toggle');
+  const VISIBLE = 4;
+
+  function render(all) {
+    const items = all ? UPDATES : UPDATES.slice(0, VISIBLE);
+    list.innerHTML = items.map(u => `
+      <div class="up-item rv ${u.kind === 'fix' ? 'minor' : ''}">
+        <span class="up-dot"></span>
+        <div class="up-meta">
+          <span class="up-date">${u.date}</span>
+          <span class="up-tag ${u.kind}">${u.kind}</span>
+          <span class="up-date">${u.project}</span>
+        </div>
+        <div class="up-h">${u.title}</div>
+        <div class="up-body">${u.body}</div>
+        ${u.link ? `<a class="up-link" href="${u.link}">${u.linkText} &rarr;</a>` : ''}
+      </div>`).join('');
+  }
+
+  render(false);
+  let open = false;
+  if (UPDATES.length <= VISIBLE) {
+    btn.style.display = 'none';
+  } else {
+    btn.addEventListener('click', () => {
+      open = !open;
+      render(open);
+      btn.textContent = open ? 'Show fewer ↑' : 'Show earlier ↓';
+    });
+  }
+})();
+</script>
 
 <!-- BUY ME A COFFEE -->
 <style>
@@ -1047,6 +1195,66 @@ footer {
 </section>
 
 <div class="rule rv" id="contact"><span class="rule-label">// open comms</span></div>
+
+<!-- CONTACT -->
+<style>
+#reach { padding: 1.5rem 0 3.5rem; position: relative; z-index: 1; }
+.reach-box { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; text-align: center; }
+.reach-kicker { font-family:'Space Mono',monospace; font-size:.62rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); margin-bottom:.6rem; }
+.reach-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(2rem,4.5vw,3rem);
+  letter-spacing:.02em; color:#fff; line-height:1; }
+.reach-sub { color:var(--muted); font-size:1.02rem; line-height:1.6; margin:.8rem auto 1.6rem;
+  max-width:52ch; }
+.reach-mail { display:inline-block; font-family:'Space Mono',monospace; font-size:.95rem;
+  letter-spacing:.04em; color:#00d4ff; text-decoration:none; padding:.85rem 1.7rem;
+  border:1px solid rgba(0,212,255,.32); border-radius:12px; transition:.2s;
+  background:rgba(8,12,20,.6); }
+.reach-mail:hover { color:#fff; border-color:#00d4ff; transform:translateY(-2px);
+  box-shadow:0 18px 44px -26px rgba(0,212,255,.7); }
+.reach-note { color:var(--muted); font-size:.86rem; margin-top:1.1rem; opacity:.75; }
+</style>
+<section id="reach">
+  <div class="reach-box rv">
+    <div class="reach-kicker">// get in touch</div>
+    <h2 class="reach-title">Say hello</h2>
+    <p class="reach-sub">Hiring, collaborating, or you found something broken in one of these
+      projects &mdash; all equally welcome. I read everything.</p>
+    <a class="reach-mail" href="mailto:wafflesareevil@sudomail.com">wafflesareevil@sudomail.com</a>
+    <p class="reach-note">Also on <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener" style="color:#00d4ff">GitHub</a>.</p>
+  </div>
+</section>
+
+<!-- NEXT UP -->
+<style>
+#nextup { padding: 0 0 3rem; position: relative; z-index: 1; }
+.nu-band { max-width:1080px; margin:0 auto; padding:1.15rem 1.6rem; display:flex;
+  align-items:center; gap:1.1rem; flex-wrap:wrap;
+  background:rgba(8,12,20,.66); border:1px solid rgba(255,255,255,.09);
+  border-left:2px solid var(--gold); border-radius:12px; backdrop-filter:blur(6px); }
+.nu-dot { width:8px; height:8px; border-radius:50%; background:var(--gold); flex-shrink:0;
+  box-shadow:0 0 0 4px rgba(232,150,10,.14); }
+.nu-label { font-family:'Space Mono',monospace; font-size:.6rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--gold); white-space:nowrap; }
+.nu-name { font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:.03em;
+  color:#fff; line-height:1; white-space:nowrap; }
+.nu-text { color:var(--muted); font-size:.92rem; line-height:1.5; flex:1; min-width:240px; }
+.nu-when { font-family:'Space Mono',monospace; font-size:.6rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); opacity:.7; white-space:nowrap; }
+@media(max-width:720px){ .nu-band{ padding:1.1rem 1.2rem } .nu-when{ display:none } }
+</style>
+<section id="nextup">
+  <div class="wrap">
+    <div class="nu-band rv">
+      <span class="nu-dot"></span>
+      <span class="nu-label">Next up</span>
+      <span class="nu-name">RPG</span>
+      <span class="nu-text">A role-playing game set in the world of <em>Let the Devil Walk</em>
+        &mdash; skills, systems and story built from the books up.</span>
+      <span class="nu-when">Ships when it&rsquo;s ready</span>
+    </div>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer>
