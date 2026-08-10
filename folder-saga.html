@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Folder Saga — a reversible file organizer with a game skin. Sort messy folders, sweep duplicates, reclaim space — undo any time, nothing ever deleted. By AbleV Labs.">
+<meta name="theme-color" content="#04050a">
+<meta property="og:title" content="Folder Saga · AbleV Labs">
+<meta property="og:description" content="A reversible file organizer with a game skin. Sort messy folders, sweep duplicates, reclaim space — undo any time.">
+<meta property="og:url" content="https://ablevlabs.com/folder-saga.html">
+<title>Folder Saga · AbleV Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#04050a;--bg2:#080c14;--accent:#00d4ff;--accent2:#6c3fff;--gold:#e8960a;
+  --ember:#c23b22;--green:#00ff88;--text:#e8edf5;--muted:#5a6480;--dim:#2a3050;
+  --border:rgba(0,212,255,.12);--card:rgba(8,14,26,.72);
+  --saga-gold:#f4cf63;--saga-purple:#b79be8;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;position:relative}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);
+  background-size:72px 72px}
+body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.025) 2px,rgba(0,0,0,.025) 4px)}
+a{color:inherit}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;
+  padding:1.15rem 3rem;background:rgba(4,5,10,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#fff;text-decoration:none}
+.logo b{color:var(--accent)}
+.back{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.back:hover{color:var(--accent)}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 3rem}
+section{position:relative;z-index:1}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:7rem 3rem 4rem}
+.kicker{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--saga-gold);margin-bottom:2rem}
+.crest{position:relative;margin-bottom:1.6rem;animation:rise .9s cubic-bezier(.2,.85,.25,1) both}
+.crest .halo{position:absolute;inset:-8% -8% -4%;border-radius:32px;
+  background:radial-gradient(circle at 50% 40%,rgba(244,207,99,.35),transparent 70%);
+  filter:blur(20px);animation:breathe 5s ease-in-out infinite;z-index:0}
+.logo-badge{position:relative;z-index:1;display:inline-block;background:#160c30;border-radius:28px;padding:6px;line-height:0;
+  box-shadow:0 26px 70px -20px rgba(244,207,99,.5),0 0 0 1px rgba(244,207,99,.25)}
+.logo-badge img{width:min(360px,80vw);height:auto;display:block;border-radius:22px}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.75}50%{transform:scale(1.06);opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.6rem,10vw,7.5rem);line-height:.86;letter-spacing:.02em;color:#fff;margin-top:1.4rem;animation:rise .9s .1s both cubic-bezier(.2,.85,.25,1)}
+.hero-title .c{color:var(--saga-gold);text-shadow:0 0 30px rgba(244,207,99,.65)}
+.hero-tag{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:1.1rem;animation:rise .9s .2s both}
+.hero-sub{font-family:'Rajdhani',sans-serif;font-size:1.18rem;color:var(--muted);max-width:62ch;line-height:1.65;margin:1.8rem auto 0;animation:rise .9s .3s both}
+.hero-sub em{font-style:normal;color:var(--text)}
+.btns{display:flex;gap:1rem;margin-top:2.2rem;flex-wrap:wrap;justify-content:center;animation:rise .9s .4s both}
+.btn{font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.85rem 2rem;text-decoration:none;border:1px solid;transition:.2s;cursor:pointer;display:inline-block}
+.btn-fill{background:var(--saga-gold);color:#000;border-color:var(--saga-gold)}
+.btn-fill:hover{background:#fff;border-color:#fff;box-shadow:0 0 30px -6px rgba(244,207,99,.7)}
+.btn-ghost{background:transparent;color:var(--muted);border-color:var(--dim)}
+.btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,.25)}
+.scroll-cue{margin-top:3rem;font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;animation:float 2.8s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* section header */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 2rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.sec-label{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.sec-num{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:transparent;-webkit-text-stroke:1px var(--dim);line-height:1}
+.pad{padding:4.5rem 0}
+
+/* demo mock */
+.demo{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px;backdrop-filter:blur(6px);
+  box-shadow:0 30px 80px -40px rgba(244,207,99,.3)}
+.demo-top{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:18px;display:flex;gap:8px;align-items:center}
+.demo-top .dots{display:flex;gap:5px}.demo-top .dots i{width:9px;height:9px;border-radius:50%;background:var(--dim)}
+.tidy-row{display:flex;gap:20px;align-items:stretch;flex-wrap:wrap;margin-bottom:18px}
+.chaos-badge{border:2px solid var(--saga-gold);border-radius:16px;min-width:140px;padding:16px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.chaos-badge .n{font-family:'Bebas Neue',sans-serif;font-size:3.2rem;line-height:.85}
+.chaos-badge .before{color:var(--ember)}
+.chaos-badge .after{color:var(--green)}
+.chaos-badge .s{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;color:var(--muted);margin-top:6px}
+.chaos-badge .arr{color:var(--saga-gold);font-size:1.6rem;margin:0 6px}
+.plan{flex:1;min-width:260px}
+.plan-h{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--saga-gold);margin-bottom:12px}
+.move{display:flex;gap:12px;padding:7px 0;border-bottom:1px solid rgba(244,207,99,.08)}
+.move .ct{font-family:'Space Mono',monospace;font-size:.82rem;font-weight:700;min-width:28px;color:var(--saga-gold);text-align:right}
+.move .dest{font-family:'Rajdhani',sans-serif;font-size:.98rem;font-weight:600;color:var(--text)}
+.move .kind{color:var(--muted);font-size:.82rem}
+.reward-row{display:flex;gap:16px;flex-wrap:wrap;padding:12px 14px;border:1px solid rgba(244,207,99,.15);border-radius:10px;background:rgba(244,207,99,.04);margin-top:10px}
+.reward-row span{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.06em;color:var(--saga-gold)}
+
+/* features */
+.feats{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.feat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;transition:.18s;backdrop-filter:blur(6px)}
+.feat:hover{transform:translateY(-4px);border-color:rgba(244,207,99,.4);box-shadow:0 16px 40px -20px rgba(244,207,99,.4)}
+.feat h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.16rem;color:#fff;margin-bottom:6px}
+.feat p{color:var(--muted);font-size:.92rem;line-height:1.5}
+.feat p em{font-style:normal;color:var(--text)}
+.feat .rule-tag{display:inline-block;margin-top:11px;font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.08em;color:var(--saga-gold);border:1px solid rgba(244,207,99,.3);border-radius:20px;padding:3px 9px}
+
+/* two-col */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem}
+.cols h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.2rem;color:#fff;margin-bottom:.8rem}
+.cols p,.cols li{color:var(--muted);font-size:.98rem;line-height:1.7}
+.cols ul{list-style:none}
+.cols li{padding-left:1.2rem;position:relative;margin-bottom:.5rem}
+.cols li::before{content:'▹';position:absolute;left:0;color:var(--saga-gold)}
+.cols b{color:var(--text)}
+.stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:1rem}
+.stack span{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.06em;color:var(--muted);border:1px solid var(--dim);border-radius:20px;padding:5px 12px}
+
+/* cta */
+.cta{text-align:center;padding:5.5rem 0 3.5rem}
+.cta h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,5vw,3.8rem);color:#fff;letter-spacing:.03em;margin-bottom:1.2rem}
+.cta h2 .c{color:var(--saga-gold)}
+.cta p{color:var(--muted);max-width:50ch;margin:0 auto 1.8rem;line-height:1.6}
+
+footer{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem;border-top:1px solid rgba(255,255,255,.05);flex-wrap:wrap;gap:1rem}
+.ft{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.12em;color:var(--dim)}
+.ft a{text-decoration:none;transition:color .2s;margin-left:1.4rem}.ft a:hover{color:var(--saga-gold)}
+
+@media(max-width:768px){
+  nav{padding:1rem 1.4rem}.wrap{padding:0 1.4rem}#hero{padding:6rem 1.4rem 3rem}
+  .cols{grid-template-columns:1fr}footer{padding:1.5rem 1.4rem}
+  .tidy-row{flex-direction:column}.chaos-badge{flex-direction:row;gap:12px;min-width:auto}
+}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="grid"></div>
+
+<nav>
+  <a href="https://ablevlabs.com/" class="logo">Able<b>V</b>Labs</a>
+  <a href="https://ablevlabs.com/#projects" class="back">&larr; All Projects</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="kicker">&#9819; Project 12 &middot; Desktop Utility</div>
+
+  <div class="crest">
+    <div class="halo"></div>
+    <span class="logo-badge" id="logo-badge">
+      <img id="logo-img" src="logos/folder-saga.png" alt="Folder Saga"
+           onerror="document.getElementById('logo-badge').style.display='none';document.getElementById('logo-fallback').style.display='block'">
+    </span>
+    <div id="logo-fallback" style="display:none">
+      <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" style="width:200px;height:200px;filter:drop-shadow(0 14px 40px rgba(244,207,99,.4))">
+        <defs>
+          <radialGradient id="ph" cx="50%" cy="42%" r="60%"><stop offset="0%" stop-color="#3a2470"/><stop offset="100%" stop-color="#160c30"/></radialGradient>
+          <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f4cf63"/><stop offset="100%" stop-color="#b79be8"/></linearGradient>
+        </defs>
+        <circle cx="120" cy="120" r="96" fill="url(#ph)"/>
+        <circle cx="120" cy="120" r="104" fill="none" stroke="url(#ring)" stroke-width="4" opacity=".9"/>
+        <path d="M60 90 L120 70 L180 90 L180 170 Q180 190 120 195 Q60 190 60 170 Z" fill="#241542" stroke="#f4cf63" stroke-width="2"/>
+        <path d="M80 105 L100 100 L100 115 L80 120 Z" fill="#1D9E75" opacity=".8"/>
+        <path d="M108 98 L128 93 L128 108 L108 113 Z" fill="#c4477e" opacity=".8"/>
+        <path d="M136 91 L156 86 L156 101 L136 106 Z" fill="#39a0c4" opacity=".8"/>
+        <path d="M80 130 L100 125 L100 140 L80 145 Z" fill="#8b6cf0" opacity=".8"/>
+        <path d="M108 123 L128 118 L128 133 L108 138 Z" fill="#e0a13a" opacity=".8"/>
+        <path d="M136 116 L156 111 L156 126 L136 131 Z" fill="#2f6bff" opacity=".8"/>
+        <text x="120" y="172" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#f4cf63">&#9819;</text>
+      </svg>
+      <h1 class="hero-title" style="margin-top:1rem">FOLDER <span class="c">SAGA</span></h1>
+    </div>
+  </div>
+
+  <div class="hero-tag" style="margin-top:1.4rem">organize &middot; discover &middot; reclaim your space</div>
+  <p class="hero-sub">A desktop app that turns file organization from a chore into a quest. Point it at a messy
+    folder and it <em>sorts loose files into clean categories</em>, <em>sweeps duplicates and junk
+    into a review vault</em>, and tracks your progress with <em>XP, levels, streaks, and achievements</em>.
+    Every move is <em>preview-first and fully reversible</em> &mdash; nothing is ever deleted.</p>
+  <div class="btns">
+    <a href="https://github.com/AbleVLabs/folder-saga" target="_blank" rel="noopener" class="btn btn-fill">View on GitHub &#8599;</a>
+    <a href="#look" class="btn btn-ghost">See inside</a>
+  </div>
+  <div class="scroll-cue">Scroll</div>
+</section>
+
+<!-- DEMO -->
+<section id="look" class="pad"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">A tidy in action</span><span class="sec-num">01</span></div>
+  <div class="demo">
+    <div class="demo-top"><span class="dots"><i></i><i></i><i></i></span> folder saga &mdash; preview tidy</div>
+    <div class="tidy-row">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="chaos-badge"><div class="n before">78</div><div class="s">chaos before</div></div>
+        <span class="arr" style="color:var(--saga-gold);font-size:1.6rem">&#10142;</span>
+        <div class="chaos-badge" style="border-color:var(--green)"><div class="n after">0</div><div class="s">chaos after</div></div>
+      </div>
+      <div class="plan">
+        <div class="plan-h">The plan (nothing moved yet)</div>
+        <div class="move"><span class="ct">12</span><div><span class="dest">Images/</span> <span class="kind">&middot; .jpg .png .webp</span></div></div>
+        <div class="move"><span class="ct">8</span><div><span class="dest">Documents/</span> <span class="kind">&middot; .pdf .docx .txt</span></div></div>
+        <div class="move"><span class="ct">3</span><div><span class="dest">Video/</span> <span class="kind">&middot; .mp4 .mkv</span></div></div>
+        <div class="move"><span class="ct">5</span><div><span class="dest">_SagaVault/duplicates/</span> <span class="kind">&middot; identical by hash</span></div></div>
+        <div class="move"><span class="ct">2</span><div><span class="dest">_SagaVault/junk/</span> <span class="kind">&middot; .tmp .crdownload</span></div></div>
+      </div>
+    </div>
+    <div class="reward-row">
+      <span>&#9876; +380 XP</span>
+      <span>&#9819; Level 2</span>
+      <span>&#128293; 3-day streak</span>
+      <span>&#9733; Achievement: First Quest</span>
+      <span>&#9830; 1.2 GB reclaimed</span>
+    </div>
+  </div>
+</div></section>
+
+<!-- FEATURES -->
+<section class="pad" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">What it does</span><span class="sec-num">02</span></div>
+  <div class="feats">
+    <div class="feat">
+      <h3>Reversible Tidy</h3>
+      <p>Sorts loose files into category folders &mdash; <em>Images/</em>, <em>Documents/</em>, <em>Video/</em>,
+        <em>Code/</em> and more. Duplicates and junk go to a <em>review vault</em>, never the trash.
+        Hit Undo and every file goes back exactly where it was.</p>
+      <span class="rule-tag">preview &rarr; approve &rarr; undo</span>
+    </div>
+    <div class="feat">
+      <h3>Duplicate Detection</h3>
+      <p>Finds identical files by <em>content hash</em>, not name. Two files called different things but
+        containing the same bytes get caught; two files with the same name but different contents don't.
+        Duplicates go to the vault for you to review &mdash; never auto-deleted.</p>
+      <span class="rule-tag">blake2b content hash</span>
+    </div>
+    <div class="feat">
+      <h3>The Map</h3>
+      <p>An interactive treemap and collapsible tree of your drive, color-coded by file type.
+        See at a glance where your space went. Opens in your browser &mdash; <em>purely read-only</em>,
+        changes nothing.</p>
+    </div>
+    <div class="feat">
+      <h3>The Realm &mdash; Game Layer</h3>
+      <p>Your drive becomes a quest board. Each folder is a region with a mess rating; your worst folder
+        is the boss. Tidying pays <em>XP</em> and <em>gold</em> (space reclaimed). Level up, keep a daily
+        streak, unlock achievements like <em>Dupe Slayer</em> and <em>Gold Hoarder</em>.</p>
+      <span class="rule-tag">the game IS the habit</span>
+    </div>
+    <div class="feat">
+      <h3>Disk Report</h3>
+      <p>A fast, dependency-free scan that shows where your space actually went &mdash; by category,
+        by folder, by biggest files. The answer to "what's eating my drive?" in seconds.</p>
+    </div>
+    <div class="feat">
+      <h3>Space Reclaim</h3>
+      <p>Finds duplicates and junk across a folder tree: identical files by content, empty files,
+        half-finished downloads, temp files. Reports what you'd free &mdash; <em>without touching
+        anything</em> until you say go.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- TRUST -->
+<section class="pad" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">The three rules</span><span class="sec-num">03</span></div>
+  <p style="max-width:70ch;margin:0 0 26px;line-height:1.7">
+    A file organizer that people can't trust with their files is useless. So the engine holds to
+    three rules, and each one is enforced by a test that blocks the release if it ever breaks.
+  </p>
+
+  <div class="feats">
+    <div class="feat">
+      <h3>1 &middot; Nothing is ever deleted</h3>
+      <p>Duplicates and junk are <em>moved</em> into a <b>_SagaVault</b> folder you control. You empty it
+        yourself, when you're sure. The app's hands stay off the delete key, period.</p>
+      <span class="rule-tag">test: file count never drops</span>
+    </div>
+    <div class="feat">
+      <h3>2 &middot; Every move is logged and reversible</h3>
+      <p>Each move is written to a <em>JSONL transaction log</em> as it happens. Undo replays the log
+        in reverse and puts every file back exactly. Even a crash mid-tidy leaves a log that still
+        rolls back cleanly.</p>
+      <span class="rule-tag">test: tidy then undo restores everything</span>
+    </div>
+    <div class="feat">
+      <h3>3 &middot; It only touches loose files</h3>
+      <p>It sorts the files sitting directly in the folder you pointed it at. It does <em>not</em>
+        reach into your existing subfolders and rearrange them, and it never moves anything outside
+        the target. The blast radius is exactly the mess you pointed it at.</p>
+      <span class="rule-tag">test: existing subfolder is never touched</span>
+    </div>
+  </div>
+</div></section>
+
+<!-- UNDER THE HOOD -->
+<section class="pad" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">Under the hood</span><span class="sec-num">04</span></div>
+  <div class="cols">
+    <div>
+      <h3>How it's built</h3>
+      <p>Pure Python with tkinter for the GUI &mdash; no external dependencies for the core app. The
+        interactive map and realm board are self-contained HTML pages that open in your default browser.
+        Threading keeps the UI responsive during scans. The organize engine uses <b>os.rename</b> for
+        atomic moves with a <b>shutil.move</b> cross-device fallback. Duplicate detection uses
+        <b>blake2b</b> hashing, only within same-size groups to stay fast on large folders.</p>
+      <div class="stack"><span>Python</span><span>tkinter</span><span>blake2b</span><span>os / shutil</span><span>JSONL logs</span><span>HTML / CSS / JS</span><span>pytest</span></div>
+    </div>
+    <div>
+      <h3>Design decisions</h3>
+      <ul>
+        <li><b>Dry-run by default.</b> Preview shows the full plan &mdash; what moves where, chaos
+          score before and after, space reclaimed. You approve before anything happens.</li>
+        <li><b>Vault, not trash.</b> Files flagged as duplicates or junk go to a visible folder you
+          can browse. The app never calls delete.</li>
+        <li><b>Game is the habit.</b> XP comes from the useful action (sorting files, reclaiming space).
+          The rewarding thing and the useful thing are the same thing.</li>
+        <li><b>53 tests.</b> Safety-critical paths (tidy, undo, round-trip, never-delete) are tested
+          with snapshot assertions. Read-only paths (scan, map, survey) are proven read-only.</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<!-- CTA -->
+<section class="cta"><div class="wrap">
+  <h2>Tidy your drive. <span class="c">Undo any time.</span></h2>
+  <p>Free and open source. Runs on your own machine, nothing leaves it. Works on Windows today.</p>
+  <div class="btns" style="justify-content:center">
+    <a href="https://github.com/AbleVLabs/folder-saga" target="_blank" rel="noopener" class="btn btn-fill">Get it on GitHub &#8599;</a>
+    <a href="https://ablevlabs.com/#projects" class="btn btn-ghost">More projects</a>
+  </div>
+</div></section>
+
+<footer>
+  <span class="ft">&copy; 2026 AbleVLabs &mdash; Carlos Abel Vivanco</span>
+  <span class="ft">
+    <a href="https://github.com/AbleVLabs/folder-saga" target="_blank" rel="noopener">GitHub &#8599;</a>
+    <a href="https://ablevlabs.com/">ablevlabs.com &#8599;</a>
+  </span>
+</footer>
+
+<script>
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');let W,H,st=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;st=[];for(let i=0;i<160;i++)st.push({x:Math.random()*W,y:Math.random()*H,r:.3+Math.random()*1.3,p:Math.random()*6.28,s:.003+Math.random()*.006});}
+rs();addEventListener('resize',rs);
+(function loop(){cx.clearRect(0,0,W,H);st.forEach(s=>{s.p+=s.s;const a=.1+Math.sin(s.p)*.16;cx.beginPath();cx.arc(s.x,s.y,s.r,0,6.28);cx.fillStyle='rgba(180,210,255,'+a+')';cx.fill();});requestAnimationFrame(loop);})();
+addEventListener('mousemove',e=>{const ox=e.clientX/innerWidth-.5,oy=e.clientY/innerHeight-.5;document.querySelector('.grid').style.transform='translate('+(ox*-14)+'px,'+(oy*-14)+'px)';});
+addEventListener('scroll',()=>{document.querySelector('nav').style.background=scrollY>50?'rgba(4,5,10,.97)':'rgba(4,5,10,.88)';});
+</script>
+</body>
+</html>
