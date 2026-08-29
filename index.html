@@ -683,6 +683,7 @@ footer {
     <li><a href="#projects">Projects</a></li>
     <li><a href="#updates">Updates</a></li>
     <li><a href="#books">Books</a></li>
+    <li><a href="#community" style="color:#8b95ff">Community</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#nextup">Next Up</a></li>
     <li><a href="https://buymeacoffee.com/ablevlabs" target="_blank" rel="noopener" style="color:var(--gold)">Coffee</a></li>
@@ -1236,6 +1237,50 @@ const UPDATES = [
   }
 })();
 </script>
+
+<!-- COMMUNITY / DISCORD -->
+<div class="rule rv"><span class="rule-label">// the hangout</span></div>
+<style>
+#community { padding: 3.5rem 0 1rem; position: relative; z-index: 1; }
+.disc-card { display:flex; align-items:center; gap:2.2rem; max-width:960px; margin:0 auto;
+  background:rgba(8,12,20,.72); border:1px solid rgba(88,101,242,.22); border-radius:18px;
+  padding:2rem 2.2rem; backdrop-filter:blur(6px); flex-wrap:wrap; }
+.disc-body { flex:1; min-width:280px; }
+.disc-kicker { font-family:'Space Mono',monospace; font-size:.62rem; letter-spacing:.2em;
+  text-transform:uppercase; color:#8b95ff; margin-bottom:.5rem; }
+.disc-title { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; letter-spacing:.02em;
+  color:#fff; line-height:1; }
+.disc-sub { color:var(--muted); font-size:1.02rem; line-height:1.6; margin:.7rem 0 1.2rem;
+  max-width:52ch; }
+.disc-btn { display:inline-flex; align-items:center; gap:.55rem; font-family:'Space Mono',monospace;
+  font-size:.7rem; letter-spacing:.08em; background:#5865F2; color:#fff; padding:.85rem 1.6rem;
+  border-radius:12px; font-weight:700; text-decoration:none; transition:.2s; }
+.disc-btn:hover { background:#4752c4; transform:translateY(-2px);
+  box-shadow:0 18px 44px -22px rgba(88,101,242,.8); }
+.disc-widget { flex-shrink:0; border-radius:14px; overflow:hidden;
+  border:1px solid rgba(88,101,242,.25); line-height:0; }
+.disc-widget iframe { display:block; }
+@media(max-width:720px){ .disc-card{ flex-direction:column; text-align:center; }
+  .disc-sub{ margin-left:auto; margin-right:auto; } .disc-widget{ width:100%; max-width:340px; } }
+</style>
+<section id="community">
+  <div class="disc-card rv">
+    <div class="disc-body">
+      <div class="disc-kicker">// come build with us</div>
+      <div class="disc-title">The AbleVLabs Discord</div>
+      <p class="disc-sub">A place to talk shop &mdash; data science, security, the projects on this
+        site, whatever you're building. Ask questions, share what you're working on, or just lurk.
+        Everyone's welcome.</p>
+      <a class="disc-btn" href="https://discord.gg/nKafRwMRY2" target="_blank" rel="noopener">&#128172; Join the Discord &#8599;</a>
+    </div>
+    <div class="disc-widget">
+      <iframe src="https://discord.com/widget?id=1543361807740178462&amp;theme=dark"
+        width="340" height="380" allowtransparency="true" frameborder="0"
+        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+        title="AbleVLabs Discord"></iframe>
+    </div>
+  </div>
+</section>
 
 <!-- BUY ME A COFFEE -->
 <style>
