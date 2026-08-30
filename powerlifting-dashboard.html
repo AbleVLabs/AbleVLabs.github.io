@@ -152,8 +152,9 @@ function render(){
   const rs = rows();
   // KPIs
   const tot = rs.map(r=>r.t), bw = rs.map(r=>r.bw);
+  const scale = DATA.stats.n_full / DATA.rows.length;   // sample -> full-data estimate
   const kpi = [
-    ['Lifters (filtered)', rs.length.toLocaleString(), ''],
+    ['Lifters (filtered)', Math.round(rs.length * scale).toLocaleString(), ''],
     ['Avg total', Math.round(mean(tot))+' kg', 'a'],
     ['Top total', (rs.length?Math.max(...tot):0)+' kg', 'gold'],
     ['Avg bodyweight', Math.round(mean(bw))+' kg', 'g'],
