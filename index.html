@@ -759,8 +759,14 @@ footer {
 
     <!-- ===== Data Science & Tools ===== -->
     <div class="cat-group">
-      <div class="cat-head rv"><span class="cat-name">Data Science &amp; Tools</span><span class="cat-count">03</span><span class="cat-line"></span></div>
+      <div class="cat-head rv"><span class="cat-name">Data Science &amp; Tools</span><span class="cat-count">04</span><span class="cat-line"></span></div>
       <div class="pgrid">
+
+        <a href="/data-science.html" class="pcard rv" style="--pc:#00ff8833; --d:.0s">
+          <div class="tile"><div class="ph" style="display:flex;background:linear-gradient(135deg,#00ff8833,#00d4ff22)">&#9650;</div></div>
+          <div class="pbody"><div class="pname">Data Science Portfolio</div><div class="psub">ML Case Studies &middot; Interactive Dashboards &middot; Reproducible Notebooks</div></div>
+          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
 
         <a href="https://noether-patterns.streamlit.app" target="_blank" rel="noopener" class="pcard rv" style="--pc:#00ff8833; --d:.0s">
           <div class="tile"><img src="logos/noether-patterns.png" alt="Noether Patterns" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#00ff8833,#00ff8811)">N</div></div>
@@ -1148,7 +1154,7 @@ footer {
       and when &mdash; including the things that turned out to be wrong.</p>
   </div>
   <div class="up-list" id="up-list"></div>
-  <div class="up-more"><button id="up-toggle">Show earlier &darr;</button></div>
+  <div class="up-more"><button id="up-toggle">Show past updates &darr;</button></div>
 </section>
 
 <script>
@@ -1262,12 +1268,12 @@ const UPDATES = [
 (function () {
   const list = document.getElementById('up-list');
   const btn = document.getElementById('up-toggle');
-  const VISIBLE = 5;
+  const VISIBLE = 3;
 
   function render(all) {
     const items = all ? UPDATES : UPDATES.slice(0, VISIBLE);
     list.innerHTML = items.map((u, i) => `
-      <div class="up-item rv vis ${u.kind === 'fix' ? 'minor' : ''} ${i === 0 ? 'open' : ''}">
+      <div class="up-item rv vis ${u.kind === 'fix' ? 'minor' : ''}">
         <span class="up-dot"></span>
         <div class="up-meta">
           <span class="up-date">${u.date}</span>
@@ -1296,7 +1302,7 @@ const UPDATES = [
     btn.addEventListener('click', () => {
       open = !open;
       render(open);
-      btn.textContent = open ? 'Show fewer ↑' : 'Show earlier ↓';
+      btn.textContent = open ? 'Hide past updates ↑' : 'Show past updates ↓';
     });
   }
 })();
@@ -1336,12 +1342,6 @@ const UPDATES = [
         site, whatever you're building. Ask questions, share what you're working on, or just lurk.
         Everyone's welcome.</p>
       <a class="disc-btn" href="https://discord.gg/nKafRwMRY2" target="_blank" rel="noopener">&#128172; Join the Discord &#8599;</a>
-    </div>
-    <div class="disc-widget">
-      <iframe src="https://discord.com/widget?id=1543361807740178462&amp;theme=dark"
-        width="340" height="380" allowtransparency="true" frameborder="0"
-        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-        title="AbleVLabs Discord"></iframe>
     </div>
   </div>
 </section>
