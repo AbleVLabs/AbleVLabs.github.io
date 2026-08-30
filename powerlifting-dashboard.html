@@ -136,7 +136,7 @@ td.miss{color:var(--gold)}td.miss::after{content:' ✎'}
         Roughly <b>half of real data-science work is finding and fixing exactly this.</b></p>
       <div class="tblwrap"><table class="raw" id="rawTable"></table></div>
       <div class="legend"><span><b class="r">red</b> = bad or impossible value</span><span><b class="o">amber ✎</b> = missing value</span></div>
-      <a class="dlbtn" id="dlRaw" href="/data/powerlifting.csv" download>⬇ Download the raw data (CSV, 30,000 rows)</a>
+      <a class="dlbtn" id="dlRaw" href="/data/powerlifting.csv" download>⬇ Download the raw data (CSV, real IPF sample)</a>
     </div>
 
     <!-- STEP 2 -->
@@ -169,7 +169,7 @@ td.miss{color:var(--gold)}td.miss::after{content:' ✎'}
           <button data-v="all" class="on">All</button><button data-v="M">Men</button><button data-v="F">Women</button></span></span>
         <span><span class="fl">Equipment</span><span class="seg" id="fEquip">
           <button data-v="all" class="on">All</button><button data-v="Raw">Raw</button><button data-v="Wraps">Wraps</button>
-          <button data-v="Single-ply">Single-ply</button><button data-v="Multi-ply">Multi-ply</button></span></span>
+          <button data-v="Single-ply">Single-ply</button></span></span>
       </div>
       <div class="kpis" id="kpis"></div>
       <div class="grid">
@@ -185,14 +185,16 @@ td.miss{color:var(--gold)}td.miss::after{content:' ✎'}
       <div class="step-h"><span class="step-n">Step 4</span><h2>Build a predictive model</h2></div>
       <p class="desc">The payoff: teach a model to <b>predict a lifter's total</b> from bodyweight, age,
         sex, and equipment. We train on 80% of the data and grade on the 20% it never saw. A simple Linear
-        Regression sets the baseline; a Random Forest does better by capturing the non-linear age curve.</p>
+        Regression sets the baseline, and a Random Forest is compared against it. On this real, noisier
+        sample the two perform about the same, a useful reminder that a more complex model does not
+        automatically win.</p>
       <div class="models">
         <div class="mcard"><div class="mt">Linear Regression</div>
           <div class="mrow"><div class="mm"><div class="v" id="linR2"></div><div class="l">R² explained</div></div>
             <div class="mm"><div class="v" id="linMae"></div><div class="l">avg error (MAE)</div></div></div></div>
-        <div class="mcard win"><div class="mt">Random Forest <span class="badge">◆ winner</span></div>
-          <div class="mrow"><div class="mm"><div class="v g" id="rfR2" style="color:var(--green)"></div><div class="l">R² explained</div></div>
-            <div class="mm"><div class="v g" id="rfMae" style="color:var(--green)"></div><div class="l">avg error (MAE)</div></div></div></div>
+        <div class="mcard"><div class="mt">Random Forest</div>
+          <div class="mrow"><div class="mm"><div class="v" id="rfR2"></div><div class="l">R² explained</div></div>
+            <div class="mm"><div class="v" id="rfMae"></div><div class="l">avg error (MAE)</div></div></div></div>
       </div>
 
       <div class="panel chartpanel" style="margin-bottom:1.2rem"><h3>What the model uses to predict</h3>
@@ -209,7 +211,7 @@ td.miss{color:var(--gold)}td.miss::after{content:' ✎'}
             <span class="seg" id="inSex"><button data-v="M" class="on">Male</button><button data-v="F">Female</button></span></div>
           <div class="ctl"><label style="margin-bottom:.5rem">Equipment</label>
             <span class="seg" id="inEquip"><button data-v="Raw" class="on">Raw</button><button data-v="Wraps">Wraps</button>
-              <button data-v="Single-ply">Single-ply</button><button data-v="Multi-ply">Multi-ply</button></span></div>
+              <button data-v="Single-ply">Single-ply</button></span></div>
         </div>
         <div class="result">
           <div class="rl">Predicted total</div>
@@ -240,8 +242,9 @@ fetch('./data/story.json').then(r=>r.json()).then(d=>{
   DATA=d;
   document.getElementById('loading').style.display='none';
   document.getElementById('story').style.display='block';
-  document.getElementById('foot').innerHTML='Built end-to-end with Python (pandas, scikit-learn) and Chart.js. '+
-    'Real dataset of '+d.stats.n_full.toLocaleString()+' cleaned records; charts sampled to 5,000. '+
+  document.getElementById('foot').innerHTML='Real IPF competition data from OpenPowerlifting (public domain), via the TidyTuesday project. '+
+    d.stats.n_full.toLocaleString()+' cleaned records in the full set; the interactive model and charts use a '+
+    (d.stats.sample_n||1000).toLocaleString()+'-lift sample. Built with Python (pandas, scikit-learn) and Chart.js. '+
     '<a href="/strength-notebook.html">See the full notebook →</a>';
   wireUnit(); wireFilters(); wirePredictor();
   renderAll();
@@ -274,8 +277,7 @@ function buildRaw(){
     return '<td>'+v+'</td>';
   }).join('')+'</tr>').join('');
   t.innerHTML=head+body;
-  const n=DATA.clean.before.toLocaleString();
-  document.getElementById('dlRaw').textContent='⬇ Download the raw data (CSV, '+n+' rows)';
+  document.getElementById('dlRaw').textContent='⬇ Download the raw data (CSV, real IPF sample)';
 }
 /* STEP 2 (no weights to convert) */
 function buildClean(){
@@ -346,9 +348,9 @@ function wirePredictor(){
 function predict(){
   const c=DATA.model.lin.coef, u=un();
   let y=DATA.model.lin.intercept + c.BodyweightKg*P.bw + c.Age*P.age + c.Sex_M*(P.sex==='M'?1:0);
-  if(P.equip==='Raw') y+=c.Equipment_Raw;
-  else if(P.equip==='Single-ply') y+=c['Equipment_Single-ply'];
+  if(P.equip==='Single-ply') y+=c['Equipment_Single-ply'];
   else if(P.equip==='Wraps') y+=c.Equipment_Wraps;
+  // Raw is the baseline category (no coefficient added)
   y=Math.max(0,y);
   document.getElementById('predVal').textContent=wr(y);
   document.getElementById('predUnit').textContent=u;

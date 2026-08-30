@@ -115,7 +115,7 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     <div class="case-top">
       <div>
         <h2>Predicting Powerlifting Performance</h2>
-        <div class="pill-row"><span>Regression</span><span>28,766 records</span><span>End-to-end</span></div>
+        <div class="pill-row"><span>Regression</span><span>Real IPF data</span><span>End-to-end</span></div>
       </div>
       <span class="tag">◆ Live dashboard + notebook</span>
     </div>
@@ -127,32 +127,34 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
       </div>
       <div class="qa">
         <div class="q">The data</div>
-        <p>Competition records in the OpenPowerlifting schema. Real-world messy: <b>dirty categories</b>
-          (mixed-case labels), <b>impossible outliers</b> (data-entry errors in bodyweight), and
-          <b>missing values</b> (skipped ages, bombed lifts). Cleaning was ~half the work &mdash; standardizing
-          categories, filtering implausible rows, and deciding when to <b>drop</b> vs <b>impute</b>.</p>
+        <p>Real IPF competition records from <b>OpenPowerlifting</b> (public domain, via the TidyTuesday
+          project). Real-world messy: <b>dirty categories</b>, <b>impossible outliers</b> (data-entry errors
+          in bodyweight), and <b>missing values</b> (skipped ages, single-lift entries with no total).
+          Cleaning was about half the work: standardizing categories, filtering implausible rows, and
+          deciding when to <b>drop</b> vs <b>impute</b>.</p>
       </div>
       <div class="qa">
         <div class="q">The approach</div>
         <p>Explore (distributions, correlations, relationships) &rarr; engineer features (a
           strength-to-bodyweight ratio, age bins, one-hot encoding of categories) &rarr; model with a
-          proper <b>train/test split</b>: a Linear Regression baseline, then a <b>Random Forest</b> to
-          capture the non-linear age effect &rarr; evaluate and interpret.</p>
+          proper <b>train/test split</b>: a Linear Regression baseline, then a <b>Random Forest</b> for
+          comparison &rarr; evaluate and interpret.</p>
       </div>
 
       <div class="metrics">
-        <div class="metric"><div class="v g">0.90</div><div class="l">R² (variance explained)</div></div>
-        <div class="metric"><div class="v">±28 kg</div><div class="l">mean error (MAE)</div></div>
-        <div class="metric"><div class="v">28,766</div><div class="l">lifters analyzed</div></div>
+        <div class="metric"><div class="v g">0.71</div><div class="l">R² (variance explained)</div></div>
+        <div class="metric"><div class="v">±72 kg</div><div class="l">mean error (MAE)</div></div>
+        <div class="metric"><div class="v">26,326</div><div class="l">lifters (full set)</div></div>
         <div class="metric"><div class="v">2</div><div class="l">models compared</div></div>
       </div>
 
       <div class="qa">
         <div class="q">What it found</div>
-        <p>The random forest explained <b>90% of the variance</b> in totals and predicted within ~28 kg on
-          data it had never seen &mdash; beating the linear baseline by capturing that strength <b>peaks in the
-          late 20s–30s then declines</b>. Feature importance quantified what coaches know by feel:
-          <b>sex and bodyweight are the dominant drivers</b>, with equipment and age contributing less.</p>
+        <p>The models predicted a lifter's total to within about <b>72 kg</b> on data they had never seen,
+          explaining <b>~71% of the variance</b>. Notably the simple linear model matched the random forest
+          here, a good reminder that on real, noisy data a more complex model does not automatically win.
+          Feature importance quantified what coaches know by feel: <b>bodyweight and sex are the dominant
+          drivers</b>, with equipment and age contributing less.</p>
       </div>
       <div class="qa">
         <div class="q">Skills demonstrated</div>
