@@ -509,6 +509,9 @@ section { position: relative; z-index: 1; }
 .cover-osf .cv-title { color: #e7dba8; }
 .cover-osf .cv-sub { color: rgba(231,219,168,.6); }
 .spine-osf { background: linear-gradient(to bottom, #090d15, #0c1018); }
+.cover-fc { background: linear-gradient(170deg, #0a0d1a, #101423 48%, #080a14); }
+.cover-fc .cv-sub { color: rgba(232,176,170,.7); }
+.spine-fc { background: linear-gradient(to bottom, #0d1120, #090c16); }
 .spine-osf span { color: rgba(231,219,168,.6); }
 
 /* Vol 05 — Proof or Paranoia: interference static + doubled title */
@@ -872,7 +875,7 @@ footer {
         <span class="section-label">Books</span>
         <div class="section-byline">by Carlos Abel Vivanco</div>
       </div>
-      <span class="proj-count">06</span>
+      <span class="proj-count">07</span>
     </div>
 
     <div class="shelf">
@@ -1021,14 +1024,17 @@ footer {
         </div>
       </a>
 
-      <div class="book book-soon rv" style="--d:.36s">
+      <a href="https://www.amazon.com/dp/B0HFPZ4M7T" target="_blank" rel="noopener" class="book rv" style="--d:.36s">
         <div class="b3d-scene">
           <div class="b3d">
-            <div class="b3d-front cover-soon">
+            <div class="b3d-front cover-fc">
+              <img class="cv-img" src="covers/framing-control.jpg" alt="" loading="lazy" onerror="this.remove()">
               <div class="cv-top"><span>Vol. 07</span><span>AVL</span></div>
-              <div class="soon-txt">&#9675;<br>Coming<br>Soon</div>
+              <div class="cv-title">Framing<br>Control</div>
+              <div class="cv-sub">Let the Devil Walk &middot; Part One of Two</div>
+              <div class="cv-author">Carlos Abel Vivanco</div>
             </div>
-            <div class="b3d-spine spine-soon"><span>Vol. VII</span></div>
+            <div class="b3d-spine spine-fc"><span>Framing Control</span></div>
             <div class="b3d-back"></div>
             <div class="b3d-pages"></div>
           </div>
@@ -1036,6 +1042,27 @@ footer {
         </div>
         <div class="book-meta">
           <div class="book-vol">Vol. 07</div>
+          <div class="book-title">Framing Control</div>
+          <div class="book-genre">Non-fiction &middot; Let the Devil Walk</div>
+          <span class="book-buy">Buy on Amazon</span>
+        </div>
+      </a>
+
+      <div class="book book-soon rv" style="--d:.42s">
+        <div class="b3d-scene">
+          <div class="b3d">
+            <div class="b3d-front cover-soon">
+              <div class="cv-top"><span>Vol. 08</span><span>AVL</span></div>
+              <div class="soon-txt">&#9675;<br>Coming<br>Soon</div>
+            </div>
+            <div class="b3d-spine spine-soon"><span>Vol. VIII</span></div>
+            <div class="b3d-back"></div>
+            <div class="b3d-pages"></div>
+          </div>
+          <div class="b3d-shadow"></div>
+        </div>
+        <div class="book-meta">
+          <div class="book-vol">Vol. 08</div>
           <div class="book-title" style="color:var(--muted)">Untitled</div>
           <div class="book-genre">Coming soon</div>
           <span class="book-buy" style="color:var(--dim)">In progress</span>
