@@ -26,43 +26,46 @@ a{color:var(--accent)}
 h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.1rem);letter-spacing:.02em;line-height:.95}
 h1 .c{color:var(--accent)}
 .lead{color:var(--muted);font-size:1rem;margin-top:.5rem;max-width:70ch;line-height:1.6}
+.topright{display:flex;flex-direction:column;align-items:flex-end;gap:.6rem}
 .back{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap}.back:hover{color:var(--accent)}
+.unit-toggle{display:inline-flex;border:1px solid var(--dim);border-radius:8px;overflow:hidden}
+.unit-toggle button{font-family:'Space Mono',monospace;font-size:.64rem;letter-spacing:.06em;background:transparent;color:var(--muted);border:0;padding:.4rem .8rem;cursor:pointer;transition:.15s}
+.unit-toggle button.on{background:var(--gold);color:#1a0f00;font-weight:700}
+.unit-toggle button:hover:not(.on){color:#fff}
 
-/* step blocks */
-.step{margin:2.6rem 0;scroll-margin-top:1rem}
-.step-h{display:flex;align-items:center;gap:.9rem;margin-bottom:.5rem}
-.step-n{font-family:'Space Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.1em;
-  color:#001018;background:var(--accent);border-radius:6px;padding:.28rem .6rem}
+.step{margin:2.6rem 0}
+.step-h{display:flex;align-items:center;gap:.9rem;margin-bottom:.5rem;flex-wrap:wrap}
+.step-n{font-family:'Space Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.1em;color:#001018;background:var(--accent);border-radius:6px;padding:.28rem .6rem}
 .step-h h2{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:.02em;color:#fff}
 .step p.desc{color:var(--muted);font-size:.96rem;line-height:1.65;max-width:74ch;margin:.2rem 0 1.1rem}
 .step p.desc b{color:var(--text)}
 .panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.2rem}
 
-/* raw table */
+.dlbtn{display:inline-flex;align-items:center;gap:.5rem;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent);text-decoration:none;border:1px solid rgba(0,212,255,.3);border-radius:9px;padding:.55rem 1rem;margin-top:.9rem;transition:.2s}
+.dlbtn:hover{color:#fff;border-color:#fff;background:rgba(0,212,255,.08)}
+
 .tblwrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;background:var(--card)}
 table.raw{border-collapse:collapse;width:100%;font-family:'Space Mono',monospace;font-size:.72rem;white-space:nowrap}
 table.raw th{background:#0b1220;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:.6rem;padding:.6rem .7rem;text-align:left;border-bottom:1px solid var(--border)}
 table.raw td{padding:.5rem .7rem;border-bottom:1px solid rgba(90,100,128,.12);color:var(--text)}
 td.bad{color:var(--red);font-weight:700}
-td.miss{color:var(--gold)}
-td.miss::after{content:' ✎'}
+td.miss{color:var(--gold)}td.miss::after{content:' ✎'}
 .legend{display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:.7rem;font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted)}
 .legend b.r{color:var(--red)}.legend b.o{color:var(--gold)}
 
-/* clean stat cards */
 .arrow-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
 .bignum{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;line-height:1}
 .bignum.a{color:var(--muted)}.bignum.b{color:var(--green)}
 .arrow{color:var(--accent);font-size:1.6rem}
+.subl{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 .clean-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.9rem}
 .cc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem}
 .cc .v{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--accent)}
 .cc .v.o{color:var(--gold)}
 .cc .l{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:.35rem;line-height:1.4}
 
-/* filters + kpis + charts */
-.filters{display:flex;gap:1.4rem;flex-wrap:wrap;align-items:center;margin-bottom:1.2rem;
-  background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.8rem 1.1rem}
+.filters{display:flex;gap:1.4rem;flex-wrap:wrap;align-items:center;margin-bottom:1.2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.8rem 1.1rem}
 .filters .fl{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-right:.5rem}
 .seg{display:inline-flex;border:1px solid var(--dim);border-radius:8px;overflow:hidden}
 .seg button{font-family:'Space Mono',monospace;font-size:.64rem;background:transparent;color:var(--muted);border:0;padding:.42rem .75rem;cursor:pointer;transition:.15s}
@@ -78,7 +81,6 @@ td.miss::after{content:' ✎'}
 .chartpanel .note{color:var(--muted);font-size:.76rem;margin-bottom:.6rem}
 .cv{position:relative;height:230px}
 
-/* model metrics */
 .models{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem}
 .mcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.2rem}
 .mcard.win{border-color:rgba(0,255,136,.4);box-shadow:0 0 0 1px rgba(0,255,136,.15)}
@@ -88,14 +90,12 @@ td.miss::after{content:' ✎'}
 .mcard .mm .v{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);line-height:1}
 .mcard .mm .l{font-family:'Space Mono',monospace;font-size:.54rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 
-/* predictor */
 .predict{display:grid;grid-template-columns:1.1fr .9fr;gap:1.2rem;align-items:stretch}
 .controls .ctl{margin-bottom:1.1rem}
 .controls label{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:.4rem}
 .controls label b{color:var(--accent);font-size:.8rem}
 .controls input[type=range]{width:100%;accent-color:var(--accent)}
-.result{background:linear-gradient(150deg,rgba(0,255,136,.10),rgba(0,212,255,.05));border:1px solid rgba(0,255,136,.35);
-  border-radius:16px;padding:1.4rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.result{background:linear-gradient(150deg,rgba(0,255,136,.10),rgba(0,212,255,.05));border:1px solid rgba(0,255,136,.35);border-radius:16px;padding:1.4rem;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .result .rl{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .result .rv{font-family:'Bebas Neue',sans-serif;font-size:4.5rem;color:var(--green);line-height:.95;margin:.3rem 0}
 .result .rk{font-family:'Space Mono',monospace;font-size:.66rem;color:var(--muted)}
@@ -112,38 +112,44 @@ td.miss::after{content:' ✎'}
     <div>
       <div class="kicker">◆ Data Science · Interactive Walkthrough</div>
       <h1>Powerlifting: from <span class="c">raw data</span> to a <span class="c">live model</span></h1>
-      <p class="lead">The whole machine-learning pipeline, start to finish and interactive: see the messy
-        raw data, watch it get cleaned, explore it with live charts, and end with a model that predicts a
-        lifter's total — try it yourself.</p>
+      <p class="lead">The whole machine-learning pipeline, start to finish and interactive. See the messy
+        raw data, watch it get cleaned, explore it with live charts, then end with a model that predicts a
+        lifter's total. Try it yourself.</p>
     </div>
-    <a class="back" href="/data-science.html">← Back to the case study</a>
+    <div class="topright">
+      <a class="back" href="/data-science.html">← Back to the case study</a>
+      <span class="unit-toggle" id="unitToggle">
+        <button data-u="kg">KG</button><button data-u="lb" class="on">LB</button>
+      </span>
+    </div>
   </div>
 
   <div id="loading">Loading the pipeline…</div>
   <div id="story" style="display:none">
 
-    <!-- STEP 1: RAW -->
+    <!-- STEP 1 -->
     <div class="step">
-      <div class="step-h"><span class="step-n">Step 1</span><h2>The raw data (before any cleaning)</h2></div>
-      <p class="desc">Real data is messy. Here's a raw sample straight from the file. A trained eye spots
-        problems immediately: <b>inconsistent categories</b> (lowercase <code>m</code>/<code>f</code>),
+      <div class="step-h"><span class="step-n">Step 1</span><h2>The raw data, before any cleaning</h2></div>
+      <p class="desc">Real data is messy. Here is a raw sample straight from the file. A trained eye spots
+        problems immediately: <b>inconsistent categories</b> (lowercase <code>m</code> / <code>f</code>),
         <b>missing values</b> (blank cells), and <b>impossible outliers</b> (a bodyweight no human has).
         Roughly <b>half of real data-science work is finding and fixing exactly this.</b></p>
       <div class="tblwrap"><table class="raw" id="rawTable"></table></div>
-      <div class="legend"><span><b class="r">red</b> = bad/impossible value</span><span><b class="o">amber ✎</b> = missing value</span></div>
+      <div class="legend"><span><b class="r">red</b> = bad or impossible value</span><span><b class="o">amber ✎</b> = missing value</span></div>
+      <a class="dlbtn" id="dlRaw" href="/data/powerlifting.csv" download>⬇ Download the raw data (CSV, 30,000 rows)</a>
     </div>
 
-    <!-- STEP 2: CLEAN -->
+    <!-- STEP 2 -->
     <div class="step">
       <div class="step-h"><span class="step-n">Step 2</span><h2>Cleaning it up</h2></div>
       <p class="desc">Every fix is a deliberate choice. Standardize the categories, remove the impossible
-        rows, and handle missing values two different ways: <b>drop</b> rows whose <i>answer</i>
-        (the total) is missing — you can't learn from a missing target — but <b>impute</b> a missing
-        <i>feature</i> like age by filling the median, so you keep the rest of that row's information.</p>
+        rows, and handle missing values two different ways. You <b>drop</b> rows whose answer (the total)
+        is missing, because you cannot learn from a missing target. But you <b>impute</b> a missing feature
+        like age by filling the median, so you keep the rest of that row's information.</p>
       <div class="arrow-row">
-        <div><span class="bignum a" id="cBefore"></span><div class="cc-l" style="font-family:'Space Mono',monospace;font-size:.56rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">raw rows</div></div>
+        <div><span class="bignum a" id="cBefore"></span><div class="subl">raw rows</div></div>
         <span class="arrow">➜</span>
-        <div><span class="bignum b" id="cAfter"></span><div class="cc-l" style="font-family:'Space Mono',monospace;font-size:.56rem;color:var(--green);text-transform:uppercase;letter-spacing:.08em">clean rows</div></div>
+        <div><span class="bignum b" id="cAfter"></span><div class="subl" style="color:var(--green)">clean rows</div></div>
       </div>
       <div class="clean-cards">
         <div class="cc"><div class="v o" id="cOut"></div><div class="l">impossible outliers removed</div></div>
@@ -153,11 +159,11 @@ td.miss::after{content:' ✎'}
       </div>
     </div>
 
-    <!-- STEP 3: EXPLORE -->
+    <!-- STEP 3 -->
     <div class="step">
       <div class="step-h"><span class="step-n">Step 3</span><h2>Explore the clean data</h2></div>
-      <p class="desc">Now build intuition. Filter by sex and equipment — <b>every chart and number updates
-        live</b> — and watch the relationships appear.</p>
+      <p class="desc">Now build intuition. Filter by sex and equipment, and <b>every chart and number
+        updates live</b> as the relationships appear.</p>
       <div class="filters">
         <span><span class="fl">Sex</span><span class="seg" id="fSex">
           <button data-v="all" class="on">All</button><button data-v="M">Men</button><button data-v="F">Women</button></span></span>
@@ -167,38 +173,37 @@ td.miss::after{content:' ✎'}
       </div>
       <div class="kpis" id="kpis"></div>
       <div class="grid">
-        <div class="panel chartpanel"><h3>Distribution of totals</h3><div class="note">how many lifters in each total range (kg)</div><div class="cv"><canvas id="cHist"></canvas></div></div>
+        <div class="panel chartpanel"><h3>Distribution of totals</h3><div class="note">how many lifters in each total range</div><div class="cv"><canvas id="cHist"></canvas></div></div>
         <div class="panel chartpanel"><h3>Bodyweight vs total</h3><div class="note">each dot is a lifter</div><div class="cv"><canvas id="cScatter"></canvas></div></div>
-        <div class="panel chartpanel"><h3>Average total by equipment</h3><div class="note">supportive gear adds kilos</div><div class="cv"><canvas id="cEquip"></canvas></div></div>
-        <div class="panel chartpanel"><h3>Average total by age</h3><div class="note">strength peaks late 20s–30s</div><div class="cv"><canvas id="cAge"></canvas></div></div>
+        <div class="panel chartpanel"><h3>Average total by equipment</h3><div class="note">supportive gear adds weight</div><div class="cv"><canvas id="cEquip"></canvas></div></div>
+        <div class="panel chartpanel"><h3>Average total by age</h3><div class="note">strength peaks late 20s to 30s</div><div class="cv"><canvas id="cAge"></canvas></div></div>
       </div>
     </div>
 
-    <!-- STEP 4: MODEL -->
+    <!-- STEP 4 -->
     <div class="step">
       <div class="step-h"><span class="step-n">Step 4</span><h2>Build a predictive model</h2></div>
       <p class="desc">The payoff: teach a model to <b>predict a lifter's total</b> from bodyweight, age,
-        sex, and equipment. We train on 80% of the data and grade on the 20% it never saw. A simple
-        Linear Regression sets the baseline; a Random Forest does better by capturing the non-linear age
-        curve.</p>
+        sex, and equipment. We train on 80% of the data and grade on the 20% it never saw. A simple Linear
+        Regression sets the baseline; a Random Forest does better by capturing the non-linear age curve.</p>
       <div class="models">
         <div class="mcard"><div class="mt">Linear Regression</div>
           <div class="mrow"><div class="mm"><div class="v" id="linR2"></div><div class="l">R² explained</div></div>
-            <div class="mm"><div class="v" id="linMae"></div><div class="l">± error (MAE)</div></div></div></div>
+            <div class="mm"><div class="v" id="linMae"></div><div class="l">avg error (MAE)</div></div></div></div>
         <div class="mcard win"><div class="mt">Random Forest <span class="badge">◆ winner</span></div>
           <div class="mrow"><div class="mm"><div class="v g" id="rfR2" style="color:var(--green)"></div><div class="l">R² explained</div></div>
-            <div class="mm"><div class="v g" id="rfMae" style="color:var(--green)"></div><div class="l">± error (MAE)</div></div></div></div>
+            <div class="mm"><div class="v g" id="rfMae" style="color:var(--green)"></div><div class="l">avg error (MAE)</div></div></div></div>
       </div>
 
       <div class="panel chartpanel" style="margin-bottom:1.2rem"><h3>What the model uses to predict</h3>
         <div class="note">feature importance from the Random Forest</div><div class="cv"><canvas id="cImp"></canvas></div></div>
 
       <div class="step-h" style="margin-top:1.4rem"><span class="step-n" style="background:var(--green)">Try it</span><h2>Predict a total</h2></div>
-      <p class="desc">Move the sliders — the model predicts a total <b>live</b>, right in your browser
-        (running the trained linear model's math on your inputs).</p>
+      <p class="desc">Move the sliders. The model predicts a total <b>live</b>, right in your browser,
+        running the trained linear model's math on your inputs.</p>
       <div class="predict">
         <div class="panel controls">
-          <div class="ctl"><label>Bodyweight <b id="lbBw">90 kg</b></label><input type="range" id="inBw" min="45" max="180" value="90"></div>
+          <div class="ctl"><label>Bodyweight <b id="lbBw"></b></label><input type="range" id="inBw" min="45" max="180" value="90"></div>
           <div class="ctl"><label>Age <b id="lbAge">28 yrs</b></label><input type="range" id="inAge" min="16" max="70" value="28"></div>
           <div class="ctl"><label style="margin-bottom:.5rem">Sex</label>
             <span class="seg" id="inSex"><button data-v="M" class="on">Male</button><button data-v="F">Female</button></span></div>
@@ -208,8 +213,8 @@ td.miss::after{content:' ✎'}
         </div>
         <div class="result">
           <div class="rl">Predicted total</div>
-          <div class="rv" id="predVal">—</div>
-          <div class="rk">kilograms</div>
+          <div class="rv" id="predVal">0</div>
+          <div class="rk" id="predUnit">lb</div>
           <div class="rb" id="predBreak"></div>
         </div>
       </div>
@@ -220,11 +225,16 @@ td.miss::after{content:' ✎'}
 </div>
 
 <script>
-const COL={M:'#00d4ff',F:'#ff5c9d'};
-let DATA=null, charts={}, filt={sex:'all',equip:'all'};
+const COL={M:'#00d4ff',F:'#ff5c9d'}, LB=2.20462;
+let DATA=null, charts={}, filt={sex:'all',equip:'all'}, UNIT='lb';
 let P={bw:90,age:28,sex:'M',equip:'Raw'};
 Chart.defaults.color='#5a6480'; Chart.defaults.borderColor='rgba(90,100,128,.15)'; Chart.defaults.font.family='Rajdhani';
-const F={cols:['Sex','Age','BodyweightKg','Best3SquatKg','Best3BenchKg','Best3DeadliftKg','TotalKg','Equipment']};
+const RAWCOLS=['Sex','Age','BodyweightKg','Best3SquatKg','Best3BenchKg','Best3DeadliftKg','TotalKg','Equipment'];
+const WEIGHTCOLS=['BodyweightKg','Best3SquatKg','Best3BenchKg','Best3DeadliftKg','TotalKg'];
+
+const wv = kg => UNIT==='kg' ? kg : kg*LB;          // numeric, converted
+const wr = kg => Math.round(wv(kg));                 // rounded for display
+const un = () => UNIT;                               // 'kg' | 'lb'
 
 fetch('./data/story.json').then(r=>r.json()).then(d=>{
   DATA=d;
@@ -233,25 +243,41 @@ fetch('./data/story.json').then(r=>r.json()).then(d=>{
   document.getElementById('foot').innerHTML='Built end-to-end with Python (pandas, scikit-learn) and Chart.js. '+
     'Real dataset of '+d.stats.n_full.toLocaleString()+' cleaned records; charts sampled to 5,000. '+
     '<a href="/strength-notebook.html">See the full notebook →</a>';
-  buildRaw(); buildClean(); wireFilters(); renderEDA(); buildModel(); wirePredictor(); predict();
+  wireUnit(); wireFilters(); wirePredictor();
+  renderAll();
 }).catch(()=>{document.getElementById('loading').textContent='Could not load data.';});
+
+function renderAll(){ buildRaw(); buildClean(); renderEDA(); buildModel(); predict(); }
+
+/* unit toggle */
+function wireUnit(){
+  document.querySelectorAll('#unitToggle button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#unitToggle button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); UNIT=b.dataset.u; renderAll();
+  });
+}
 
 /* STEP 1 */
 function buildRaw(){
   const t=document.getElementById('rawTable');
-  const head='<tr>'+F.cols.map(c=>'<th>'+c.replace('Best3','').replace('Kg','')+'</th>').join('')+'</tr>';
-  const body=DATA.raw.map(r=>{
-    return '<tr>'+F.cols.map(c=>{
-      let v=r[c];
-      if(v===null||v===undefined) return '<td class="miss">—</td>';
-      if(c==='Sex' && (v==='m'||v==='f')) return '<td class="bad">'+v+'</td>';
-      if(c==='BodyweightKg' && (v<35||v>230)) return '<td class="bad">'+v+'</td>';
-      return '<td>'+v+'</td>';
-    }).join('')+'</tr>';
-  }).join('');
+  const head='<tr>'+RAWCOLS.map(c=>{
+    let name=c.replace('Best3','').replace('Kg','');
+    if(WEIGHTCOLS.includes(c)) name+=' ('+un()+')';
+    return '<th>'+name+'</th>';
+  }).join('')+'</tr>';
+  const body=DATA.raw.map(r=>'<tr>'+RAWCOLS.map(c=>{
+    let v=r[c];
+    if(v===null||v===undefined) return '<td class="miss">n/a</td>';
+    if(c==='Sex' && (v==='m'||v==='f')) return '<td class="bad">'+v+'</td>';
+    if(c==='BodyweightKg' && (v<35||v>230)) return '<td class="bad">'+wr(v)+'</td>';
+    if(WEIGHTCOLS.includes(c)) return '<td>'+wr(v)+'</td>';
+    return '<td>'+v+'</td>';
+  }).join('')+'</tr>').join('');
   t.innerHTML=head+body;
+  const n=DATA.clean.before.toLocaleString();
+  document.getElementById('dlRaw').textContent='⬇ Download the raw data (CSV, '+n+' rows)';
 }
-/* STEP 2 */
+/* STEP 2 (no weights to convert) */
 function buildClean(){
   const c=DATA.clean;
   document.getElementById('cBefore').textContent=c.before.toLocaleString();
@@ -263,48 +289,48 @@ function buildClean(){
 }
 /* STEP 3 */
 function wireFilters(){
-  document.querySelectorAll('#fSex button').forEach(b=>b.onclick=()=>seg('fSex','sex',b,()=>renderEDA()));
-  document.querySelectorAll('#fEquip button').forEach(b=>b.onclick=()=>seg('fEquip','equip',b,()=>renderEDA()));
+  document.querySelectorAll('#fSex button').forEach(b=>b.onclick=()=>pick('fSex',b,()=>{filt.sex=b.dataset.v;renderEDA();}));
+  document.querySelectorAll('#fEquip button').forEach(b=>b.onclick=()=>pick('fEquip',b,()=>{filt.equip=b.dataset.v;renderEDA();}));
 }
-function seg(group,key,btn,cb){document.querySelectorAll('#'+group+' button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');
-  if(key==='sex'||key==='equip')filt[key]=btn.dataset.v; cb&&cb();}
+function pick(group,btn,cb){document.querySelectorAll('#'+group+' button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');cb&&cb();}
 function rows(){return DATA.rows.filter(r=>(filt.sex==='all'||r.s===filt.sex)&&(filt.equip==='all'||r.e===filt.equip));}
 function mean(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:0;}
 function fresh(id,cfg){if(charts[id])charts[id].destroy();charts[id]=new Chart(document.getElementById(id),cfg);}
 function renderEDA(){
-  const rs=rows(), scale=DATA.stats.n_full/DATA.rows.length, tot=rs.map(r=>r.t), bw=rs.map(r=>r.bw);
+  const rs=rows(), scale=DATA.stats.n_full/DATA.rows.length, tot=rs.map(r=>r.t), bw=rs.map(r=>r.bw), u=un();
   const kpi=[['Lifters (filtered)',Math.round(rs.length*scale).toLocaleString(),''],
-    ['Avg total',Math.round(mean(tot))+' kg','a'],['Top total',(rs.length?Math.max(...tot):0)+' kg','gold'],
-    ['Avg bodyweight',Math.round(mean(bw))+' kg','g']];
+    ['Avg total',wr(mean(tot))+' '+u,'a'],['Top total',(rs.length?wr(Math.max(...tot)):0)+' '+u,'gold'],
+    ['Avg bodyweight',wr(mean(bw))+' '+u,'g']];
   document.getElementById('kpis').innerHTML=kpi.map(k=>`<div class="kpi"><div class="l">${k[0]}</div><div class="v ${k[2]}">${k[1]}</div></div>`).join('');
-  // hist
-  const bins={},step=50; rs.forEach(r=>{const b=Math.floor(r.t/step)*step;bins[b]=(bins[b]||0)+1;});
+  // histogram
+  const step=UNIT==='kg'?50:100, bins={};
+  rs.forEach(r=>{const b=Math.floor(wv(r.t)/step)*step;bins[b]=(bins[b]||0)+1;});
   const keys=Object.keys(bins).map(Number).sort((a,b)=>a-b);
-  fresh('cHist',{type:'bar',data:{labels:keys.map(k=>k+'–'+(k+step)),datasets:[{data:keys.map(k=>bins[k]),backgroundColor:'#6a2c91',borderColor:'#8b3fbf',borderWidth:1}]},
-    options:{maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:7}},y:{beginAtZero:true}}}});
+  fresh('cHist',{type:'bar',data:{labels:keys.map(k=>k+'-'+(k+step)),datasets:[{data:keys.map(k=>bins[k]),backgroundColor:'#6a2c91',borderColor:'#8b3fbf',borderWidth:1}]},
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'total ('+u+')'},ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:7}},y:{beginAtZero:true}}}});
   // scatter
-  const byS={M:[],F:[]}; rs.forEach(r=>{if(byS[r.s])byS[r.s].push({x:r.bw,y:r.t});});
+  const byS={M:[],F:[]}; rs.forEach(r=>{if(byS[r.s])byS[r.s].push({x:wv(r.bw),y:wv(r.t)});});
   const ds=Object.keys(byS).filter(s=>byS[s].length).map(s=>({label:s==='M'?'Men':'Women',data:byS[s].slice(0,2500),backgroundColor:COL[s]+'66',pointRadius:2}));
   fresh('cScatter',{type:'scatter',data:{datasets:ds},options:{maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:10}}},
-    scales:{x:{title:{display:true,text:'bodyweight (kg)'}},y:{title:{display:true,text:'total (kg)'}}}}});
-  // equip
+    scales:{x:{title:{display:true,text:'bodyweight ('+u+')'}},y:{title:{display:true,text:'total ('+u+')'}}}}});
+  // equipment
   const order=['Raw','Wraps','Single-ply','Multi-ply'],m={}; order.forEach(e=>{const v=rs.filter(r=>r.e===e).map(r=>r.t);if(v.length)m[e]=mean(v);});
   const lb=Object.keys(m);
-  fresh('cEquip',{type:'bar',data:{labels:lb,datasets:[{data:lb.map(l=>Math.round(m[l])),backgroundColor:['#00d4ff','#39a0c4','#6c3fff','#e8960a'].slice(0,lb.length)}]},
-    options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,title:{display:true,text:'avg total (kg)'}}}}});
+  fresh('cEquip',{type:'bar',data:{labels:lb,datasets:[{data:lb.map(l=>wr(m[l])),backgroundColor:['#00d4ff','#39a0c4','#6c3fff','#e8960a'].slice(0,lb.length)}]},
+    options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,title:{display:true,text:'avg total ('+u+')'}}}}});
   // age
   const groups=[[13,19],[20,24],[25,29],[30,34],[35,39],[40,49],[50,64],[65,80]],al=[],av=[];
-  groups.forEach(([lo,hi])=>{const v=rs.filter(r=>r.a>=lo&&r.a<=hi).map(r=>r.t);al.push(lo+'–'+hi);av.push(v.length?Math.round(mean(v)):null);});
+  groups.forEach(([lo,hi])=>{const v=rs.filter(r=>r.a>=lo&&r.a<=hi).map(r=>r.t);al.push(lo+'-'+hi);av.push(v.length?wr(mean(v)):null);});
   fresh('cAge',{type:'line',data:{labels:al,datasets:[{data:av,borderColor:'#00ff88',backgroundColor:'rgba(0,255,136,.12)',fill:true,tension:.35,pointRadius:3,spanGaps:true}]},
-    options:{maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'avg total (kg)'}}}}});
+    options:{maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'avg total ('+u+')'}}}}});
 }
 /* STEP 4 */
 function buildModel(){
-  const m=DATA.model;
+  const m=DATA.model, u=un();
   document.getElementById('linR2').textContent=m.lin.r2;
-  document.getElementById('linMae').textContent='±'+m.lin.mae;
+  document.getElementById('linMae').textContent='±'+wr(m.lin.mae)+' '+u;
   document.getElementById('rfR2').textContent=m.rf.r2;
-  document.getElementById('rfMae').textContent='±'+m.rf.mae;
+  document.getElementById('rfMae').textContent='±'+wr(m.rf.mae)+' '+u;
   const nice={BodyweightKg:'Bodyweight',Age:'Age','Sex_M':'Sex (male)','Equipment_Raw':'Equip: Raw','Equipment_Single-ply':'Equip: Single-ply','Equipment_Wraps':'Equip: Wraps'};
   const imp=m.rf.importance, keys=Object.keys(imp).sort((a,b)=>imp[a]-imp[b]);
   fresh('cImp',{type:'bar',data:{labels:keys.map(k=>nice[k]||k),datasets:[{data:keys.map(k=>imp[k]),backgroundColor:'#00ff88'}]},
@@ -312,21 +338,22 @@ function buildModel(){
 }
 function wirePredictor(){
   const bw=document.getElementById('inBw'),age=document.getElementById('inAge');
-  bw.oninput=()=>{P.bw=+bw.value;document.getElementById('lbBw').textContent=P.bw+' kg';predict();};
+  bw.oninput=()=>{P.bw=+bw.value;predict();};
   age.oninput=()=>{P.age=+age.value;document.getElementById('lbAge').textContent=P.age+' yrs';predict();};
-  document.querySelectorAll('#inSex button').forEach(b=>b.onclick=()=>seg('inSex','psex',b,()=>{P.sex=b.dataset.v;predict();}));
-  document.querySelectorAll('#inEquip button').forEach(b=>b.onclick=()=>seg('inEquip','pequip',b,()=>{P.equip=b.dataset.v;predict();}));
+  document.querySelectorAll('#inSex button').forEach(b=>b.onclick=()=>pick('inSex',b,()=>{P.sex=b.dataset.v;predict();}));
+  document.querySelectorAll('#inEquip button').forEach(b=>b.onclick=()=>pick('inEquip',b,()=>{P.equip=b.dataset.v;predict();}));
 }
 function predict(){
-  const c=DATA.model.lin.coef, y0=DATA.model.lin.intercept;
-  let y=y0 + c.BodyweightKg*P.bw + c.Age*P.age + c.Sex_M*(P.sex==='M'?1:0);
+  const c=DATA.model.lin.coef, u=un();
+  let y=DATA.model.lin.intercept + c.BodyweightKg*P.bw + c.Age*P.age + c.Sex_M*(P.sex==='M'?1:0);
   if(P.equip==='Raw') y+=c.Equipment_Raw;
   else if(P.equip==='Single-ply') y+=c['Equipment_Single-ply'];
   else if(P.equip==='Wraps') y+=c.Equipment_Wraps;
-  y=Math.max(0,Math.round(y));
-  document.getElementById('predVal').textContent=y;
-  document.getElementById('predBreak').textContent=
-    `${P.sex==='M'?'Male':'Female'} · ${P.bw} kg · ${P.age} yrs · ${P.equip}`;
+  y=Math.max(0,y);
+  document.getElementById('predVal').textContent=wr(y);
+  document.getElementById('predUnit').textContent=u;
+  document.getElementById('lbBw').textContent=wr(P.bw)+' '+u;
+  document.getElementById('predBreak').textContent=`${P.sex==='M'?'Male':'Female'} · ${wr(P.bw)} ${u} · ${P.age} yrs · ${P.equip}`;
 }
 </script>
 </body>

@@ -7795,44 +7795,34 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f3549e7a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c1c0a282">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Strength-Analysis-%E2%80%94-Your-First-End-to-End-Data-Science-Project">Strength Analysis — Your First End-to-End Data Science Project<a class="anchor-link" href="#Strength-Analysis-%E2%80%94-Your-First-End-to-End-Data-Science-Project">¶</a></h1><p><strong>AbleVLabs · a teaching notebook</strong></p>
-<p>You're going to take a real-shaped dataset of powerlifters and walk the whole data-science
-pipeline: <strong>load → explore → clean → visualize → engineer features → model → evaluate → interpret.</strong></p>
-<p>This is the exact loop you'll run in every DS job. Read the text, run each code cell (Shift+Enter),
-and do the <strong>Your turn</strong> bits — that's where the learning happens.</p>
-<blockquote>
-<p><strong>About the data:</strong> these columns match the real <em>OpenPowerlifting</em> database exactly. This file is a
-realistic stand-in so you can learn now. To use the real 3.9M-row data later, see the last section —
-you just change one filename.</p>
-</blockquote>
+<h1 id="Predicting-Powerlifting-Performance">Predicting Powerlifting Performance<a class="anchor-link" href="#Predicting-Powerlifting-Performance">¶</a></h1><h3 id="A-data-science-case-study-%C2%B7-Carlos-Abel-Vivanco-/-AbleVLabs">A data science case study · Carlos Abel Vivanco / AbleVLabs<a class="anchor-link" href="#A-data-science-case-study-%C2%B7-Carlos-Abel-Vivanco-/-AbleVLabs">¶</a></h3><p>This project takes a dataset of competition powerlifters and runs the complete machine-learning
+pipeline: load, explore, clean, visualize, engineer features, model, evaluate, and interpret. The
+objective is to <strong>predict a lifter's competition total</strong> from bodyweight, age, sex, and equipment, and
+to identify <strong>what actually drives strength</strong>.</p>
+<p>The data follows the OpenPowerlifting schema. The file used here is a realistic stand-in so the project
+is self-contained; the identical code runs on the full public archive by changing one filename.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c6379611">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=13fecb78">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="0.-The-tools">0. The tools<a class="anchor-link" href="#0.-The-tools">¶</a></h2><p>A data scientist's core Python kit:</p>
-<ul>
-<li><strong>pandas</strong> — tables (think Excel, but programmable). The <code>DataFrame</code> is your spreadsheet.</li>
-<li><strong>numpy</strong> — fast math on arrays (pandas is built on it).</li>
-<li><strong>matplotlib / seaborn</strong> — charts.</li>
-<li><strong>scikit-learn</strong> — machine-learning models, all with the same <code>.fit()</code> / <code>.predict()</code> shape.</li>
-</ul>
-<p>Run this once to load them.</p>
+<h2 id="The-tools">The tools<a class="anchor-link" href="#The-tools">¶</a></h2><p>The analysis uses the standard Python data-science stack: <strong>pandas</strong> for tabular data, <strong>NumPy</strong> for
+numerical work, <strong>Matplotlib</strong> and <strong>Seaborn</strong> for visualization, and <strong>scikit-learn</strong> for modeling.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=80ffdac4">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b0b13479">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7848,44 +7838,26 @@ you just change one filename.</p>
 <span class="n">sns</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"whitegrid"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">"figure.figsize"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">)</span>
 <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"display.max_columns"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Ready."</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Ready.
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=13af6b2f">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f7fa74c0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="1.-Load-the-data-and-take-a-first-look">1. Load the data and take a first look<a class="anchor-link" href="#1.-Load-the-data-and-take-a-first-look">¶</a></h2><p>Rule #1 of data science: <strong>look at your data before you do anything to it.</strong> We load the CSV into a
-DataFrame, then ask the four questions you ask of every new dataset:</p>
-<ol>
-<li>How big is it? (<code>.shape</code>)</li>
-<li>What do the rows look like? (<code>.head()</code>)</li>
-<li>What type is each column, and where are values missing? (<code>.info()</code>)</li>
-<li>What's the rough scale of the numbers? (<code>.describe()</code>)</li>
-</ol>
+<h2 id="1.-Loading-the-data-and-a-first-look">1. Loading the data and a first look<a class="anchor-link" href="#1.-Loading-the-data-and-a-first-look">¶</a></h2><p>Any analysis begins by inspecting the data before changing it. The CSV is loaded into a DataFrame, and
+four standard questions are asked of it: how large it is (<code>.shape</code>), what the rows look like
+(<code>.head()</code>), the type of each column and where values are missing (<code>.info()</code>), and the rough scale of
+the numbers (<code>.describe()</code>).</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4b7eea93">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=971aefcc">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7893,7 +7865,7 @@ DataFrame, then ask the four questions you ask of every new dataset:</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"powerlifting.csv"</span><span class="p">)</span>   <span class="c1"># &lt;-- to use the REAL data later, swap this filename</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"powerlifting.csv"</span><span class="p">)</span>   <span class="c1"># the same code runs on the full archive by swapping this file</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"shape (rows, columns):"</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -8030,7 +8002,7 @@ DataFrame, then ask the four questions you ask of every new dataset:</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d9d137b2">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f467eac5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8075,7 +8047,7 @@ memory usage: 2.7+ MB
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=aaa0ca9f">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f6da2c7f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8212,23 +8184,21 @@ memory usage: 2.7+ MB
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=61ff814a">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=dea21b62">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Read the output above.</strong> A few things a trained eye already notices:</p>
-<ul>
-<li><code>Age</code> and <code>Best3BenchKg</code>/<code>TotalKg</code> have fewer non-null values than the row count — <strong>missing data.</strong></li>
-<li><code>BodyweightKg</code> has a min and max that look extreme — possible <strong>outliers</strong> (bad data entry).</li>
-<li><code>Sex</code>, <code>Equipment</code>, <code>Federation</code> are text <strong>categories</strong>, not numbers.</li>
-</ul>
-<p>We'll deal with each. First, what categories are actually in there?</p>
+<p>The output reveals several issues typical of real-world data. <code>Age</code>, <code>Best3BenchKg</code>, and <code>TotalKg</code>
+have fewer non-null entries than the row count, indicating <strong>missing values</strong>. <code>BodyweightKg</code> shows
+extreme minimum and maximum values, suggesting <strong>outliers</strong> from data entry. And <code>Sex</code>, <code>Equipment</code>,
+and <code>Federation</code> are text <strong>categories</strong> rather than numbers. Each is handled below. First, the
+categories are inspected directly.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=53db4a9a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=2ab25cd0">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8260,42 +8230,42 @@ Event -&gt; ['SBD']
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=773b8ae3">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d4d94e09">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Your turn #1:</strong> Notice anything wrong with <code>Sex</code>? Some values are lowercase (<code>'m'</code>, <code>'f'</code>).
-To a computer, <code>'M'</code> and <code>'m'</code> are <em>different categories</em> — that would split your data by accident.
-This is why real analysis is ~80% cleaning. Let's fix it next.</p>
+<p>The <code>Sex</code> column contains inconsistent casing: lowercase <code>'m'</code> and <code>'f'</code> appear alongside <code>'M'</code>
+and <code>'F'</code>. To software these read as distinct categories, which would split the data incorrectly. This
+is a representative example of why data cleaning accounts for the majority of applied work.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=eb115e51">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0d230ae4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="2.-Clean-the-data">2. Clean the data<a class="anchor-link" href="#2.-Clean-the-data">¶</a></h2><p>Cleaning decisions should be <strong>deliberate and documented</strong> — every row you drop or change is a choice.
-We'll handle three problems.</p>
+<h2 id="2.-Cleaning-the-data">2. Cleaning the data<a class="anchor-link" href="#2.-Cleaning-the-data">¶</a></h2><p>Each cleaning decision is deliberate and documented, since every row dropped or altered is a modeling
+choice.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=61df4779">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9b1c40d1">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="2a.-Standardize-the-dirty-category">2a. Standardize the dirty category<a class="anchor-link" href="#2a.-Standardize-the-dirty-category">¶</a></h3><p>Force <code>Sex</code> to uppercase so <code>'m'</code> becomes <code>'M'</code>.</p>
+<h3 id="Standardizing-the-category">Standardizing the category<a class="anchor-link" href="#Standardizing-the-category">¶</a></h3><p>The <code>Sex</code> values are forced to uppercase so that <code>'m'</code> and <code>'M'</code> collapse into a single category.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=45f8a9e6">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f838a22d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8327,18 +8297,18 @@ Name: count, dtype: int64
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8770362e">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=baf79666">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="2b.-Remove-impossible-values-(outliers)">2b. Remove impossible values (outliers)<a class="anchor-link" href="#2b.-Remove-impossible-values-(outliers)">¶</a></h3><p>A human powerlifter isn't 9 kg or 1900 kg. We keep only physically plausible bodyweights.
-We <em>look</em> first, then filter.</p>
+<h3 id="Removing-impossible-values">Removing impossible values<a class="anchor-link" href="#Removing-impossible-values">¶</a></h3><p>A human competitor does not weigh 9 kg or 1900 kg, so only physically plausible bodyweights are
+retained. The range is examined first, then filtered.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8d0cb24c">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a0a51796">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8372,23 +8342,21 @@ bodyweight range after: 44.0 to 182.1
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2692a20c">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1e93134e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="2c.-Handle-missing-values">2c. Handle missing values<a class="anchor-link" href="#2c.-Handle-missing-values">¶</a></h3><p>Two different situations, two different choices:</p>
-<ul>
-<li><strong><code>TotalKg</code> is our target</strong> (the thing we'll predict). We can't learn from rows where the answer is
-missing, so we <strong>drop</strong> those rows.</li>
-<li><strong><code>Age</code> is a feature</strong> with ~9% missing. Dropping all of them wastes data, so we <strong>impute</strong> — fill the
-gaps with the median age. (Median, not mean, because it's robust to outliers.)</li>
-</ul>
+<h3 id="Handling-missing-values">Handling missing values<a class="anchor-link" href="#Handling-missing-values">¶</a></h3><p>Two situations are treated differently. Because <code>TotalKg</code> is the prediction target, rows missing it are
+<strong>dropped</strong>: a model cannot learn from a missing answer. <code>Age</code> is a feature with roughly 9% missing, so
+rather than discard those rows it is <strong>imputed</strong> with the median, preserving the remaining information
+in each row. The median is preferred over the mean because it is robust to outliers. Dropping missing
+targets while imputing missing features is a standard part of preparing data for modeling.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5450f6c6">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=598d855d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8396,12 +8364,11 @@ gaps with the median age. (Median, not mean, because it's robust to outliers.)</
 <div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">"TotalKg"</span><span class="p">])</span>          <span class="c1"># can't train on a missing answer</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">"TotalKg"</span><span class="p">])</span>          <span class="c1"># cannot train on a missing answer</span>
 <span class="n">median_age</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Age"</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
 <span class="n">df</span><span class="p">[</span><span class="s2">"Age"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Age"</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">median_age</span><span class="p">)</span>     <span class="c1"># impute the feature</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"median age used for imputation:"</span><span class="p">,</span> <span class="n">median_age</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"missing values remaining:"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"none"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"missing values remaining:"</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
 </pre></div>
 </div>
 </div>
@@ -8415,51 +8382,36 @@ gaps with the median age. (Median, not mean, because it's robust to outliers.)</
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>median age used for imputation: 37.0
-missing values remaining:
-none
+missing values remaining: 0
 </pre>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0601812e">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=233af69d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Your turn #2:</strong> We just made two different calls on missing data (drop vs impute).
-In one sentence, why does it make sense to <em>drop</em> missing targets but <em>impute</em> missing features?
-(Answer: you can't learn a mapping to an answer that isn't there, but a missing input can be
-reasonably guessed so you keep the rest of that row's information.)</p>
+<h2 id="3.-Exploratory-data-analysis">3. Exploratory data analysis<a class="anchor-link" href="#3.-Exploratory-data-analysis">¶</a></h2><p>Before modeling, the clean data is explored visually to understand the distribution of each variable
+and the relationships between them.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5dfc2e8d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f0007a76">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="3.-Explore-&amp;-visualize-(EDA)">3. Explore &amp; visualize (EDA)<a class="anchor-link" href="#3.-Explore-&amp;-visualize-(EDA)">¶</a></h2><p><strong>EDA = Exploratory Data Analysis.</strong> Before modeling, you build intuition: what's the shape of each
-variable, and what relates to what? Charts are how you 'see' a dataset.</p>
+<h3 id="Distribution-of-the-target">Distribution of the target<a class="anchor-link" href="#Distribution-of-the-target">¶</a></h3><p>The distribution of competition totals.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6a925501">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="3a.-Distribution-of-the-target-%E2%80%94-how-big-are-totals?">3a. Distribution of the target — how big are totals?<a class="anchor-link" href="#3a.-Distribution-of-the-target-%E2%80%94-how-big-are-totals?">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3dab7d65">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a11401a3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8489,17 +8441,18 @@ variable, and what relates to what? Charts are how you 'see' a dataset.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1ec8f4b5">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4d3021e2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="3b.-Does-bodyweight-predict-total?-(scatter)">3b. Does bodyweight predict total? (scatter)<a class="anchor-link" href="#3b.-Does-bodyweight-predict-total?-(scatter)">¶</a></h3><p>Each dot is a lifter. If the cloud slopes up, heavier lifters tend to total more.</p>
+<h3 id="Bodyweight-versus-total">Bodyweight versus total<a class="anchor-link" href="#Bodyweight-versus-total">¶</a></h3><p>Each point is a lifter. The upward slope confirms that heavier lifters tend to total more, and the two
+colors show the consistent gap between sexes.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=0170ec10">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=975e8e51">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8529,17 +8482,17 @@ variable, and what relates to what? Charts are how you 'see' a dataset.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6e735b9d">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f290cd50">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="3c.-Total-by-sex-and-by-equipment-(boxplots)">3c. Total by sex and by equipment (boxplots)<a class="anchor-link" href="#3c.-Total-by-sex-and-by-equipment-(boxplots)">¶</a></h3><p>A boxplot shows the median (middle line), the middle 50% (the box), and the spread.</p>
+<h3 id="Total-by-sex-and-by-equipment">Total by sex and by equipment<a class="anchor-link" href="#Total-by-sex-and-by-equipment">¶</a></h3><p>Boxplots summarize each group by its median (center line), interquartile range (box), and spread.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=07ec1d14">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4dfe1844">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8548,11 +8501,9 @@ variable, and what relates to what? Charts are how you 'see' a dataset.</p>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">"Sex"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">"TotalKg"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Total by sex"</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">"Sex"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">"TotalKg"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Total by sex"</span><span class="p">)</span>
 <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">"Equipment"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">"TotalKg"</span><span class="p">,</span>
-            <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">"Raw"</span><span class="p">,</span><span class="s2">"Wraps"</span><span class="p">,</span><span class="s2">"Single-ply"</span><span class="p">,</span><span class="s2">"Multi-ply"</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Total by equipment"</span><span class="p">)</span>
+            <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">"Raw"</span><span class="p">,</span><span class="s2">"Wraps"</span><span class="p">,</span><span class="s2">"Single-ply"</span><span class="p">,</span><span class="s2">"Multi-ply"</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Total by equipment"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -8572,17 +8523,18 @@ variable, and what relates to what? Charts are how you 'see' a dataset.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6da7df08">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=dcbb1982">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="3d.-How-does-strength-change-with-age?">3d. How does strength change with age?<a class="anchor-link" href="#3d.-How-does-strength-change-with-age?">¶</a></h3><p>We bin age and plot the average total per bin — expect a rise to a peak, then a decline.</p>
+<h3 id="Strength-across-age">Strength across age<a class="anchor-link" href="#Strength-across-age">¶</a></h3><p>Average total per five-year age band. Strength rises to a peak in the late 20s and early 30s, then
+declines, a non-linear pattern that becomes important at the modeling stage.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ee2e441a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b5f4db3a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8613,18 +8565,18 @@ variable, and what relates to what? Charts are how you 'see' a dataset.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0f9d93ac">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8a56107d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="3e.-Correlation-heatmap">3e. Correlation heatmap<a class="anchor-link" href="#3e.-Correlation-heatmap">¶</a></h3><p>Correlation runs from -1 to 1: how strongly two numeric columns move together. This is a fast way to
-spot which features will matter for prediction.</p>
+<h3 id="Correlation-heatmap">Correlation heatmap<a class="anchor-link" href="#Correlation-heatmap">¶</a></h3><p>Correlation, ranging from -1 to 1, measures how strongly two numeric columns move together, and gives a
+quick read on which features will matter for prediction.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=9ad80f4f">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a0faf46d">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8654,42 +8606,43 @@ spot which features will matter for prediction.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5f933159">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=82e36306">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>What you should see:</strong> the three lifts correlate strongly with Total (of course — Total is their
-sum), and BodyweightKg correlates moderately. <code>Dots</code> (a bodyweight-adjusted score) correlates <em>less</em>
-with raw Total, because it's designed to cancel out bodyweight. That's a real insight from one chart.</p>
+<p>The three lifts correlate strongly with the total, as expected since the total is their sum, and
+bodyweight correlates moderately. <code>Dots</code>, a bodyweight-adjusted score, correlates less with the raw
+total because it is designed to cancel out bodyweight, a subtle point surfaced by a single chart.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3d85c8fa">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d6170819">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="4.-Feature-engineering">4. Feature engineering<a class="anchor-link" href="#4.-Feature-engineering">¶</a></h2><p><strong>Feature engineering = creating better inputs for your model</strong> from the raw columns. Good features
-often matter more than fancy models. We'll do three classic moves.</p>
+<h2 id="4.-Feature-engineering">4. Feature engineering<a class="anchor-link" href="#4.-Feature-engineering">¶</a></h2><p>Stronger model inputs are constructed from the raw columns; well-chosen features often matter more than
+the choice of model.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=042002ff">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ac989579">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="4a.-A-ratio-feature-%E2%80%94-strength-relative-to-bodyweight">4a. A ratio feature — strength relative to bodyweight<a class="anchor-link" href="#4a.-A-ratio-feature-%E2%80%94-strength-relative-to-bodyweight">¶</a></h3><p>Totaling 500 kg means something different at 60 kg vs 140 kg. A ratio captures 'pound-for-pound' strength.</p>
+<h3 id="A-ratio-feature">A ratio feature<a class="anchor-link" href="#A-ratio-feature">¶</a></h3><p>A strength-to-bodyweight ratio captures pound-for-pound strength, which the raw total does not: a
+500 kg total means something different at 60 kg than at 140 kg.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3cca4c7c">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ba5c8d46">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8779,17 +8732,18 @@ often matter more than fancy models. We'll do three classic moves.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d065968b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9b226906">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="4b.-Binning-%E2%80%94-turn-age-into-groups">4b. Binning — turn age into groups<a class="anchor-link" href="#4b.-Binning-%E2%80%94-turn-age-into-groups">¶</a></h3><p>Sometimes a category ('Masters', 'Open') is more useful than a raw number.</p>
+<h3 id="Binning-age-into-groups">Binning age into groups<a class="anchor-link" href="#Binning-age-into-groups">¶</a></h3><p>A categorical age band (Open, Masters, and so on) is sometimes more useful to a model than the raw
+number.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8492b818">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=2fc994b4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8825,18 +8779,19 @@ Name: count, dtype: int64
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3b870574">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ea857c91">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="4c.-One-hot-encoding-%E2%80%94-turn-categories-into-numbers">4c. One-hot encoding — turn categories into numbers<a class="anchor-link" href="#4c.-One-hot-encoding-%E2%80%94-turn-categories-into-numbers">¶</a></h3><p>Models do math, so text categories must become numeric. <strong>One-hot encoding</strong> makes a 0/1 column for
-each category. <code>pd.get_dummies</code> does it in one line.</p>
+<h3 id="One-hot-encoding">One-hot encoding<a class="anchor-link" href="#One-hot-encoding">¶</a></h3><p>Models operate on numbers, so text categories are converted to 0/1 columns, one per category.
+<code>drop_first=True</code> removes one redundant column per variable, since a lifter who is not male must be
+female.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8bb49357">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c34a8324">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8946,33 +8901,19 @@ each category. <code>pd.get_dummies</code> does it in one line.</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1b8a4665">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ac4c06fa">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Your turn #3:</strong> <code>drop_first=True</code> drops one category (e.g. <code>Sex_F</code>) to avoid redundancy — if a
-lifter isn't <code>Sex_M</code>, they must be female, so the extra column adds no information. Look at the new
-columns above and identify which original categories became 0/1 columns.</p>
+<h2 id="5.-Building-a-predictive-model">5. Building a predictive model<a class="anchor-link" href="#5.-Building-a-predictive-model">¶</a></h2><p>The task is framed as regression: predict <code>TotalKg</code> from bodyweight, age, sex, and equipment. The data
+is split so the model trains on 80% and is graded on the 20% it has never seen, which is what prevents
+it from simply memorizing.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5c120041">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="5.-Build-a-model">5. Build a model<a class="anchor-link" href="#5.-Build-a-model">¶</a></h2><p>Now the machine learning. The task: <strong>predict a lifter's <code>TotalKg</code> from their bodyweight, age, sex, and
-equipment.</strong> This is <em>regression</em> (predicting a number).</p>
-<p>The golden rule: <strong>split your data into train and test sets.</strong> You teach the model on the training set
-and grade it on the test set it has never seen — otherwise you're just letting it memorize.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=112d20be">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=4838e6b3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -8985,9 +8926,7 @@ and grade it on the test set it has never seen — otherwise you're just letting
 <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestRegressor</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_absolute_error</span><span class="p">,</span> <span class="n">r2_score</span>
 
-<span class="n">X</span> <span class="o">=</span> <span class="n">model_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"TotalKg"</span><span class="p">])</span>   <span class="c1"># the inputs (features)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">model_df</span><span class="p">[</span><span class="s2">"TotalKg"</span><span class="p">]</span>                   <span class="c1"># the answer (target)</span>
-
+<span class="n">X</span> <span class="o">=</span> <span class="n">model_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"TotalKg"</span><span class="p">]);</span> <span class="n">y</span> <span class="o">=</span> <span class="n">model_df</span><span class="p">[</span><span class="s2">"TotalKg"</span><span class="p">]</span>
 <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"training on"</span><span class="p">,</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">"lifters, testing on"</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
@@ -9009,21 +8948,18 @@ and grade it on the test set it has never seen — otherwise you're just letting
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9058b954">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=275899b4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="5a.-A-simple-baseline-%E2%80%94-Linear-Regression">5a. A simple baseline — Linear Regression<a class="anchor-link" href="#5a.-A-simple-baseline-%E2%80%94-Linear-Regression">¶</a></h3><p>Always start simple. Linear regression fits a straight-line relationship. Two scores to judge it:</p>
-<ul>
-<li><strong>MAE</strong> (mean absolute error): on average, how many kg off is the prediction? Lower is better.</li>
-<li><strong>R²</strong>: what fraction of the variation in totals the model explains (1.0 = perfect, 0 = useless).</li>
-</ul>
+<h3 id="Baseline:-Linear-Regression">Baseline: Linear Regression<a class="anchor-link" href="#Baseline:-Linear-Regression">¶</a></h3><p>A linear model sets the baseline, judged on two metrics: <strong>MAE</strong>, the average error in kilograms (lower
+is better), and <strong>R²</strong>, the fraction of variation in totals the model explains (1.0 is perfect).</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=b6874340">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=56209ef5">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -9055,19 +8991,19 @@ Linear Regression  R^2: 0.876
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=8bdbd901">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=01862592">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="5b.-A-stronger-model-%E2%80%94-Random-Forest">5b. A stronger model — Random Forest<a class="anchor-link" href="#5b.-A-stronger-model-%E2%80%94-Random-Forest">¶</a></h3><p>A random forest builds many decision trees and averages them. It captures <strong>non-linear</strong> patterns (like
-strength peaking in middle age) that a straight line can't. Same <code>.fit()</code>/<code>.predict()</code> interface —
-that's the beauty of scikit-learn.</p>
+<h3 id="Random-Forest">Random Forest<a class="anchor-link" href="#Random-Forest">¶</a></h3><p>A random forest averages many decision trees and captures non-linear effects, such as the age curve
+seen earlier, that a straight line cannot. It uses the same interface, which is one of the strengths of
+scikit-learn.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=d9674579">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=0c81f976">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -9100,29 +9036,28 @@ Random Forest  R^2: 0.903
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b17f3f25">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1bd85763">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="6.-Evaluate-&amp;-interpret">6. Evaluate &amp; interpret<a class="anchor-link" href="#6.-Evaluate-&amp;-interpret">¶</a></h2><p>A model you can't explain is a model you can't trust. Two views: <em>how well</em> does it predict, and <em>what</em>
-is it using to predict?</p>
+<h2 id="6.-Evaluation-and-interpretation">6. Evaluation and interpretation<a class="anchor-link" href="#6.-Evaluation-and-interpretation">¶</a></h2><p>A model is only useful if its predictions can be trusted and explained.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4b1070cb">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=affeb32f">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="6a.-Predicted-vs-actual">6a. Predicted vs actual<a class="anchor-link" href="#6a.-Predicted-vs-actual">¶</a></h3><p>Perfect predictions land on the diagonal line. Tight around the line = good.</p>
+<h3 id="Predicted-versus-actual">Predicted versus actual<a class="anchor-link" href="#Predicted-versus-actual">¶</a></h3><p>Points near the diagonal are accurate predictions.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=2b58b8ee">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=1329cafe">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -9134,8 +9069,7 @@ is it using to predict?</p>
 <span class="n">lims</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_test</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">y_test</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lims</span><span class="p">,</span> <span class="n">lims</span><span class="p">,</span> <span class="s2">"r--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"perfect prediction"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"actual total (kg)"</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"predicted total (kg)"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Random Forest: predicted vs actual"</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Random Forest: predicted vs actual"</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -9154,17 +9088,17 @@ is it using to predict?</p>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e1f4ad12">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d8e7deef">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="6b.-Feature-importance-%E2%80%94-what-drives-the-prediction?">6b. Feature importance — what drives the prediction?<a class="anchor-link" href="#6b.-Feature-importance-%E2%80%94-what-drives-the-prediction?">¶</a></h3><p>The forest can tell you which inputs it leaned on most.</p>
+<h3 id="Feature-importance">Feature importance<a class="anchor-link" href="#Feature-importance">¶</a></h3><p>The forest reports which inputs it relied on most.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=7e746598">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=df950110">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -9174,8 +9108,8 @@ is it using to predict?</p>
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">importances</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">rf</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
 <span class="n">importances</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">"barh"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#6a2c91"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"What the model uses to predict total"</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"importance"</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"What the model uses to predict total"</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"importance"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">importances</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -9208,46 +9142,34 @@ dtype: float64
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=28f0e5bb">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3d37d1d8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Interpret it.</strong> You'll typically see <strong>bodyweight</strong> and <strong>sex</strong> dominate, with equipment and age
-contributing less. That matches reality: the biggest driver of how much someone totals is how big they
-are and their sex. You just <em>quantified</em> something coaches know by feel — that's data science.</p>
+<p><strong>Sex</strong> and <strong>bodyweight</strong> dominate the prediction, with equipment and age contributing less. This
+matches domain knowledge: how much a competitor totals is driven mostly by their size and sex. The
+analysis puts a number on something coaches understand intuitively.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=e88b390b">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4fe1dd38">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="7.-What-you-did,-and-where-to-go-next">7. What you did, and where to go next<a class="anchor-link" href="#7.-What-you-did,-and-where-to-go-next">¶</a></h2><p>You ran a complete pipeline:</p>
-<ol>
-<li><strong>Loaded</strong> and inspected a dataset.</li>
-<li><strong>Cleaned</strong> it — dirty categories, impossible outliers, missing values (drop vs impute).</li>
-<li><strong>Explored</strong> with distributions, scatter, boxplots, a correlation heatmap.</li>
-<li><strong>Engineered features</strong> — a ratio, bins, one-hot encoding.</li>
-<li><strong>Modeled</strong> total strength with two algorithms and a proper train/test split.</li>
-<li><strong>Evaluated</strong> with MAE and R², and <strong>interpreted</strong> feature importances.</li>
-</ol>
-<h3 id="Your-turn-%E2%80%94-extend-it">Your turn — extend it<a class="anchor-link" href="#Your-turn-%E2%80%94-extend-it">¶</a></h3><ul>
-<li>Predict <strong><code>Best3DeadliftKg</code></strong> instead of <code>TotalKg</code>. Which features matter now?</li>
-<li>Add <code>age_group</code> (one-hot encoded) to the model. Does R² improve?</li>
-<li>Try <code>max_depth=6</code> vs <code>max_depth=20</code> on the forest. Watch train vs test scores — that gap is <strong>overfitting</strong>.</li>
-</ul>
-<h3 id="Swap-in-the-REAL-OpenPowerlifting-data">Swap in the REAL OpenPowerlifting data<a class="anchor-link" href="#Swap-in-the-REAL-OpenPowerlifting-data">¶</a></h3><ol>
-<li>Go to <strong>openpowerlifting.org/data.html</strong> and download the bulk CSV (a zip).</li>
-<li>Unzip it and put the <code>.csv</code> in this same folder.</li>
-<li>In section 1, change the filename in <code>pd.read_csv(...)</code> to the real file.</li>
-<li>Re-run. The columns match, so everything works — now on 3.9 million real lifts.</li>
-</ol>
-<p>Nicely done. This is the loop; every DS project is a variation on it.</p>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">¶</a></h2><p>The project ran a complete pipeline: loading and inspection; cleaning across dirty categories,
+impossible outliers, and missing values; exploratory analysis; feature engineering; modeling with two
+algorithms under a proper train/test split; and evaluation with MAE, R², and feature importance. The
+random forest explained roughly <strong>90% of the variance</strong> in totals and predicted within about <strong>28 kg</strong>
+on unseen data, with sex and bodyweight the dominant drivers.</p>
+<p>The same pipeline runs on the full 3.9-million-row OpenPowerlifting archive by downloading the bulk CSV
+and pointing the load step at it; the schema is identical.</p>
+<p><strong>Interactive version:</strong> an accompanying dashboard turns this analysis into a live walkthrough, with a
+model that predicts a total from inputs in real time.</p>
 </div>
 </div>
 </div>
