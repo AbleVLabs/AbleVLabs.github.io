@@ -510,6 +510,15 @@ section { position: relative; z-index: 1; }
 .cover-osf .cv-sub { color: rgba(231,219,168,.6); }
 .spine-osf { background: linear-gradient(to bottom, #090d15, #0c1018); }
 .cover-fc { background: linear-gradient(170deg, #0a0d1a, #101423 48%, #080a14); }
+.cover-fc::before {   /* Framing Control — the red sun with its horizontal slits */
+  content: ''; position: absolute; left: 50%; top: 15%;
+  width: 92px; height: 92px; transform: translateX(-50%);
+  border-radius: 50%;
+  background:
+    linear-gradient(180deg, transparent 0 50%, #0a0d1a 50% 52.5%, transparent 52.5% 58%, #0a0d1a 58% 60.5%, transparent 60.5% 66%, #0a0d1a 66% 68.5%, transparent 68.5% 74%, #0a0d1a 74% 76.5%, transparent 76.5% 100%),
+    radial-gradient(circle at 50% 45%, #f0402f, #cf261c 68%, #a81c15);
+  box-shadow: 0 0 26px rgba(224,45,34,.35); z-index: 1;
+}
 .cover-fc .cv-sub { color: rgba(232,176,170,.7); }
 .spine-fc { background: linear-gradient(to bottom, #0d1120, #090c16); }
 .spine-osf span { color: rgba(231,219,168,.6); }
@@ -1140,6 +1149,17 @@ footer {
      shown: first 4 render immediately, the rest behind "show earlier"
 --------------------------------------------------------------------------- */
 const UPDATES = [
+  {
+    date: "29 Aug 2026", kind: "release", project: "OMEN",
+    title: "OMEN: a naming standard so software can finally read a workout",
+    body: "Exercise names are a mess: <i>arm curl</i>, <i>bicep curl</i> and <i>biceps curl</i> are " +
+          "all one movement, and no two apps or studies agree, so nothing compares across them. OMEN " +
+          "fixes it the way chemistry named molecules. You describe a movement by its <b>facets</b> " +
+          "(posture, implement, movement pattern) and get back a canonical form plus a short, stable " +
+          "identifier, the &ldquo;InChI of human movement.&rdquo; You never type the muscle; it is " +
+          "derived from the movement pattern. Ships with a white paper and an open reference encoder. <b>18 tests.</b>",
+    link: "omen.html", linkText: "Read the standard"
+  },
   {
     date: "10 Aug 2026", kind: "release", project: "Folder Saga",
     title: "New: a reversible file organizer with a game skin over it",
