@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Data science portfolio by Carlos Abel Vivanco — end-to-end machine learning case studies with real datasets, interactive dashboards, and reproducible notebooks.">
+<meta name="description" content="Data science portfolio by Carlos Abel Vivanco: end-to-end machine learning case studies with real datasets, interactive dashboards, and reproducible notebooks.">
 <meta name="theme-color" content="#04050a">
 <meta property="og:title" content="Data Science Portfolio · AbleV Labs">
 <meta property="og:description" content="End-to-end ML case studies: clean data, build models, ship interactive dashboards.">
@@ -173,16 +173,79 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     </div>
   </div>
 
+  <div class="case" style="margin-top:2rem">
+    <div class="case-top">
+      <div>
+        <h2>Mapping UFO Reports Across America</h2>
+        <div class="pill-row"><span>Geospatial</span><span>Time-series forecast</span><span>Real NUFORC data</span></div>
+      </div>
+      <span class="tag">◆ Live map + forecast + notebook</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">The question</div>
+        <p>Across 80,000 real sighting reports: <b>where do they cluster, when do they spike, and can the
+          volume of future reports be forecast?</b> And the question that keeps the project honest,
+          <b>what do those patterns actually measure?</b></p>
+      </div>
+      <div class="qa">
+        <div class="q">The data</div>
+        <p>Real reports from <b>NUFORC</b>, the National UFO Reporting Center (via the TidyTuesday project),
+          spanning 1925 to 2014. Messy like any report log: <b>international rows</b> and <b>missing
+          coordinates</b> to filter out, <b>placeholder shapes</b> like <em>na</em> and <em>unknown</em>, and
+          free-text timestamps to parse into a year, month, hour, and weekday.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The approach</div>
+        <p>Geospatial aggregation and a live scatter map of the real coordinates &rarr; temporal decomposition
+          across month, hour, weekday, and calendar date &rarr; a <b>log-linear trend model</b> fit to the
+          online era with a proper <b>train/test backtest</b> &rarr; a transparent <b>likelihood model</b> that
+          scores any month, day, and hour.</p>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><div class="v">80,327</div><div class="l">reports analyzed</div></div>
+        <div class="metric"><div class="v g">+10.2%</div><div class="l">report growth / year</div></div>
+        <div class="metric"><div class="v">&plusmn;18%</div><div class="l">backtest error (MAPE)</div></div>
+        <div class="metric"><div class="v">5.9&times;</div><div class="l">peak-slot likelihood</div></div>
+      </div>
+
+      <div class="qa">
+        <div class="q">What it found</div>
+        <p>Hotspots follow <b>population</b>, not the paranormal: California, Washington, Florida, Texas, and
+          New York lead. The sharpest signal is the clock, reports peak at <b>9 to 10 pm</b>. The season peaks
+          in <b>July</b>, the week peaks on <b>Saturday</b>, and the <b>Fourth of July</b> is the single busiest
+          date by a wide margin. Report volume grew about <b>10% a year</b> through the internet era. Every one
+          of those patterns has an ordinary explanation, which is exactly the point: the model describes
+          <b>human reporting behavior, not real events</b>.</p>
+      </div>
+      <div class="qa">
+        <div class="q">Skills demonstrated</div>
+        <div class="pill-row">
+          <span>geospatial analysis</span><span>time-series forecasting</span><span>backtesting</span>
+          <span>temporal decomposition</span><span>data cleaning</span><span>EDA</span>
+          <span>canvas data viz</span><span>honest framing</span><span>model interpretation</span>
+        </div>
+      </div>
+
+      <div class="btns">
+        <a class="btn btn-fill" href="/ufo-dashboard.html">Open the interactive walkthrough &#8599;</a>
+        <a class="btn btn-ghost" href="/ufo-notebook.html" target="_blank" rel="noopener">View the full notebook &#8599;</a>
+      </div>
+    </div>
+  </div>
+
   <div class="soon">
-    <b>More case studies coming.</b> This portfolio grows with each project &mdash; next up: a classification
-    problem and a time-series forecast.
+    <b>More case studies coming.</b> This portfolio grows with each project. Next up: a classification
+    problem, and a deeper geospatial model.
   </div>
 </div></section>
 
 <footer>
   <span class="ft">&copy; 2026 AbleVLabs &mdash; Carlos Abel Vivanco</span>
   <span class="ft">
-    <a href="/powerlifting-dashboard.html">Dashboard &#8599;</a>
+    <a href="/powerlifting-dashboard.html">Strength &#8599;</a>
+    <a href="/ufo-dashboard.html">UFO map &#8599;</a>
     <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
     <a href="https://ablevlabs.com/">ablevlabs.com &#8599;</a>
   </span>
