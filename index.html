@@ -1101,7 +1101,7 @@ footer {
 .up-list::before { content:''; position:absolute; left:calc(1.5rem + 6px); top:6px; bottom:34px;
   width:1px; background:linear-gradient(180deg,rgba(0,212,255,.5),rgba(0,212,255,.04)); }
 
-.up-item { position:relative; padding:0 0 2.1rem 2.5rem; }
+.up-item { position:relative; padding:0 0 1.4rem 2.5rem; }
 .up-dot { position:absolute; left:0; top:5px; width:13px; height:13px; border-radius:50%;
   background:#080c14; border:2px solid var(--gold); box-shadow:0 0 0 4px rgba(8,12,20,.9); }
 .up-item.minor .up-dot { border-color:rgba(0,212,255,.55); }
@@ -1115,7 +1115,16 @@ footer {
 .up-tag.release { border-color:rgba(232,150,10,.45); color:var(--gold); }
 .up-tag.fix { border-color:rgba(255,255,255,.18); color:var(--muted); }
 
-.up-h { font-size:1.14rem; color:#fff; font-weight:600; line-height:1.35; margin-bottom:.35rem; }
+.up-h { font-size:1.1rem; color:#fff; font-weight:600; line-height:1.35; cursor:pointer;
+  display:flex; justify-content:space-between; align-items:baseline; gap:1rem; transition:color .15s; }
+.up-h:hover { color:#cfe4f2; }
+.up-h::after { content:'\25BE'; font-size:.72rem; color:var(--muted); flex-shrink:0;
+  transition:transform .25s, color .2s; }
+.up-item.open .up-h::after { transform:rotate(180deg); color:var(--gold); }
+.up-detail { display:grid; grid-template-rows:0fr; opacity:0;
+  transition:grid-template-rows .3s ease, opacity .3s ease; }
+.up-item.open .up-detail { grid-template-rows:1fr; opacity:1; margin-top:.5rem; }
+.up-detail-inner { overflow:hidden; }
 .up-body { color:var(--muted); font-size:.97rem; line-height:1.65; max-width:68ch; }
 .up-body b { color:#cfe4f2; font-weight:600; }
 .up-link { display:inline-block; margin-top:.55rem; font-family:'Space Mono',monospace;
@@ -1253,12 +1262,12 @@ const UPDATES = [
 (function () {
   const list = document.getElementById('up-list');
   const btn = document.getElementById('up-toggle');
-  const VISIBLE = 4;
+  const VISIBLE = 5;
 
   function render(all) {
     const items = all ? UPDATES : UPDATES.slice(0, VISIBLE);
-    list.innerHTML = items.map(u => `
-      <div class="up-item rv ${u.kind === 'fix' ? 'minor' : ''}">
+    list.innerHTML = items.map((u, i) => `
+      <div class="up-item rv vis ${u.kind === 'fix' ? 'minor' : ''} ${i === 0 ? 'open' : ''}">
         <span class="up-dot"></span>
         <div class="up-meta">
           <span class="up-date">${u.date}</span>
@@ -1266,10 +1275,18 @@ const UPDATES = [
           <span class="up-date">${u.project}</span>
         </div>
         <div class="up-h">${u.title}</div>
-        <div class="up-body">${u.body}</div>
-        ${u.link ? `<a class="up-link" href="${u.link}">${u.linkText} &rarr;</a>` : ''}
+        <div class="up-detail"><div class="up-detail-inner">
+          <div class="up-body">${u.body}</div>
+          ${u.link ? `<a class="up-link" href="${u.link}">${u.linkText} &rarr;</a>` : ''}
+        </div></div>
       </div>`).join('');
   }
+
+  // click a headline to expand or collapse its entry
+  list.addEventListener('click', (e) => {
+    const h = e.target.closest('.up-h');
+    if (h && list.contains(h)) h.parentElement.classList.toggle('open');
+  });
 
   render(false);
   let open = false;
