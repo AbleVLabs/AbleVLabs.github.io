@@ -311,11 +311,27 @@ section { position: relative; z-index: 1; }
 /* ── PROJECTS GRID (logo tiles) ── */
 .pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(470px, 1fr)); gap: 20px; }
 .cat-group { margin-bottom: .4rem; }
-.cat-head { display: flex; align-items: center; gap: 1.1rem; margin: 3rem 0 1.4rem; }
+.cat-head { display: flex; align-items: center; gap: 1.1rem; margin: 2.2rem 0 1.3rem; cursor: pointer; user-select: none; }
+.cat-head::after { content: '\25BE'; flex: 0 0 auto; font-size: .8rem; color: var(--accent); transition: transform .25s; }
+.cat-head:hover .cat-name { color: var(--accent); }
+.cat-group:not(.open) .cat-head { margin-bottom: .9rem; }
+.cat-group:not(.open) .cat-head::after { transform: rotate(-90deg); }
+.cat-group:not(.open) .pgrid { display: none; }
 .cat-group:first-child .cat-head { margin-top: .4rem; }
 .cat-name { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1.5rem; color: #fff; letter-spacing: .03em; white-space: nowrap; }
 .cat-count { font-family: 'Space Mono', monospace; font-size: .74rem; color: var(--accent); letter-spacing: .1em; }
 .cat-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(0,212,255,.18), transparent); }
+/* standalone data-science portfolio banner */
+.ds-banner { display:flex; align-items:center; gap:1.3rem; margin:1.6rem 0 2.4rem; padding:1.4rem 1.7rem;
+  background:linear-gradient(100deg, rgba(0,255,136,.10), rgba(0,212,255,.05) 55%, transparent);
+  border:1px solid rgba(0,255,136,.32); border-radius:16px; text-decoration:none; color:inherit; transition:.2s; }
+.ds-banner:hover { border-color:rgba(0,255,136,.65); transform:translateY(-3px); box-shadow:0 22px 54px -26px rgba(0,255,136,.5); }
+.ds-banner .ic { font-size:2rem; color:var(--green); flex:0 0 auto; line-height:1; }
+.ds-banner .txt { flex:1; min-width:0; }
+.ds-banner .t { font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.5rem; color:#fff; letter-spacing:.02em; }
+.ds-banner .s { font-family:'Space Mono',monospace; font-size:.66rem; letter-spacing:.03em; color:var(--muted); margin-top:5px; line-height:1.5; }
+.ds-banner .go { font-family:'Space Mono',monospace; font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green); white-space:nowrap; flex:0 0 auto; }
+@media(max-width:600px){ .ds-banner{ flex-wrap:wrap; } .ds-banner .go{ width:100%; } }
 .pcard { display: flex; align-items: center; gap: 16px; background: var(--card); border: 1px solid var(--border);
   border-radius: 16px; padding: 15px 17px; text-decoration: none; color: inherit; position: relative; overflow: hidden;
   transition: transform .18s, border-color .18s, box-shadow .18s; }
@@ -737,6 +753,16 @@ footer {
       <span class="section-label">Projects</span>
       <span class="proj-count">09</span>
     </div>
+
+    <a href="/data-science.html" class="ds-banner rv">
+      <span class="ic">&#9650;</span>
+      <div class="txt">
+        <div class="t">Data Science Portfolio</div>
+        <div class="s">End-to-end ML case studies &middot; interactive dashboards &middot; reproducible notebooks</div>
+      </div>
+      <span class="go">View portfolio &#8599;</span>
+    </a>
+
     <!-- ===== Fitness & Well-being ===== -->
     <div class="cat-group">
       <div class="cat-head rv"><span class="cat-name">Fitness &amp; Well-being</span><span class="cat-count">02</span><span class="cat-line"></span></div>
@@ -759,14 +785,8 @@ footer {
 
     <!-- ===== Data Science & Tools ===== -->
     <div class="cat-group">
-      <div class="cat-head rv"><span class="cat-name">Data Science &amp; Tools</span><span class="cat-count">04</span><span class="cat-line"></span></div>
+      <div class="cat-head rv"><span class="cat-name">Data Science &amp; Tools</span><span class="cat-count">03</span><span class="cat-line"></span></div>
       <div class="pgrid">
-
-        <a href="/data-science.html" class="pcard rv" style="--pc:#00ff8833; --d:.0s">
-          <div class="tile"><div class="ph" style="display:flex;background:linear-gradient(135deg,#00ff8833,#00d4ff22)">&#9650;</div></div>
-          <div class="pbody"><div class="pname">Data Science Portfolio</div><div class="psub">ML Case Studies &middot; Interactive Dashboards &middot; Reproducible Notebooks</div></div>
-          <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
-        </a>
 
         <a href="https://noether-patterns.streamlit.app" target="_blank" rel="noopener" class="pcard rv" style="--pc:#00ff8833; --d:.0s">
           <div class="tile"><img src="logos/noether-patterns.png" alt="Noether Patterns" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#00ff8833,#00ff8811)">N</div></div>
@@ -1311,7 +1331,9 @@ const UPDATES = [
 <!-- COMMUNITY / DISCORD -->
 <div class="rule rv"><span class="rule-label">// the hangout</span></div>
 <style>
-#community { padding: 3.5rem 0 1rem; position: relative; z-index: 1; }
+#community { padding: 3rem 0 1rem; position: relative; z-index: 1; }
+.duo { display:flex; gap:1.4rem; max-width:1120px; margin:0 auto; padding:0 1.5rem; align-items:stretch; flex-wrap:wrap; }
+.duo > .disc-card, .duo > .coffee-card { flex:1 1 400px; max-width:none; margin:0; }
 .disc-card { display:flex; align-items:center; gap:2.2rem; max-width:960px; margin:0 auto;
   background:rgba(8,12,20,.72); border:1px solid rgba(88,101,242,.22); border-radius:18px;
   padding:2rem 2.2rem; backdrop-filter:blur(6px); flex-wrap:wrap; }
@@ -1333,49 +1355,48 @@ const UPDATES = [
 @media(max-width:720px){ .disc-card{ flex-direction:column; text-align:center; }
   .disc-sub{ margin-left:auto; margin-right:auto; } .disc-widget{ width:100%; max-width:340px; } }
 </style>
-<section id="community">
-  <div class="disc-card rv">
-    <div class="disc-body">
-      <div class="disc-kicker">// come build with us</div>
-      <div class="disc-title">The AbleVLabs Discord</div>
-      <p class="disc-sub">A place to talk shop &mdash; data science, security, the projects on this
-        site, whatever you're building. Ask questions, share what you're working on, or just lurk.
-        Everyone's welcome.</p>
-      <a class="disc-btn" href="https://discord.gg/nKafRwMRY2" target="_blank" rel="noopener">&#128172; Join the Discord &#8599;</a>
-    </div>
-  </div>
-</section>
-
-<!-- BUY ME A COFFEE -->
+<!-- Buy-Me-a-Coffee styles (the card is reused inside the duo below) -->
 <style>
-#coffee { padding: 4rem 0 1rem; position: relative; z-index: 1; }
-.coffee-card { display: flex; align-items: center; gap: 1.9rem; max-width: 760px; margin: 0 auto;
+.coffee-card { display: flex; align-items: center; gap: 1.7rem;
   background: rgba(8,12,20,.72); border: 1px solid rgba(0,212,255,.14); border-radius: 18px;
   padding: 1.9rem 2.1rem; text-decoration: none; transition: .2s; backdrop-filter: blur(6px); }
 .coffee-card:hover { border-color: rgba(0,212,255,.4); transform: translateY(-3px); box-shadow: 0 22px 55px -28px rgba(0,212,255,.5); }
-.coffee-mascot img, .coffee-mascot .coffee-fb { width: 108px; height: 108px; border-radius: 16px; display: block; flex-shrink: 0; }
+.coffee-mascot img, .coffee-mascot .coffee-fb { width: 96px; height: 96px; border-radius: 16px; display: block; flex-shrink: 0; }
 .coffee-mascot .coffee-fb { display:none; align-items:center; justify-content:center; font-size:3rem; background:rgba(232,150,10,.1); }
 .coffee-kicker { font-family:'Space Mono',monospace; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:.5rem; }
-.coffee-title { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; letter-spacing:.02em; color:#fff; line-height:1; }
-.coffee-sub { color:var(--muted); font-size:1.02rem; line-height:1.55; margin:.6rem 0 1.1rem; max-width:48ch; }
-.coffee-btn { display:inline-block; font-family:'Space Mono',monospace; font-size:.66rem; letter-spacing:.1em; background:var(--gold); color:#1a0f00; padding:.75rem 1.4rem; border-radius:10px; font-weight:700; transition:.2s; }
+.coffee-title { font-family:'Bebas Neue',sans-serif; font-size:2.2rem; letter-spacing:.02em; color:#fff; line-height:1; }
+.coffee-sub { color:var(--muted); font-size:.98rem; line-height:1.55; margin:.6rem 0 1.1rem; }
+.coffee-btn { display:inline-block; font-family:'Space Mono',monospace; font-size:.64rem; letter-spacing:.08em; background:var(--gold); color:#1a0f00; padding:.7rem 1.3rem; border-radius:10px; font-weight:700; transition:.2s; }
 .coffee-card:hover .coffee-btn { background:#fff; }
-@media(max-width:640px){ .coffee-card{ flex-direction:column; text-align:center; } .coffee-sub{ margin:.6rem auto 1.1rem; } }
+@media(max-width:900px){ .coffee-card{ flex-direction:column; text-align:center; } }
 </style>
-<section id="coffee">
-  <a href="https://buymeacoffee.com/ablevlabs" target="_blank" rel="noopener" class="coffee-card rv">
-    <div class="coffee-mascot">
-      <img src="logos/ablevlabs-capybara.png" alt="AbleVLabs capybara mascot"
-           onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}">
-      <span class="coffee-fb">&#9749;</span>
+<section id="community">
+  <div class="duo">
+    <div class="disc-card rv">
+      <div class="disc-body">
+        <div class="disc-kicker">// come build with us</div>
+        <div class="disc-title">The AbleVLabs Discord</div>
+        <p class="disc-sub">A place to talk shop &mdash; data science, security, the projects on this
+          site, whatever you're building. Ask questions, share, or just lurk. Everyone's welcome.</p>
+        <a class="disc-btn" href="https://discord.gg/nKafRwMRY2" target="_blank" rel="noopener">&#128172; Join the Discord &#8599;</a>
+      </div>
     </div>
-    <div class="coffee-body">
-      <div class="coffee-kicker">// fuel the lab</div>
-      <div class="coffee-title">Buy me a coffee</div>
-      <p class="coffee-sub">Everything here is free and open source. The coffee that builds it, sadly, is not. One cup keeps the late-night builds shipping &mdash; and keeps my caffeine ratio dangerous.</p>
-      <span class="coffee-btn">&#9749; buymeacoffee.com/ablevlabs &#8599;</span>
-    </div>
-  </a>
+
+    <a href="https://buymeacoffee.com/ablevlabs" target="_blank" rel="noopener" class="coffee-card rv">
+      <div class="coffee-mascot">
+        <img src="logos/ablevlabs-capybara.png" alt="AbleVLabs capybara mascot"
+             onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}">
+        <span class="coffee-fb">&#9749;</span>
+      </div>
+      <div class="coffee-body">
+        <div class="coffee-kicker">// fuel the lab</div>
+        <div class="coffee-title">Buy me a coffee</div>
+        <p class="coffee-sub">Everything here is free and open source. The coffee that builds it, sadly,
+          is not. One cup keeps the late-night builds shipping.</p>
+        <span class="coffee-btn">&#9749; buymeacoffee.com/ablevlabs &#8599;</span>
+      </div>
+    </a>
+  </div>
 </section>
 
 <div class="rule rv" id="contact"><span class="rule-label">// open comms</span></div>
@@ -1575,6 +1596,16 @@ const io = new IntersectionObserver(entries => {
   });
 }, { threshold: .12 });
 document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+/* ── COLLAPSIBLE PROJECT CATEGORIES ── */
+document.querySelectorAll('.cat-head').forEach(h => {
+  h.addEventListener('click', () => {
+    const g = h.parentElement;
+    g.classList.toggle('open');
+    if (g.classList.contains('open'))
+      g.querySelectorAll('.rv').forEach(el => el.classList.add('vis'));
+  });
+});
 
 /* ── NAV ACTIVE SECTION ── */
 const navMap = {};
