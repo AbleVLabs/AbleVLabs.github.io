@@ -104,7 +104,7 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     notebook so you can see exactly how it was done.</p>
   <div class="stack">
     <span>Python</span><span>pandas</span><span>NumPy</span><span>scikit-learn</span>
-    <span>Matplotlib / Seaborn</span><span>Jupyter</span><span>Chart.js</span>
+    <span>TensorFlow / Keras</span><span>Matplotlib / Seaborn</span><span>Jupyter</span><span>Chart.js</span>
   </div>
 </section>
 
@@ -299,6 +299,67 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     </div>
   </div>
 
+  <div class="case" style="margin-top:2rem">
+    <div class="case-top">
+      <div>
+        <h2>Draw a Digit: A Neural Network in Your Browser</h2>
+        <div class="pill-row"><span>Deep learning</span><span>CNN</span><span>TensorFlow / Keras</span></div>
+      </div>
+      <span class="tag">◆ Live draw pad + notebook</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">The question</div>
+        <p>Can a neural network learn to <b>read handwriting</b>, and can the trained model then run <b>live
+          in a browser</b> with no server? The problem that put deep learning on the map, taken end to end
+          from raw pixels to a thing visitors can actually play with.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The data</div>
+        <p>The classic <b>MNIST</b> benchmark: 70,000 real 28 by 28 grayscale images of handwritten digits,
+          split 60,000 for training and 10,000 held back to test on. Pixels normalized to 0 to 1, labels 0
+          through 9.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The approach</div>
+        <p>Build a <b>convolutional neural network</b> in <b>TensorFlow and Keras</b>: two convolution and
+          pooling blocks to learn visual features, then dense layers to decide &rarr; train for 8 epochs and
+          watch the <b>learning curves</b> &rarr; evaluate honestly with a <b>confusion matrix</b> &rarr; then
+          ship the ~27,000 trained weights into the page and run the network with a <b>from-scratch forward
+          pass in JavaScript</b>, so it predicts your drawing on the spot.</p>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><div class="v g">98.7%</div><div class="l">test accuracy (unseen digits)</div></div>
+        <div class="metric"><div class="v">26,698</div><div class="l">parameters (tiny)</div></div>
+        <div class="metric"><div class="v">8</div><div class="l">training epochs</div></div>
+        <div class="metric"><div class="v g">0</div><div class="l">servers (runs in-browser)</div></div>
+      </div>
+
+      <div class="qa">
+        <div class="q">What it found</div>
+        <p>The compact CNN reached <b>98.7% accuracy</b> on digits it had never seen, and the learning curves
+          stayed healthy (train and validation tracking together, no overfitting). The confusion matrix showed
+          the handful of errors were the <b>humanly reasonable</b> ones, a 4 mistaken for a 9, a 7 for a 1.
+          Best of all, the model is small enough to <b>deploy to the browser</b>: draw a digit on the live pad
+          and the same trained network classifies it instantly, no round trip to any server.</p>
+      </div>
+      <div class="qa">
+        <div class="q">Skills demonstrated</div>
+        <div class="pill-row">
+          <span>deep learning</span><span>convolutional neural networks</span><span>TensorFlow / Keras</span>
+          <span>training / validation curves</span><span>confusion matrix</span><span>model evaluation</span>
+          <span>in-browser deployment</span><span>image data</span><span>data viz</span>
+        </div>
+      </div>
+
+      <div class="btns">
+        <a class="btn btn-fill" href="/mnist-dashboard.html">Open the live draw pad &#8599;</a>
+        <a class="btn btn-ghost" href="/mnist-notebook.html" target="_blank" rel="noopener">View the full notebook &#8599;</a>
+      </div>
+    </div>
+  </div>
+
   <div class="soon">
     <b>More case studies coming.</b> This portfolio grows with each project. Next up: an SQL-driven
     analysis, and a deeper geospatial model.
@@ -311,6 +372,7 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     <a href="/powerlifting-dashboard.html">Strength &#8599;</a>
     <a href="/ufo-dashboard.html">UFO map &#8599;</a>
     <a href="/mushroom-dashboard.html">Mushrooms &#8599;</a>
+    <a href="/mnist-dashboard.html">Draw pad &#8599;</a>
     <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
     <a href="https://ablevlabs.com/">ablevlabs.com &#8599;</a>
   </span>
