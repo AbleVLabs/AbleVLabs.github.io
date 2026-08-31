@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="An interactive SQL walkthrough: a real relational database of 30 years of UFC fights, running live in your browser with sql.js. Read the queries, see the results, and run your own. By Carlos Abel Vivanco / AbleVLabs.">
+<meta name="theme-color" content="#04050a">
+<title>UFC in SQL: A Live Query Console · AbleV Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/sql-wasm.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#04050a;--bg2:#080c14;--accent:#00d4ff;--accent2:#6c3fff;--gold:#e8960a;
+  --green:#00ff88;--pink:#ff5c9d;--red:#ff5a5a;--text:#e8edf5;--muted:#5a6480;--dim:#2a3050;
+  --border:rgba(0,212,255,.14);--card:rgba(8,14,26,.75)}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;padding:1.6rem;
+  background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);
+  background-size:60px 60px}
+.wrap{max-width:1120px;margin:0 auto}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;
+  border-bottom:1px solid var(--border);padding-bottom:1.1rem;margin-bottom:.6rem}
+.kicker{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.1rem);letter-spacing:.02em;line-height:.95}
+h1 .c{color:var(--accent)}
+.lead{color:var(--muted);font-size:1rem;margin-top:.5rem;max-width:74ch;line-height:1.6}
+.topright{display:flex;flex-direction:column;align-items:flex-end;gap:.6rem}
+.back{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap}.back:hover{color:var(--accent)}
+.dlbtn{display:inline-flex;align-items:center;gap:.5rem;font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent);text-decoration:none;border:1px solid rgba(0,212,255,.3);border-radius:9px;padding:.55rem 1rem;transition:.2s}
+.dlbtn:hover{color:#fff;border-color:#fff;background:rgba(0,212,255,.08)}
+
+.honest{display:flex;gap:.9rem;align-items:flex-start;background:linear-gradient(150deg,rgba(0,212,255,.08),rgba(108,63,255,.05));
+  border:1px solid rgba(0,212,255,.3);border-radius:14px;padding:1rem 1.2rem;margin:1.4rem 0 .4rem}
+.honest .ic{font-size:1.4rem;line-height:1}
+.honest .ht{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
+.honest p{color:var(--text);font-size:.9rem;line-height:1.6;max-width:84ch}
+.honest #dbstatus{color:var(--muted)}
+
+.step{margin:2.6rem 0}
+.step-h{display:flex;align-items:center;gap:.9rem;margin-bottom:.5rem;flex-wrap:wrap}
+.step-n{font-family:'Space Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:.1em;color:#001018;background:var(--accent);border-radius:6px;padding:.28rem .6rem}
+.step-h h2{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:.02em;color:#fff}
+.step p.desc{color:var(--muted);font-size:.96rem;line-height:1.65;max-width:82ch;margin:.2rem 0 1.1rem}
+.step p.desc b{color:var(--text)}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.85rem;margin-bottom:1.1rem}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem}
+.kpi .l{font-family:'Space Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.kpi .v{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1;margin-top:.3rem;color:#fff}
+.kpi .v.a{color:var(--accent)}.kpi .v.g{color:var(--green)}.kpi .v.gold{color:var(--gold)}
+
+.schema{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.tcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
+.tcard .tn{font-family:'Space Mono',monospace;font-size:.9rem;color:var(--accent);font-weight:700}
+.tcard .tr{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:.15rem 0 .6rem}
+.tcard .td{color:var(--muted);font-size:.82rem;margin-bottom:.7rem;line-height:1.45}
+.tcard ul{list-style:none;display:flex;flex-direction:column;gap:.2rem}
+.tcard li{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text);display:flex;justify-content:space-between;gap:.6rem;border-bottom:1px solid rgba(90,100,128,.1);padding:.2rem 0}
+.tcard li span.k{color:var(--gold);font-size:.56rem;text-transform:uppercase}
+.tcard li.pk span.c{color:var(--green)}
+
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.3rem;margin-bottom:1.2rem}
+.qcard .qh{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-bottom:.3rem}
+.qcard .qnum{font-family:'Space Mono',monospace;font-size:.6rem;color:#001018;background:var(--accent2);border-radius:5px;padding:.15rem .45rem}
+.qcard h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.15rem;color:#fff}
+.qcard .skill{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(0,212,255,.35);border-radius:20px;padding:2px 8px;margin-left:auto}
+.qcard .exp{color:var(--muted);font-size:.9rem;line-height:1.55;margin-bottom:.8rem}
+pre.sql{background:#070b14;border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem;overflow-x:auto;
+  font-family:'Space Mono',monospace;font-size:.74rem;line-height:1.6;color:#cdd6e6;white-space:pre;tab-size:2}
+pre.sql .kw{color:#00d4ff;font-weight:700}pre.sql .fn{color:#e8960a}pre.sql .st{color:#00ff88}pre.sql .nu{color:#ff5c9d}pre.sql .cm{color:#5a6480}
+.qactions{display:flex;gap:.6rem;margin:.7rem 0 .2rem;flex-wrap:wrap}
+.mini{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--dim);border-radius:7px;padding:.35rem .7rem;cursor:pointer;transition:.15s}
+.mini:hover{color:#fff;border-color:var(--accent)}
+.qbody{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:.6rem}
+.qbody.haschart{grid-template-columns:1.1fr .9fr}
+.rtable-wrap{overflow:auto;max-height:340px;border:1px solid var(--border);border-radius:10px}
+table.rt{border-collapse:collapse;width:100%;font-family:'Space Mono',monospace;font-size:.72rem;white-space:nowrap}
+table.rt th{position:sticky;top:0;background:#0b1220;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.56rem;padding:.5rem .7rem;text-align:left;border-bottom:1px solid var(--border)}
+table.rt td{padding:.4rem .7rem;border-bottom:1px solid rgba(90,100,128,.1);color:var(--text)}
+table.rt tr:hover td{background:rgba(0,212,255,.04)}
+.cv{position:relative;height:280px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.6rem}
+.rmeta{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--muted);margin-top:.4rem}
+
+.console{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.3rem}
+.console textarea{width:100%;min-height:130px;background:#070b14;color:#cdd6e6;border:1px solid var(--dim);border-radius:10px;
+  padding:.9rem 1rem;font-family:'Space Mono',monospace;font-size:.8rem;line-height:1.55;resize:vertical;tab-size:2}
+.console textarea:focus{outline:none;border-color:var(--accent)}
+.crow{display:flex;gap:.7rem;align-items:center;margin:.8rem 0;flex-wrap:wrap}
+.runbtn{font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+  background:var(--accent);color:#001018;border:0;border-radius:9px;padding:.6rem 1.3rem;cursor:pointer;transition:.15s}
+.runbtn:hover{background:#fff}.runbtn:disabled{opacity:.4;cursor:not-allowed}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.3rem}
+.chip{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--muted);border:1px solid var(--dim);border-radius:16px;padding:.3rem .7rem;cursor:pointer;transition:.15s}
+.chip:hover{color:#fff;border-color:var(--accent)}
+.cerr{color:var(--red);font-family:'Space Mono',monospace;font-size:.74rem;margin-top:.6rem;white-space:pre-wrap}
+
+.foot{color:var(--muted);font-size:.78rem;margin-top:2rem;text-align:center;line-height:1.7;border-top:1px solid var(--border);padding-top:1.2rem}
+.foot a{text-decoration:none}
+@media(max-width:820px){.qbody.haschart{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="kicker">◆ Data Science · Case Study 05</div>
+      <h1>UFC in <span class="c">SQL</span>: a live query console</h1>
+      <p class="lead">Thirty years of UFC fights, modeled into a real relational database that runs entirely
+        in your browser. Read the analyst queries and their results, from simple joins to window functions,
+        then scroll to the console and run your own SQL against the same database.</p>
+    </div>
+    <div class="topright">
+      <a class="back" href="/data-science.html">← Back to the case study</a>
+      <a class="dlbtn" href="./data/ufc.sqlite" download>⬇ Download the database (SQLite)</a>
+    </div>
+  </div>
+
+  <div class="honest">
+    <div class="ic">🗄️</div>
+    <div>
+      <div class="ht">This is a real database, not a mockup</div>
+      <p>A 2.3 MB SQLite database of every UFC event, fighter, and bout is loaded into your browser with
+        sql.js (SQLite compiled to WebAssembly). Every result below is computed live by actually running the
+        SQL, and the console at the bottom runs whatever you type. <span id="dbstatus">Loading the database…</span></p>
+    </div>
+  </div>
+
+  <!-- STEP 1 schema -->
+  <section class="step">
+    <div class="step-h"><span class="step-n">STEP 1</span><h2>The schema</h2></div>
+    <p class="desc">The raw source is a flat scrape of ufcstats.com. The first job of an analyst is
+      <b>modeling</b>: turning that pile into normalized tables with keys, so each fighter, event, and fight
+      is stored once and linked by id. <b>bouts</b> is the hub, pointing to an event, two fighters, and a
+      winner, with matching rows in <b>fight_stats</b>.</p>
+    <div class="kpis" id="kpis"></div>
+    <div class="schema" id="schema"></div>
+  </section>
+
+  <!-- STEP 2 guided queries -->
+  <section class="step">
+    <div class="step-h"><span class="step-n">STEP 2</span><h2>The questions, answered in SQL</h2></div>
+    <p class="desc">Eight real questions, each matched to the SQL technique that answers it: joins, grouping,
+      conditional aggregation, CTEs, self-joins, date bucketing, and window functions. Every query runs live
+      against the database above, so these are the actual results, not screenshots.</p>
+    <div id="queries"></div>
+  </section>
+
+  <!-- STEP 3 console -->
+  <section class="step">
+    <div class="step-h"><span class="step-n">STEP 3</span><h2>Your turn: the live console</h2></div>
+    <p class="desc">Write any query and run it against the real database. Start from an example, or explore
+      the schema above. This is the same engine, so window functions, CTEs, and joins all work.</p>
+    <div class="console">
+      <textarea id="sqlInput" spellcheck="false">SELECT f.name, COUNT(*) AS wins
+FROM bouts b
+JOIN fighters f ON f.fighter_id = b.winner_id
+GROUP BY f.fighter_id
+ORDER BY wins DESC
+LIMIT 15;</textarea>
+      <div class="crow">
+        <button class="runbtn" id="runBtn" disabled>Run query ▸</button>
+        <span class="rmeta" id="consoleMeta"></span>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div class="cerr" id="consoleErr"></div>
+      <div class="rtable-wrap" id="consoleResult" style="margin-top:.8rem;display:none"></div>
+    </div>
+  </section>
+
+  <div class="foot">
+    Data: <b>ufcstats.com</b> (public scrape) · Database, schema design, queries, and console by
+    <b>Carlos Abel Vivanco / AbleV Labs</b> ·
+    <a href="/ufc-sql-notebook.html">Read the full notebook →</a> ·
+    <a href="/data-science.html">Back to the case study →</a>
+  </div>
+</div>
+
+<script>
+const QDATA = {
+  "schema": [
+    {"table":"events","rows":789,"desc":"One row per UFC event.",
+     "cols":[["event_id","PK"],["name","text"],["date","date"],["city","text"],["country","text"]]},
+    {"table":"fighters","rows":4623,"desc":"One row per fighter, with tale-of-the-tape.",
+     "cols":[["fighter_id","PK"],["name","text"],["height_in","int"],["reach_in","int"],["weight_lbs","int"],["stance","text"],["dob","date"]]},
+    {"table":"bouts","rows":8885,"desc":"One row per fight, with foreign keys to the two fighters, the winner, and the event.",
+     "cols":[["bout_id","PK"],["event_id","FK events"],["fighter1_id","FK fighters"],["fighter2_id","FK fighters"],["winner_id","FK fighters"],["result_type","Win/Draw/No Contest"],["weight_class","text"],["title_bout","0/1"],["method","text"],["method_group","KO/TKO, Submission, Decision, Other"],["round","int"],["time","mm:ss"],["end_secs","int"],["referee","text"],["duration_secs","int"]]},
+    {"table":"fight_stats","rows":17726,"desc":"One row per fighter per bout: totals aggregated over rounds.",
+     "cols":[["bout_id","FK bouts"],["fighter_id","FK fighters"],["kd","knockdowns"],["sig_str_landed","int"],["sig_str_att","int"],["total_str_landed","int"],["td_landed","int"],["td_att","int"],["sub_att","int"],["reversals","int"],["ctrl_secs","control time"]]}
+  ],
+  "queries": [
+    {"id":"top_wins","title":"Who has the most UFC wins?","skill":"JOIN + GROUP BY + COUNT",
+     "explain":"Join every bout to its winner, then count wins per fighter. The simplest bread-and-butter query, and the foundation everything else builds on.",
+     "sql":"SELECT f.name, COUNT(*) AS wins\nFROM bouts b\nJOIN fighters f ON f.fighter_id = b.winner_id\nGROUP BY f.fighter_id\nORDER BY wins DESC\nLIMIT 10;",
+     "chart":{"type":"bar","x":"name","y":"wins","label":"wins"}},
+
+    {"id":"finish_rate","title":"Which fighters finish, instead of coasting to a decision?","skill":"CTE + CASE + ratio",
+     "explain":"A CTE counts each fighter's wins and how many were finishes (KO or submission), then the outer query turns that into a finish percentage. CASE inside SUM is the classic way to count a condition.",
+     "sql":"WITH w AS (\n  SELECT winner_id AS fid,\n         COUNT(*) AS wins,\n         SUM(CASE WHEN method_group IN ('KO/TKO','Submission') THEN 1 ELSE 0 END) AS finishes\n  FROM bouts\n  WHERE winner_id IS NOT NULL\n  GROUP BY winner_id\n)\nSELECT f.name, w.wins, w.finishes,\n       ROUND(100.0 * w.finishes / w.wins, 1) AS finish_pct\nFROM w\nJOIN fighters f ON f.fighter_id = w.fid\nWHERE w.wins >= 15\nORDER BY finish_pct DESC, wins DESC\nLIMIT 10;",
+     "chart":null},
+
+    {"id":"method_by_class","title":"Do heavier fighters really knock people out more?","skill":"Conditional aggregation (pivot with CASE)",
+     "explain":"Group bouts by weight class and, in one pass, compute the share ending by KO, submission, and decision. This pivots a category column into three metric columns.",
+     "sql":"SELECT weight_class,\n       COUNT(*) AS bouts,\n       ROUND(100.0*SUM(method_group='KO/TKO')  /COUNT(*),1) AS ko_pct,\n       ROUND(100.0*SUM(method_group='Submission')/COUNT(*),1) AS sub_pct,\n       ROUND(100.0*SUM(method_group='Decision') /COUNT(*),1) AS dec_pct\nFROM bouts\nWHERE weight_class IN ('Flyweight','Bantamweight','Featherweight','Lightweight',\n      'Welterweight','Middleweight','Light Heavyweight','Heavyweight')\nGROUP BY weight_class\nORDER BY bouts DESC;",
+     "chart":{"type":"grouped","x":"weight_class","series":["ko_pct","sub_pct","dec_pct"]}},
+
+    {"id":"win_streaks","title":"The longest win streaks in UFC history","skill":"Window functions (gaps and islands)",
+     "explain":"The showpiece. Each bout is unpivoted to one row per fighter with a win flag, then two ROW_NUMBER() windows are subtracted so consecutive wins share an island id. Counting each island gives the streak length.",
+     "sql":"WITH per_fighter AS (\n  SELECT b.bout_id, b.fighter1_id AS fid, e.date AS d,\n         (b.winner_id = b.fighter1_id) AS won\n  FROM bouts b JOIN events e ON e.event_id = b.event_id\n  WHERE b.result_type = 'Win'\n  UNION ALL\n  SELECT b.bout_id, b.fighter2_id, e.date,\n         (b.winner_id = b.fighter2_id)\n  FROM bouts b JOIN events e ON e.event_id = b.event_id\n  WHERE b.result_type = 'Win'\n),\nislands AS (\n  SELECT fid, won,\n         ROW_NUMBER() OVER (PARTITION BY fid          ORDER BY d, bout_id)\n       - ROW_NUMBER() OVER (PARTITION BY fid, won     ORDER BY d, bout_id) AS grp\n  FROM per_fighter\n)\nSELECT f.name, COUNT(*) AS win_streak\nFROM islands\nJOIN fighters f ON f.fighter_id = islands.fid\nWHERE won = 1\nGROUP BY fid, grp\nORDER BY win_streak DESC\nLIMIT 10;",
+     "chart":{"type":"bar","x":"name","y":"win_streak","label":"consecutive wins"}},
+
+    {"id":"fastest_finishes","title":"The fastest finishes ever recorded","skill":"Multi-table JOIN + derived opponent",
+     "explain":"Join each bout to its winner and event, then join again to look up the loser (the other corner) with a CASE. Ordering by elapsed seconds surfaces the quickest stoppages.",
+     "sql":"SELECT f.name AS winner,\n       l.name AS loser,\n       b.method, b.time,\n       ev.name AS event, ev.date\nFROM bouts b\nJOIN fighters f  ON f.fighter_id = b.winner_id\nJOIN fighters l  ON l.fighter_id = CASE WHEN b.winner_id = b.fighter1_id\n                                        THEN b.fighter2_id ELSE b.fighter1_id END\nJOIN events   ev ON ev.event_id = b.event_id\nWHERE b.method_group IN ('KO/TKO','Submission')\n  AND b.round = 1 AND b.end_secs > 0\nORDER BY b.end_secs ASC\nLIMIT 10;",
+     "chart":null},
+
+    {"id":"reach_edge","title":"Does a longer reach actually win fights?","skill":"Self-join + conditional aggregate",
+     "explain":"Join the bout to both fighters' tale-of-the-tape, keep bouts where reaches differ, and measure how often the longer-reach fighter won. A data-driven myth check.",
+     "sql":"WITH r AS (\n  SELECT b.winner_id, b.fighter1_id, b.fighter2_id,\n         f1.reach_in AS reach1, f2.reach_in AS reach2\n  FROM bouts b\n  JOIN fighters f1 ON f1.fighter_id = b.fighter1_id\n  JOIN fighters f2 ON f2.fighter_id = b.fighter2_id\n  WHERE b.result_type = 'Win'\n    AND f1.reach_in IS NOT NULL AND f2.reach_in IS NOT NULL\n    AND f1.reach_in <> f2.reach_in\n)\nSELECT COUNT(*) AS decided_bouts,\n       ROUND(100.0*SUM(CASE WHEN (reach1>reach2 AND winner_id=fighter1_id)\n                              OR (reach2>reach1 AND winner_id=fighter2_id)\n                            THEN 1 ELSE 0 END)/COUNT(*),1) AS longer_reach_win_pct\nFROM r;",
+     "chart":null},
+
+    {"id":"bouts_per_year","title":"How the UFC exploded: bouts per year","skill":"Date bucketing + GROUP BY",
+     "explain":"Pull the year out of each event date and count bouts. A time series that tells the story of the sport growing from a curiosity in 1994 to hundreds of fights a year.",
+     "sql":"SELECT strftime('%Y', e.date) AS year,\n       COUNT(*) AS bouts\nFROM bouts b\nJOIN events e ON e.event_id = b.event_id\nWHERE e.date IS NOT NULL\nGROUP BY year\nORDER BY year;",
+     "chart":{"type":"line","x":"year","y":"bouts","label":"bouts"}},
+
+    {"id":"control_time","title":"The grinders: most octagon control time","skill":"JOIN to stats + SUM + HAVING",
+     "explain":"Sum control-time seconds from the per-fight stats table for each fighter, filtering to those with a real sample of fights. HAVING filters on the aggregate, which WHERE cannot do.",
+     "sql":"SELECT f.name,\n       ROUND(SUM(s.ctrl_secs)/60.0) AS control_minutes,\n       COUNT(*) AS fights\nFROM fight_stats s\nJOIN fighters f ON f.fighter_id = s.fighter_id\nGROUP BY s.fighter_id\nHAVING fights >= 12\nORDER BY control_minutes DESC\nLIMIT 10;",
+     "chart":{"type":"bar","x":"name","y":"control_minutes","label":"control minutes"}}
+  ]
+};
+let db=null, charts={};
+Chart.defaults.color='#5a6480';Chart.defaults.font.family="'Space Mono', monospace";Chart.defaults.font.size=10;
+const AX={grid:{color:'rgba(90,100,128,.12)'},ticks:{color:'#5a6480'}};
+const CY='#00d4ff',PU='#a855f7',GR='#00ff88',AM='#e8960a',RED='#ef4444';
+
+// ---------- render schema + queries immediately (no DB needed) ----------
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+const KW=/\b(SELECT|FROM|WHERE|GROUP BY|ORDER BY|LIMIT|JOIN|LEFT|INNER|ON|AS|AND|OR|NOT|IN|IS|NULL|WITH|CASE|WHEN|THEN|ELSE|END|COUNT|SUM|ROUND|AVG|MIN|MAX|OVER|PARTITION BY|ROW_NUMBER|RANK|DENSE_RANK|LAG|LEAD|UNION ALL|UNION|HAVING|DESC|ASC|DISTINCT|strftime)\b/gi;
+function hlSQL(sql){
+  let h=esc(sql);
+  h=h.replace(/'[^']*'/g,m=>''+m+'');           // protect strings
+  h=h.replace(KW,m=>'<span class="kw">'+m+'</span>');
+  h=h.replace(/\b(\d+\.?\d*)\b/g,'<span class="nu">$1</span>');
+  h=h.replace(/('[^']*')/g,'<span class="st">$1</span>');
+  return h;
+}
+function renderSchema(){
+  const box=document.getElementById('schema');
+  QDATA.schema.forEach(t=>{
+    const lis=t.cols.map(([c,k])=>{
+      const pk=/PK/.test(k), fk=/FK/.test(k);
+      return `<li class="${pk?'pk':''}"><span class="c">${c}</span><span class="k">${k}</span></li>`;
+    }).join('');
+    box.insertAdjacentHTML('beforeend',
+      `<div class="tcard"><div class="tn">${t.table}</div><div class="tr">${t.rows.toLocaleString()} rows</div>
+       <div class="td">${t.desc}</div><ul>${lis}</ul></div>`);
+  });
+  const kp=[['Events',789,'a'],['Fighters','4,623','g'],['Bouts','8,885','gold'],['Span','1994–2026','']];
+  document.getElementById('kpis').innerHTML=kp.map(([l,v,c])=>
+    `<div class="kpi"><div class="l">${l}</div><div class="v ${c}">${v}</div></div>`).join('');
+}
+function renderQueries(){
+  const box=document.getElementById('queries');
+  QDATA.queries.forEach((q,i)=>{
+    const hasChart=!!q.chart;
+    box.insertAdjacentHTML('beforeend',
+      `<div class="qcard" id="qc_${q.id}">
+        <div class="qh"><span class="qnum">Q${i+1}</span><h3>${q.title}</h3><span class="skill">${q.skill}</span></div>
+        <div class="exp">${q.explain}</div>
+        <pre class="sql">${hlSQL(q.sql)}</pre>
+        <div class="qactions"><button class="mini" data-load="${q.id}">↳ Load into console</button></div>
+        <div class="qbody ${hasChart?'haschart':''}">
+          <div class="rtable-wrap" id="res_${q.id}"><div class="rmeta" style="padding:.7rem">Waiting for the database…</div></div>
+          ${hasChart?`<div class="cv"><canvas id="chart_${q.id}"></canvas></div>`:''}
+        </div>
+      </div>`);
+  });
+  box.querySelectorAll('[data-load]').forEach(b=>b.addEventListener('click',()=>{
+    const q=QDATA.queries.find(x=>x.id===b.dataset.load);
+    document.getElementById('sqlInput').value=q.sql;
+    document.getElementById('sqlInput').scrollIntoView({behavior:'smooth',block:'center'});
+  }));
+}
+
+// ---------- table + chart rendering ----------
+function tableHTML(cols,vals,cap){
+  let h='<table class="rt"><thead><tr>'+cols.map(c=>`<th>${esc(c)}</th>`).join('')+'</tr></thead><tbody>';
+  const show=vals.slice(0,cap||500);
+  h+=show.map(r=>'<tr>'+r.map(v=>`<td>${v===null?'<span style="color:#5a6480">NULL</span>':esc(v)}</td>`).join('')+'</tr>').join('');
+  h+='</tbody></table>';
+  return h;
+}
+function drawChart(q,cols,vals){
+  const ix=n=>cols.indexOf(n); const c=q.chart;
+  const ctx=document.getElementById('chart_'+q.id); if(!ctx)return;
+  if(charts[q.id])charts[q.id].destroy();
+  if(c.type==='bar'){
+    const labels=vals.map(r=>r[ix(c.x)]).reverse(), data=vals.map(r=>r[ix(c.y)]).reverse();
+    charts[q.id]=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:CY,borderRadius:3}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...AX},y:{...AX}}}});
+  }else if(c.type==='line'){
+    const labels=vals.map(r=>r[ix(c.x)]), data=vals.map(r=>r[ix(c.y)]);
+    charts[q.id]=new Chart(ctx,{type:'line',data:{labels,datasets:[{data,borderColor:CY,backgroundColor:CY,pointRadius:2,borderWidth:2,tension:.25}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{...AX},y:{...AX,beginAtZero:true}}}});
+  }else if(c.type==='grouped'){
+    const labels=vals.map(r=>r[ix(c.x)]);
+    const cols3=[['KO/TKO',RED],['Submission',PU],['Decision',CY]];
+    const ds=c.series.map((s,k)=>({label:cols3[k][0],data:vals.map(r=>r[ix(s)]),backgroundColor:cols3[k][1],borderRadius:3}));
+    charts[q.id]=new Chart(ctx,{type:'bar',data:{labels,datasets:ds},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#a9b0c8',boxWidth:10,font:{size:9}}}},
+        scales:{x:{...AX,ticks:{color:'#5a6480',maxRotation:40,minRotation:25}},y:{...AX,beginAtZero:true}}}});
+  }
+}
+
+// ---------- load the real database ----------
+async function boot(){
+  renderSchema(); renderQueries(); renderChips();
+  try{
+    const SQL=await initSqlJs({locateFile:f=>'https://cdn.jsdelivr.net/npm/sql.js@1.12.0/dist/'+f});
+    const buf=await fetch('./data/ufc.sqlite').then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.arrayBuffer();});
+    db=new SQL.Database(new Uint8Array(buf));
+    document.getElementById('dbstatus').innerHTML='<b style="color:var(--green)">Database ready.</b> Every result below is live.';
+    runWalkthrough();
+    const btn=document.getElementById('runBtn'); btn.disabled=false;
+    btn.addEventListener('click',runConsole);
+    document.getElementById('sqlInput').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')runConsole();});
+    runConsole();
+  }catch(e){
+    document.getElementById('dbstatus').innerHTML='<b style="color:var(--gold)">Live results need the hosted page.</b> The SQL and schema are all shown; open this on ablevlabs.com to run it.';
+    document.querySelectorAll('.rtable-wrap .rmeta').forEach(m=>m.textContent='(open the hosted page to see live results)');
+    console.error(e);
+  }
+}
+function runQuery(sql){const res=db.exec(sql);return res.length?{cols:res[0].columns,vals:res[0].values}:{cols:[],vals:[]};}
+
+function runWalkthrough(){
+  QDATA.queries.forEach(q=>{
+    try{
+      const {cols,vals}=runQuery(q.sql);
+      const wrap=document.getElementById('res_'+q.id);
+      wrap.innerHTML=tableHTML(cols,vals);
+      if(q.chart&&vals.length)drawChart(q,cols,vals);
+    }catch(e){document.getElementById('res_'+q.id).innerHTML='<div class="cerr" style="padding:.7rem">'+esc(e.message)+'</div>';}
+  });
+}
+function runConsole(){
+  const sql=document.getElementById('sqlInput').value.trim();
+  const err=document.getElementById('consoleErr'), out=document.getElementById('consoleResult'), meta=document.getElementById('consoleMeta');
+  err.textContent=''; if(!sql)return;
+  const t0=performance.now();
+  try{
+    const {cols,vals}=runQuery(sql);
+    const ms=(performance.now()-t0).toFixed(1);
+    out.style.display='block';
+    out.innerHTML=cols.length?tableHTML(cols,vals,500):'<div class="rmeta" style="padding:.7rem">Query ran, no rows returned.</div>';
+    meta.textContent=`${vals.length} row${vals.length===1?'':'s'} · ${ms} ms`+(vals.length>500?' · showing first 500':'');
+  }catch(e){out.style.display='none';meta.textContent='';err.textContent='SQL error: '+e.message;}
+}
+function renderChips(){
+  const ex=[
+    ['Title fights by decade',"SELECT (CAST(strftime('%Y',e.date) AS INT)/10)*10 AS decade,\n       COUNT(*) AS title_bouts\nFROM bouts b JOIN events e ON e.event_id=b.event_id\nWHERE b.title_bout=1 AND e.date IS NOT NULL\nGROUP BY decade ORDER BY decade;"],
+    ['Southpaw vs Orthodox wins',"SELECT f.stance, COUNT(*) AS wins\nFROM bouts b JOIN fighters f ON f.fighter_id=b.winner_id\nWHERE f.stance IS NOT NULL\nGROUP BY f.stance ORDER BY wins DESC;"],
+    ['Busiest referees',"SELECT referee, COUNT(*) AS bouts\nFROM bouts\nWHERE referee IS NOT NULL AND referee<>''\nGROUP BY referee ORDER BY bouts DESC LIMIT 10;"],
+    ['Tallest fighters',"SELECT name, height_in, reach_in, stance\nFROM fighters\nWHERE height_in IS NOT NULL\nORDER BY height_in DESC LIMIT 10;"],
+    ['Most knockdowns landed',"SELECT f.name, SUM(s.kd) AS knockdowns\nFROM fight_stats s JOIN fighters f ON f.fighter_id=s.fighter_id\nGROUP BY s.fighter_id ORDER BY knockdowns DESC LIMIT 10;"]
+  ];
+  document.getElementById('chips').innerHTML=ex.map((e,i)=>`<span class="chip" data-ex="${i}">${e[0]}</span>`).join('');
+  document.getElementById('chips').querySelectorAll('[data-ex]').forEach(c=>c.addEventListener('click',()=>{
+    document.getElementById('sqlInput').value=ex[+c.dataset.ex][1];
+    if(db)runConsole();
+  }));
+}
+window.EXCHIPS=null;
+boot();
+</script>
+</body>
+</html>

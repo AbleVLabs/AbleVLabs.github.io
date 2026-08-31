@@ -1,0 +1,53 @@
+{
+  "schema": [
+    {"table":"events","rows":789,"desc":"One row per UFC event.",
+     "cols":[["event_id","PK"],["name","text"],["date","date"],["city","text"],["country","text"]]},
+    {"table":"fighters","rows":4623,"desc":"One row per fighter, with tale-of-the-tape.",
+     "cols":[["fighter_id","PK"],["name","text"],["height_in","int"],["reach_in","int"],["weight_lbs","int"],["stance","text"],["dob","date"]]},
+    {"table":"bouts","rows":8885,"desc":"One row per fight, with foreign keys to the two fighters, the winner, and the event.",
+     "cols":[["bout_id","PK"],["event_id","FK events"],["fighter1_id","FK fighters"],["fighter2_id","FK fighters"],["winner_id","FK fighters"],["result_type","Win/Draw/No Contest"],["weight_class","text"],["title_bout","0/1"],["method","text"],["method_group","KO/TKO, Submission, Decision, Other"],["round","int"],["time","mm:ss"],["end_secs","int"],["referee","text"],["duration_secs","int"]]},
+    {"table":"fight_stats","rows":17726,"desc":"One row per fighter per bout: totals aggregated over rounds.",
+     "cols":[["bout_id","FK bouts"],["fighter_id","FK fighters"],["kd","knockdowns"],["sig_str_landed","int"],["sig_str_att","int"],["total_str_landed","int"],["td_landed","int"],["td_att","int"],["sub_att","int"],["reversals","int"],["ctrl_secs","control time"]]}
+  ],
+  "queries": [
+    {"id":"top_wins","title":"Who has the most UFC wins?","skill":"JOIN + GROUP BY + COUNT",
+     "explain":"Join every bout to its winner, then count wins per fighter. The simplest bread-and-butter query, and the foundation everything else builds on.",
+     "sql":"SELECT f.name, COUNT(*) AS wins\nFROM bouts b\nJOIN fighters f ON f.fighter_id = b.winner_id\nGROUP BY f.fighter_id\nORDER BY wins DESC\nLIMIT 10;",
+     "chart":{"type":"bar","x":"name","y":"wins","label":"wins"}},
+
+    {"id":"finish_rate","title":"Which fighters finish, instead of coasting to a decision?","skill":"CTE + CASE + ratio",
+     "explain":"A CTE counts each fighter's wins and how many were finishes (KO or submission), then the outer query turns that into a finish percentage. CASE inside SUM is the classic way to count a condition.",
+     "sql":"WITH w AS (\n  SELECT winner_id AS fid,\n         COUNT(*) AS wins,\n         SUM(CASE WHEN method_group IN ('KO/TKO','Submission') THEN 1 ELSE 0 END) AS finishes\n  FROM bouts\n  WHERE winner_id IS NOT NULL\n  GROUP BY winner_id\n)\nSELECT f.name, w.wins, w.finishes,\n       ROUND(100.0 * w.finishes / w.wins, 1) AS finish_pct\nFROM w\nJOIN fighters f ON f.fighter_id = w.fid\nWHERE w.wins >= 15\nORDER BY finish_pct DESC, wins DESC\nLIMIT 10;",
+     "chart":null},
+
+    {"id":"method_by_class","title":"Do heavier fighters really knock people out more?","skill":"Conditional aggregation (pivot with CASE)",
+     "explain":"Group bouts by weight class and, in one pass, compute the share ending by KO, submission, and decision. This pivots a category column into three metric columns.",
+     "sql":"SELECT weight_class,\n       COUNT(*) AS bouts,\n       ROUND(100.0*SUM(method_group='KO/TKO')  /COUNT(*),1) AS ko_pct,\n       ROUND(100.0*SUM(method_group='Submission')/COUNT(*),1) AS sub_pct,\n       ROUND(100.0*SUM(method_group='Decision') /COUNT(*),1) AS dec_pct\nFROM bouts\nWHERE weight_class IN ('Flyweight','Bantamweight','Featherweight','Lightweight',\n      'Welterweight','Middleweight','Light Heavyweight','Heavyweight')\nGROUP BY weight_class\nORDER BY bouts DESC;",
+     "chart":{"type":"grouped","x":"weight_class","series":["ko_pct","sub_pct","dec_pct"]}},
+
+    {"id":"win_streaks","title":"The longest win streaks in UFC history","skill":"Window functions (gaps and islands)",
+     "explain":"The showpiece. Each bout is unpivoted to one row per fighter with a win flag, then two ROW_NUMBER() windows are subtracted so consecutive wins share an island id. Counting each island gives the streak length.",
+     "sql":"WITH per_fighter AS (\n  SELECT b.bout_id, b.fighter1_id AS fid, e.date AS d,\n         (b.winner_id = b.fighter1_id) AS won\n  FROM bouts b JOIN events e ON e.event_id = b.event_id\n  WHERE b.result_type = 'Win'\n  UNION ALL\n  SELECT b.bout_id, b.fighter2_id, e.date,\n         (b.winner_id = b.fighter2_id)\n  FROM bouts b JOIN events e ON e.event_id = b.event_id\n  WHERE b.result_type = 'Win'\n),\nislands AS (\n  SELECT fid, won,\n         ROW_NUMBER() OVER (PARTITION BY fid          ORDER BY d, bout_id)\n       - ROW_NUMBER() OVER (PARTITION BY fid, won     ORDER BY d, bout_id) AS grp\n  FROM per_fighter\n)\nSELECT f.name, COUNT(*) AS win_streak\nFROM islands\nJOIN fighters f ON f.fighter_id = islands.fid\nWHERE won = 1\nGROUP BY fid, grp\nORDER BY win_streak DESC\nLIMIT 10;",
+     "chart":{"type":"bar","x":"name","y":"win_streak","label":"consecutive wins"}},
+
+    {"id":"fastest_finishes","title":"The fastest finishes ever recorded","skill":"Multi-table JOIN + derived opponent",
+     "explain":"Join each bout to its winner and event, then join again to look up the loser (the other corner) with a CASE. Ordering by elapsed seconds surfaces the quickest stoppages.",
+     "sql":"SELECT f.name AS winner,\n       l.name AS loser,\n       b.method, b.time,\n       ev.name AS event, ev.date\nFROM bouts b\nJOIN fighters f  ON f.fighter_id = b.winner_id\nJOIN fighters l  ON l.fighter_id = CASE WHEN b.winner_id = b.fighter1_id\n                                        THEN b.fighter2_id ELSE b.fighter1_id END\nJOIN events   ev ON ev.event_id = b.event_id\nWHERE b.method_group IN ('KO/TKO','Submission')\n  AND b.round = 1 AND b.end_secs > 0\nORDER BY b.end_secs ASC\nLIMIT 10;",
+     "chart":null},
+
+    {"id":"reach_edge","title":"Does a longer reach actually win fights?","skill":"Self-join + conditional aggregate",
+     "explain":"Join the bout to both fighters' tale-of-the-tape, keep bouts where reaches differ, and measure how often the longer-reach fighter won. A data-driven myth check.",
+     "sql":"WITH r AS (\n  SELECT b.winner_id, b.fighter1_id, b.fighter2_id,\n         f1.reach_in AS reach1, f2.reach_in AS reach2\n  FROM bouts b\n  JOIN fighters f1 ON f1.fighter_id = b.fighter1_id\n  JOIN fighters f2 ON f2.fighter_id = b.fighter2_id\n  WHERE b.result_type = 'Win'\n    AND f1.reach_in IS NOT NULL AND f2.reach_in IS NOT NULL\n    AND f1.reach_in <> f2.reach_in\n)\nSELECT COUNT(*) AS decided_bouts,\n       ROUND(100.0*SUM(CASE WHEN (reach1>reach2 AND winner_id=fighter1_id)\n                              OR (reach2>reach1 AND winner_id=fighter2_id)\n                            THEN 1 ELSE 0 END)/COUNT(*),1) AS longer_reach_win_pct\nFROM r;",
+     "chart":null},
+
+    {"id":"bouts_per_year","title":"How the UFC exploded: bouts per year","skill":"Date bucketing + GROUP BY",
+     "explain":"Pull the year out of each event date and count bouts. A time series that tells the story of the sport growing from a curiosity in 1994 to hundreds of fights a year.",
+     "sql":"SELECT strftime('%Y', e.date) AS year,\n       COUNT(*) AS bouts\nFROM bouts b\nJOIN events e ON e.event_id = b.event_id\nWHERE e.date IS NOT NULL\nGROUP BY year\nORDER BY year;",
+     "chart":{"type":"line","x":"year","y":"bouts","label":"bouts"}},
+
+    {"id":"control_time","title":"The grinders: most octagon control time","skill":"JOIN to stats + SUM + HAVING",
+     "explain":"Sum control-time seconds from the per-fight stats table for each fighter, filtering to those with a real sample of fights. HAVING filters on the aggregate, which WHERE cannot do.",
+     "sql":"SELECT f.name,\n       ROUND(SUM(s.ctrl_secs)/60.0) AS control_minutes,\n       COUNT(*) AS fights\nFROM fight_stats s\nJOIN fighters f ON f.fighter_id = s.fighter_id\nGROUP BY s.fighter_id\nHAVING fights >= 12\nORDER BY control_minutes DESC\nLIMIT 10;",
+     "chart":{"type":"bar","x":"name","y":"control_minutes","label":"control minutes"}}
+  ]
+}

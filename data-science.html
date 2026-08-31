@@ -104,7 +104,7 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     notebook so you can see exactly how it was done.</p>
   <div class="stack">
     <span>Python</span><span>pandas</span><span>NumPy</span><span>scikit-learn</span>
-    <span>TensorFlow / Keras</span><span>Matplotlib / Seaborn</span><span>Jupyter</span><span>Chart.js</span>
+    <span>SQL / SQLite</span><span>TensorFlow / Keras</span><span>Matplotlib / Seaborn</span><span>Jupyter</span><span>Chart.js</span>
   </div>
 </section>
 
@@ -360,9 +360,72 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     </div>
   </div>
 
+  <div class="case" style="margin-top:2rem">
+    <div class="case-top">
+      <div>
+        <h2>UFC in SQL: A Live Query Console</h2>
+        <div class="pill-row"><span>SQL</span><span>Relational modeling</span><span>Window functions</span></div>
+      </div>
+      <span class="tag">◆ Live in-browser database + notebook</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">The question</div>
+        <p>Take 30 years of UFC fights and do what a data analyst is actually paid to do: <b>model the data
+          into a clean relational database</b>, then <b>answer real questions in SQL</b>, from simple joins up
+          to window functions. And make it something a recruiter can run themselves.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The data</div>
+        <p>A real scrape of <b>ufcstats.com</b>: every event, fighter, and bout. It arrives flat and
+          denormalized, so the first job was <b>modeling</b> it into four linked tables with proper keys:
+          <b>events</b> (789), <b>fighters</b> (4,623), <b>bouts</b> (8,885), and per-fight <b>fight_stats</b>
+          (17,726), spanning 1994 to 2026.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The approach</div>
+        <p>Normalize the schema &rarr; write eight analyst queries, each matched to the right technique:
+          <b>JOIN + GROUP BY</b> for win counts, <b>CTE + CASE</b> for finish rates, conditional aggregation
+          for method mix, a <b>self-join</b> for reach, date bucketing for growth, and <b>window functions</b>
+          (gaps-and-islands) for win streaks &rarr; then ship the whole SQLite database into the browser with
+          <b>sql.js</b>, so every result is computed live and visitors can run their own SQL.</p>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><div class="v g">8,885</div><div class="l">bouts, fully queryable</div></div>
+        <div class="metric"><div class="v">4</div><div class="l">linked tables</div></div>
+        <div class="metric"><div class="v">8</div><div class="l">showcase queries</div></div>
+        <div class="metric"><div class="v g">live</div><div class="l">runs in your browser</div></div>
+      </div>
+
+      <div class="qa">
+        <div class="q">What it found</div>
+        <p>Jim Miller holds the most wins (28); the window-function query surfaces the legendary streaks,
+          Jon Jones at 19 and Anderson Silva at 16; heavyweights finish <b>51% by KO</b> while lighter classes
+          go to decision far more often; and a reach advantage, contrary to the myth, wins only about
+          <b>52%</b> of the time. The best part is the <b>live console</b>: anyone can write their own query
+          against the real database and get an answer instantly, no server involved.</p>
+      </div>
+      <div class="qa">
+        <div class="q">Skills demonstrated</div>
+        <div class="pill-row">
+          <span>SQL</span><span>relational data modeling</span><span>normalization</span>
+          <span>JOINs</span><span>GROUP BY / aggregation</span><span>CTEs</span>
+          <span>window functions</span><span>self-joins</span><span>date functions</span>
+          <span>CASE logic</span><span>in-browser database (sql.js)</span>
+        </div>
+      </div>
+
+      <div class="btns">
+        <a class="btn btn-fill" href="/sql-dashboard.html">Open the live SQL console &#8599;</a>
+        <a class="btn btn-ghost" href="/ufc-sql-notebook.html" target="_blank" rel="noopener">View the full notebook &#8599;</a>
+      </div>
+    </div>
+  </div>
+
   <div class="soon">
-    <b>More case studies coming.</b> This portfolio grows with each project. Next up: an SQL-driven
-    analysis, and a deeper geospatial model.
+    <b>More case studies coming.</b> This portfolio grows with each project. Next up: a deeper geospatial
+    model, and an A/B test with real statistics.
   </div>
 </div></section>
 
@@ -373,6 +436,7 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     <a href="/ufo-dashboard.html">UFO map &#8599;</a>
     <a href="/mushroom-dashboard.html">Mushrooms &#8599;</a>
     <a href="/mnist-dashboard.html">Draw pad &#8599;</a>
+    <a href="/sql-dashboard.html">SQL console &#8599;</a>
     <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
     <a href="https://ablevlabs.com/">ablevlabs.com &#8599;</a>
   </span>
