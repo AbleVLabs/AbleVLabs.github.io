@@ -235,9 +235,73 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     </div>
   </div>
 
+  <div class="case" style="margin-top:2rem">
+    <div class="case-top">
+      <div>
+        <h2>Poisonous or Edible? A Mushroom Classifier</h2>
+        <div class="pill-row"><span>Classification</span><span>Real UCI data</span><span>Interpretable</span></div>
+      </div>
+      <span class="tag">◆ Live predictor + threshold demo + notebook</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">The question</div>
+        <p>Given 22 traits of a mushroom, is it <b>edible or poisonous?</b> A binary classification problem
+          with a brutal twist: one kind of error is annoying, the other is fatal. That asymmetry is the
+          whole point of the study.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The data</div>
+        <p>The classic <b>UCI Mushroom</b> dataset: 8,124 real mushrooms from a 1981 Audubon Society field
+          guide, every trait categorical. Real cleaning calls too: a <b>constant column</b> that carries no
+          information gets dropped, and <b>2,480 missing</b> stalk-root values are kept as their own category
+          rather than thrown away. Then every trait is <b>one-hot encoded</b> into 116 features.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The approach</div>
+        <p>Explore (odor alone nearly separates the classes) &rarr; one-hot encode &rarr; train a
+          <b>logistic regression</b> and a <b>decision tree</b> with a proper train/test split &rarr; then
+          judge them the right way: <b>confusion matrix, precision, recall, ROC and AUC</b>, and a tuned
+          decision <b>threshold</b>, not a single accuracy number.</p>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><div class="v g">99.9%</div><div class="l">accuracy (both models)</div></div>
+        <div class="metric"><div class="v">2</div><div class="l">poison missed at 0.50 cutoff</div></div>
+        <div class="metric"><div class="v g">1.00</div><div class="l">ROC AUC</div></div>
+        <div class="metric"><div class="v">8,124</div><div class="l">mushrooms</div></div>
+      </div>
+
+      <div class="qa">
+        <div class="q">What it found</div>
+        <p>Both models scored above <b>99.8%</b> on every metric, and made <b>zero</b> false positives. The
+          catch: they still labeled <b>2 poisonous mushrooms as edible</b>. Every mistake was the dangerous
+          kind, which plain accuracy hid completely. Lowering the decision threshold drives those false
+          negatives to zero. The tree also stayed readable: <b>odor</b> carries most of the signal, and its
+          top rules read like a foraging heuristic. The real lesson transfers straight to fraud detection and
+          disease screening: <b>when one error is far more costly, accuracy is a trap and the confusion matrix
+          is the truth.</b></p>
+      </div>
+      <div class="qa">
+        <div class="q">Skills demonstrated</div>
+        <div class="pill-row">
+          <span>classification</span><span>one-hot encoding</span><span>missing-data strategy</span>
+          <span>logistic regression</span><span>decision trees</span><span>confusion matrix</span>
+          <span>precision / recall</span><span>ROC / AUC</span><span>threshold tuning</span>
+          <span>cost-sensitive evaluation</span><span>model interpretability</span>
+        </div>
+      </div>
+
+      <div class="btns">
+        <a class="btn btn-fill" href="/mushroom-dashboard.html">Open the interactive walkthrough &#8599;</a>
+        <a class="btn btn-ghost" href="/mushroom-notebook.html" target="_blank" rel="noopener">View the full notebook &#8599;</a>
+      </div>
+    </div>
+  </div>
+
   <div class="soon">
-    <b>More case studies coming.</b> This portfolio grows with each project. Next up: a classification
-    problem, and a deeper geospatial model.
+    <b>More case studies coming.</b> This portfolio grows with each project. Next up: an SQL-driven
+    analysis, and a deeper geospatial model.
   </div>
 </div></section>
 
@@ -246,6 +310,7 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
   <span class="ft">
     <a href="/powerlifting-dashboard.html">Strength &#8599;</a>
     <a href="/ufo-dashboard.html">UFO map &#8599;</a>
+    <a href="/mushroom-dashboard.html">Mushrooms &#8599;</a>
     <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
     <a href="https://ablevlabs.com/">ablevlabs.com &#8599;</a>
   </span>
