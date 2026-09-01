@@ -104,7 +104,7 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     notebook so you can see exactly how it was done.</p>
   <div class="stack">
     <span>Python</span><span>pandas</span><span>NumPy</span><span>scikit-learn</span>
-    <span>SQL / SQLite</span><span>TensorFlow / Keras</span><span>Matplotlib / Seaborn</span><span>Jupyter</span><span>Chart.js</span>
+    <span>SQL / SQLite</span><span>TensorFlow / Keras</span><span>NLP / embeddings</span><span>Matplotlib / Seaborn</span><span>Jupyter</span><span>Chart.js</span>
   </div>
 </section>
 
@@ -423,9 +423,67 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     </div>
   </div>
 
+  <div class="case" style="margin-top:2rem">
+    <div class="case-top">
+      <div>
+        <h2>Search 80,000 UFO Reports by Meaning</h2>
+        <div class="pill-row"><span>NLP</span><span>Embeddings</span><span>Runs in-browser</span></div>
+      </div>
+      <span class="tag">◆ Live semantic search</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">The question</div>
+        <p>Keyword search breaks when people describe the same thing with different words. Can we search
+          80,000 real UFO reports by <b>meaning</b> instead, so "a silent triangle over the highway" finds a
+          report about "a triangular craft hovering above the road," even with <b>zero shared words?</b></p>
+      </div>
+      <div class="qa">
+        <div class="q">The data</div>
+        <p>The full <b>NUFORC</b> report archive (via TidyTuesday): about 80,000 free-text sighting
+          descriptions. The page pulls the real reports at runtime and indexes a live sample of them.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The approach</div>
+        <p>This is modern <b>NLP</b>: a sentence-embedding transformer (<b>all-MiniLM-L6-v2</b>) is downloaded
+          and run <b>entirely in the browser</b> with WebAssembly (transformers.js), no server. Each report
+          becomes a <b>384-dimensional vector</b> that captures its meaning; your query becomes one too; and
+          results are ranked by <b>cosine similarity</b>. The index is built once and cached in the browser
+          (IndexedDB), so later searches are instant.</p>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><div class="v">80,332</div><div class="l">reports in the archive</div></div>
+        <div class="metric"><div class="v">384-d</div><div class="l">embedding per report</div></div>
+        <div class="metric"><div class="v g">0</div><div class="l">servers (runs in-browser)</div></div>
+        <div class="metric"><div class="v g">cosine</div><div class="l">similarity ranking</div></div>
+      </div>
+
+      <div class="qa">
+        <div class="q">What it shows</div>
+        <p>Real <b>semantic search</b>: type a vibe and the model surfaces sightings that mean the same thing,
+          not ones that happen to share a word. It is the same technique behind modern search, recommendations,
+          and retrieval-augmented AI, running live on a static page with <b>no backend at all</b>. Try a query
+          like "lights that changed color then vanished" and watch it rank the closest real reports.</p>
+      </div>
+      <div class="qa">
+        <div class="q">Skills demonstrated</div>
+        <div class="pill-row">
+          <span>NLP</span><span>sentence embeddings</span><span>semantic / vector search</span>
+          <span>cosine similarity</span><span>transformers.js</span><span>in-browser ML (WASM)</span>
+          <span>IndexedDB caching</span><span>data wrangling</span>
+        </div>
+      </div>
+
+      <div class="btns">
+        <a class="btn btn-fill" href="/ufo-search.html">Open the live semantic search &#8599;</a>
+      </div>
+    </div>
+  </div>
+
   <div class="soon">
-    <b>More case studies coming.</b> This portfolio grows with each project. Next up: a deeper geospatial
-    model, and an A/B test with real statistics.
+    <b>More case studies coming.</b> This portfolio grows with each project. Next up: an R and Tableau
+    build, and a deeper geospatial model.
   </div>
 </div></section>
 
@@ -437,6 +495,7 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     <a href="/mushroom-dashboard.html">Mushrooms &#8599;</a>
     <a href="/mnist-dashboard.html">Draw pad &#8599;</a>
     <a href="/sql-dashboard.html">SQL console &#8599;</a>
+    <a href="/ufo-search.html">UFO search &#8599;</a>
     <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
     <a href="https://ablevlabs.com/">ablevlabs.com &#8599;</a>
   </span>

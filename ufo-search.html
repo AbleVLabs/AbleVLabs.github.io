@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Semantic search over 80,000 real NUFORC UFO reports, powered by a transformer embedding model that runs entirely in your browser. Search by meaning, not keywords. By Carlos Abel Vivanco / AbleVLabs.">
+<meta name="theme-color" content="#04050a">
+<title>Semantic Search over UFO Reports · AbleV Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#04050a;--bg2:#080c14;--accent:#00d4ff;--accent2:#6c3fff;--gold:#e8960a;
+  --green:#00ff88;--pink:#ff5c9d;--red:#ff5a5a;--text:#e8edf5;--muted:#5a6480;--dim:#2a3050;
+  --border:rgba(0,212,255,.14);--card:rgba(8,14,26,.75)}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;padding:1.6rem;
+  background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);
+  background-size:60px 60px}
+.wrap{max-width:900px;margin:0 auto}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;
+  border-bottom:1px solid var(--border);padding-bottom:1.1rem;margin-bottom:.6rem}
+.kicker{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.1rem);letter-spacing:.02em;line-height:.95}
+h1 .c{color:var(--accent)}
+.lead{color:var(--muted);font-size:1rem;margin-top:.5rem;max-width:70ch;line-height:1.6}
+.back{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap}.back:hover{color:var(--accent)}
+
+.honest{display:flex;gap:.9rem;align-items:flex-start;background:linear-gradient(150deg,rgba(0,212,255,.08),rgba(108,63,255,.05));
+  border:1px solid rgba(0,212,255,.3);border-radius:14px;padding:1rem 1.2rem;margin:1.4rem 0}
+.honest .ic{font-size:1.4rem;line-height:1}
+.honest .ht{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
+.honest p{color:var(--text);font-size:.9rem;line-height:1.6}
+
+.searchbox{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.3rem 1.4rem}
+.searchrow{display:flex;gap:.7rem;flex-wrap:wrap}
+#q{flex:1 1 320px;background:#070b14;color:var(--text);border:1px solid var(--dim);border-radius:11px;
+  padding:.85rem 1rem;font-family:'Rajdhani',sans-serif;font-size:1.05rem}
+#q:focus{outline:none;border-color:var(--accent)}
+#q::placeholder{color:#44506e}
+.sbtn{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+  background:var(--accent);color:#001018;border:0;border-radius:11px;padding:0 1.4rem;cursor:pointer;transition:.15s}
+.sbtn:hover{background:#fff}.sbtn:disabled{opacity:.4;cursor:not-allowed}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.9rem}
+.chip{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);border:1px solid var(--dim);border-radius:16px;padding:.35rem .8rem;cursor:pointer;transition:.15s}
+.chip:hover{color:#fff;border-color:var(--accent)}
+.chip.dim{opacity:.4;pointer-events:none}
+
+.status{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.3rem;margin-top:1rem}
+.status .sl{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--text)}
+.status .sl b{color:var(--accent)}
+.bar{height:8px;background:#0b1220;border-radius:6px;overflow:hidden;margin-top:.7rem;border:1px solid var(--border)}
+.bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .2s}
+.substep{font-family:'Space Mono',monospace;font-size:.56rem;color:var(--muted);margin-top:.5rem;min-height:1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.results{margin-top:1.4rem;display:flex;flex-direction:column;gap:.8rem}
+.rcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;display:grid;grid-template-columns:54px 1fr;gap:1rem;align-items:start}
+.score{display:flex;flex-direction:column;align-items:center;gap:.3rem}
+.score .sv{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--green);line-height:1}
+.score .sbar{width:8px;height:46px;background:#0b1220;border-radius:5px;overflow:hidden;display:flex;align-items:flex-end;border:1px solid var(--border)}
+.score .sbar > i{display:block;width:100%;background:linear-gradient(0deg,var(--accent2),var(--green))}
+.rtext{font-size:1rem;line-height:1.5;color:var(--text)}
+.rmeta{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:.5rem;display:flex;gap:1rem;flex-wrap:wrap}
+.rmeta b{color:var(--accent)}
+
+.foot{color:var(--muted);font-size:.78rem;margin-top:2rem;text-align:center;line-height:1.7;border-top:1px solid var(--border);padding-top:1.2rem}
+.foot a{text-decoration:none}
+@media(max-width:600px){.rcard{grid-template-columns:1fr}.score{flex-direction:row}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="kicker">◆ Data Science · Case Study 06</div>
+      <h1>Search 80,000 UFO reports by <span class="c">meaning</span></h1>
+      <p class="lead">Not keyword search. Type what you picture, and a neural network finds the real
+        sightings that <em>mean</em> the same thing, even with different words. The model runs entirely in
+        your browser.</p>
+    </div>
+    <a class="back" href="/data-science.html">← Back to the case study</a>
+  </div>
+
+  <div class="honest">
+    <div class="ic">🛸</div>
+    <div>
+      <div class="ht">How this works</div>
+      <p>A sentence-embedding model (MiniLM) is downloaded and run <b>in your browser</b> with WebAssembly, no
+        server. It turns each real NUFORC report into a 384-number vector that captures its meaning, and does
+        the same to your query, then ranks reports by cosine similarity. The index is built once and cached, so
+        searches after that are instant.</p>
+    </div>
+  </div>
+
+  <div class="searchbox">
+    <div class="searchrow">
+      <input id="q" placeholder="e.g. a silent triangle hovering over the highway" autocomplete="off" disabled>
+      <button class="sbtn" id="go" disabled>Search</button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="status" id="status">
+    <div class="sl" id="statusLine">Starting up…</div>
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="substep" id="substep"></div>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <div class="foot">
+    Data: <b>NUFORC</b> via the TidyTuesday mirror · Model: <b>all-MiniLM-L6-v2</b> via transformers.js (runs in-browser) ·
+    Built by <b>Carlos Abel Vivanco / AbleV Labs</b><br>
+    <a href="/data-science.html">Back to the case study →</a>
+  </div>
+</div>
+
+<script>
+const MODEL='Xenova/all-MiniLM-L6-v2', DIM=384, N=400, VER='ufo-idx-v1';
+const CSV='https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-25/ufo_sightings.csv';
+const EX=['a silent triangle hovering over the highway','glowing orange orbs moving in formation',
+  'something fell from the sky and hit the ground','missing time after a close encounter',
+  'lights that changed color then vanished','a metallic disc reflecting the sun'];
+let extractor=null, CORP=null, VEC=null;
+const $=id=>document.getElementById(id);
+const setStatus=(h,pct)=>{$('statusLine').innerHTML=h; if(pct!=null)$('barFill').style.width=pct+'%';};
+const sub=t=>{$('substep').textContent=t;};
+
+// ---- tiny IndexedDB cache ----
+function idb(fn){return new Promise(res=>{const r=indexedDB.open('ufoSearch',1);
+  r.onupgradeneeded=()=>{r.result.createObjectStore('kv');};
+  r.onsuccess=()=>{try{fn(r.result,res);}catch(e){res(null);}}; r.onerror=()=>res(null);});}
+const idbGet=k=>idb((db,res)=>{const t=db.transaction('kv','readonly').objectStore('kv').get(k);t.onsuccess=()=>res(t.result);t.onerror=()=>res(null);});
+const idbSet=(k,v)=>idb((db,res)=>{const t=db.transaction('kv','readwrite').objectStore('kv').put(v,k);t.onsuccess=()=>res(true);t.onerror=()=>res(false);});
+
+function parseCSV(text){const rows=[];let f='',row=[],i=0,q=false;
+  while(i<text.length){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}
+    else{if(c==='"')q=true;else if(c===','){row.push(f);f='';}else if(c==='\n'){row.push(f);rows.push(row);row=[];f='';}else if(c!=='\r')f+=c;}
+    i++;}
+  if(f.length||row.length){row.push(f);rows.push(row);}return rows;}
+
+async function boot(){
+  try{
+    setStatus('Loading the embedding model <b>(~23 MB, one-time)</b>…',6);
+    const T=await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+    T.env.allowLocalModels=false;
+    extractor=await T.pipeline('feature-extraction',MODEL);
+    setStatus('Model ready. Checking for a cached index…',14);
+
+    const cached=await idbGet(VER);
+    if(cached && cached.corp && cached.buf){
+      CORP=cached.corp; VEC=new Float32Array(cached.buf);
+      finishReady(true);
+      return;
+    }
+    setStatus('Fetching real UFO reports…',18);
+    const txt=await fetch(CSV).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text();});
+    const rows=parseCSV(txt), head=rows[0];
+    const iD=head.indexOf('description'),iC=head.indexOf('city_area'),iS=head.indexOf('state'),iSh=head.indexOf('ufo_shape'),iDt=head.indexOf('date_time');
+    const pool=[];
+    for(const r of rows.slice(1)){ if(r.length<=iD)continue;
+      let d=(r[iD]||'').replace(/&#\d+;?/g,' ').replace(/&quot;?/g,'"').replace(/\s+/g,' ').trim();
+      if(d.length<45||d.length>360)continue;
+      pool.push({d:d.slice(0,240),s:(r[iS]||'').toUpperCase().trim(),sh:(r[iSh]||'').trim(),y:((r[iDt]||'').match(/\d{4}/)||[''])[0]});
+    }
+    const step=Math.max(1,Math.floor(pool.length/N));
+    CORP=[]; for(let k=0;k<pool.length&&CORP.length<N;k+=step)CORP.push(pool[k]);
+    setStatus('Building the neural search index in your browser…',22);
+
+    VEC=new Float32Array(CORP.length*DIM);
+    const B=24;
+    for(let i=0;i<CORP.length;i+=B){
+      const batch=CORP.slice(i,i+B).map(r=>r.d);
+      const out=await extractor(batch,{pooling:'mean',normalize:true});
+      VEC.set(out.data,i*DIM);
+      const done=Math.min(i+B,CORP.length);
+      setStatus('Building the neural search index in your browser…',22+Math.round(76*done/CORP.length));
+      sub('embedded '+done+' / '+CORP.length+'  ·  "'+CORP[i].d.slice(0,54)+'…"');
+      await new Promise(r=>setTimeout(r,0));
+    }
+    await idbSet(VER,{corp:CORP,buf:VEC.buffer});
+    finishReady(false);
+  }catch(e){
+    setStatus('<b style="color:var(--gold)">Could not start.</b> This page needs internet access for the model and the reports. '+e.message,100);
+    console.error(e);
+  }
+}
+
+function finishReady(cached){
+  setStatus('<b style="color:var(--green)">Ready.</b> '+CORP.length+' real UFO reports indexed'+(cached?' (from cache)':'')+'. Search by meaning below.',100);
+  sub('');
+  $('q').disabled=false; $('go').disabled=false;
+  $('chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('dim'));
+  $('q').focus();
+  setTimeout(()=>{$('status').style.opacity=.6;},1200);
+}
+
+async function search(){
+  const q=$('q').value.trim(); if(!q||!VEC)return;
+  $('go').disabled=true; $('go').textContent='…';
+  const out=await extractor([q],{pooling:'mean',normalize:true});
+  const qv=out.data;
+  const scored=[];
+  for(let i=0;i<CORP.length;i++){ let s=0; const off=i*DIM;
+    for(let k=0;k<DIM;k++) s+=qv[k]*VEC[off+k];
+    scored.push([s,i]); }
+  scored.sort((a,b)=>b[0]-a[0]);
+  const box=$('results'); box.innerHTML='';
+  for(let n=0;n<8;n++){ const [s,i]=scored[n]; const r=CORP[i];
+    const pctBar=Math.max(4,Math.round(s*100));
+    box.insertAdjacentHTML('beforeend',
+      `<div class="rcard"><div class="score"><div class="sv">${s.toFixed(2)}</div>
+         <div class="sbar"><i style="height:${pctBar}%"></i></div></div>
+        <div><div class="rtext">${esc(r.d)}</div>
+          <div class="rmeta"><span>match <b>${(s*100).toFixed(0)}%</b></span>
+            <span>state <b>${r.s||'?'}</b></span><span>shape <b>${r.sh||'?'}</b></span><span>year <b>${r.y||'?'}</b></span></div>
+        </div></div>`);
+  }
+  $('go').disabled=false; $('go').textContent='Search';
+}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+// wire up
+$('chips').innerHTML=EX.map(e=>`<span class="chip dim">${e}</span>`).join('');
+$('chips').querySelectorAll('.chip').forEach((c,i)=>c.addEventListener('click',()=>{$('q').value=EX[i];search();}));
+$('go').addEventListener('click',search);
+$('q').addEventListener('keydown',e=>{if(e.key==='Enter')search();});
+boot();
+</script>
+</body>
+</html>
