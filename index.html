@@ -332,6 +332,16 @@ section { position: relative; z-index: 1; }
 .ds-banner .s { font-family:'Space Mono',monospace; font-size:.66rem; letter-spacing:.03em; color:var(--muted); margin-top:5px; line-height:1.5; }
 .ds-banner .go { font-family:'Space Mono',monospace; font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green); white-space:nowrap; flex:0 0 auto; }
 @media(max-width:600px){ .ds-banner{ flex-wrap:wrap; } .ds-banner .go{ width:100%; } }
+.art-banner { display:flex; align-items:center; gap:1.3rem; margin:0 0 2.4rem; padding:1.4rem 1.7rem;
+  background:linear-gradient(100deg, rgba(255,59,71,.12), rgba(255,122,26,.05) 55%, transparent);
+  border:1px solid rgba(255,59,71,.34); border-radius:16px; text-decoration:none; color:inherit; transition:.2s; }
+.art-banner:hover { border-color:rgba(255,59,71,.7); transform:translateY(-3px); box-shadow:0 22px 54px -26px rgba(255,59,71,.5); }
+.art-banner .ic { font-size:2rem; color:#ff3b47; flex:0 0 auto; line-height:1; }
+.art-banner .txt { flex:1; min-width:0; }
+.art-banner .t { font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1.5rem; color:#fff; letter-spacing:.02em; }
+.art-banner .s { font-family:'Space Mono',monospace; font-size:.66rem; letter-spacing:.03em; color:var(--muted); margin-top:5px; line-height:1.5; }
+.art-banner .go { font-family:'Space Mono',monospace; font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:#ff3b47; white-space:nowrap; flex:0 0 auto; }
+@media(max-width:600px){ .art-banner{ flex-wrap:wrap; } .art-banner .go{ width:100%; } }
 .pcard { display: flex; align-items: center; gap: 16px; background: var(--card); border: 1px solid var(--border);
   border-radius: 16px; padding: 15px 17px; text-decoration: none; color: inherit; position: relative; overflow: hidden;
   transition: transform .18s, border-color .18s, box-shadow .18s; }
@@ -711,6 +721,7 @@ footer {
     <li><a href="#projects">Projects</a></li>
     <li><a href="#updates">Updates</a></li>
     <li><a href="#books">Books</a></li>
+    <li><a href="/gallery.html" style="color:#ff3b47">Collection</a></li>
     <li><a href="#community" style="color:#8b95ff">Community</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#nextup">Next Up</a></li>
@@ -761,6 +772,15 @@ footer {
         <div class="s">End-to-end ML case studies &middot; interactive dashboards &middot; reproducible notebooks</div>
       </div>
       <span class="go">View portfolio &#8599;</span>
+    </a>
+
+    <a href="/gallery.html" class="art-banner rv">
+      <span class="ic">&#9670;</span>
+      <div class="txt">
+        <div class="t">The Gone Wrongs &middot; Art Collection</div>
+        <div class="s">Original characters, collectible as NFTs &middot; something went wrong</div>
+      </div>
+      <span class="go">View collection &#8599;</span>
     </a>
 
     <!-- ===== Fitness & Well-being ===== -->
