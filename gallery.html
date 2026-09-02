@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The Gone Wrongs: original characters by Carlos Abel Vivanco. Something went wrong. Each one can be collected as an NFT.">
+<meta name="theme-color" content="#04050a">
+<meta property="og:title" content="The Gone Wrongs · Original Art by AbleVLabs">
+<meta property="og:url" content="https://ablevlabs.com/gallery.html">
+<title>The Gone Wrongs · AbleV Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@900&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ===================================================================
+   HOW TO ADD YOUR ART (easy):
+   1. Put your image in the /art folder next to this file (e.g. art/piece1.png).
+   2. In the PIECES array in the script near the bottom, edit an entry:
+        { title, desc, img:'./art/piece1.png', edition, price, link, status }
+      - img:  path to your image (leave '' to show a placeholder tile)
+      - link: the marketplace URL where it can be collected (e.g. your OpenSea listing)
+      - status: 'available' or 'coming soon'
+   3. Save. That is it. Add as many entries as you like.
+   =================================================================== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#04050a;--bg2:#0a0709;--accent:#ff3b47;--accent2:#ff7a1a;--gold:#e8960a;
+  --green:#00ff88;--pink:#ff5c9d;--red:#ff5a5a;--text:#e8edf5;--muted:#9a8b90;--dim:#3a2a30;
+  --border:rgba(255,59,71,.16);--card:rgba(18,10,12,.72)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;padding:1.6rem;
+  background-image:linear-gradient(rgba(255,59,71,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,59,71,.025) 1px,transparent 1px);
+  background-size:60px 60px}
+.wrap{max-width:1120px;margin:0 auto}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;
+  border-bottom:1px solid var(--border);padding-bottom:1.1rem;margin-bottom:.6rem}
+.kicker{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+/* Title: Orbitron Black, white with a red "error" glow + slight glitch offset.
+   Change the color (#fff) or the red rgba glow below if you want a different look. */
+h1{font-family:'Orbitron',sans-serif;font-weight:900;text-transform:uppercase;
+  font-size:clamp(2rem,7vw,4.6rem);letter-spacing:.02em;line-height:1.02;color:#fff;
+  text-shadow:0 0 24px rgba(255,59,71,.4), 2px 0 rgba(255,59,71,.55), -2px 0 rgba(255,255,255,.06)}
+.lead{color:var(--muted);font-size:1.05rem;margin-top:.6rem;max-width:66ch;line-height:1.6}
+.lead em{font-style:normal;color:var(--text)}
+.back{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap}.back:hover{color:var(--accent)}
+
+.note{display:flex;gap:.9rem;align-items:flex-start;background:linear-gradient(150deg,rgba(232,150,10,.08),rgba(255,59,71,.06));
+  border:1px solid rgba(232,150,10,.3);border-radius:14px;padding:1rem 1.2rem;margin:1.4rem 0}
+.note .ic{font-size:1.4rem;line-height:1}
+.note .ht{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem}
+.note p{color:var(--text);font-size:.9rem;line-height:1.6}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.3rem;margin-top:1.4rem}
+.piece{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;
+  transition:transform .18s,box-shadow .18s,border-color .18s}
+.piece:hover{transform:translateY(-4px);border-color:rgba(255,59,71,.45);box-shadow:0 24px 60px -40px rgba(255,59,71,.7)}
+.pimg{aspect-ratio:1;width:100%;display:block;object-fit:cover;background:#070b14;border-bottom:1px solid var(--border)}
+.pbody{padding:1rem 1.1rem 1.2rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
+.ptitle{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.02em;color:#fff;line-height:1}
+.pdesc{color:var(--muted);font-size:.86rem;line-height:1.5;flex:1}
+.prow{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-family:'Space Mono',monospace;font-size:.6rem;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.prow .ed b{color:var(--text)}
+.status{border-radius:16px;padding:2px 9px;border:1px solid}
+.status.available{color:var(--green);border-color:rgba(0,255,136,.4)}
+.status.soon{color:var(--gold);border-color:rgba(232,150,10,.4)}
+.collect{margin-top:.4rem;display:block;text-align:center;font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:700;padding:.7rem;border-radius:10px;text-decoration:none;transition:.15s}
+.collect.on{background:var(--accent);color:#001018}.collect.on:hover{background:#fff}
+.collect.off{background:transparent;color:var(--muted);border:1px solid var(--dim);cursor:default;pointer-events:none}
+
+.how{margin-top:2.4rem;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.4rem 1.5rem}
+.how h2{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:#fff;margin-bottom:.3rem}
+.how ol{margin:.6rem 0 0 1.1rem;color:var(--muted);font-size:.92rem;line-height:1.8}
+.how ol b{color:var(--text)}
+
+.foot{color:var(--muted);font-size:.78rem;margin-top:2.2rem;text-align:center;line-height:1.7;border-top:1px solid var(--border);padding-top:1.2rem}
+.foot a{text-decoration:none}
+.disc{color:var(--dim);font-size:.68rem;margin-top:.5rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="kicker">◆ Art · The Gone Wrongs</div>
+      <h1>The Gone Wrongs</h1>
+      <p class="lead"><em>Something went wrong.</em> The Gone Wrongs are original characters by
+        Carlos Abel Vivanco, each one a glitch, a mistake, a thing that came out wrong. Every character can be
+        <em>collected as an NFT</em>, a signed, on-chain original. Collect one because it speaks to you.</p>
+    </div>
+    <a class="back" href="https://ablevlabs.com/">← ablevlabs.com</a>
+  </div>
+
+  <div class="note">
+    <div class="ic">◆</div>
+    <div>
+      <div class="ht">A note on collecting</div>
+      <p>These are <b>artworks</b>, not investments. Nothing here is a promise of profit or financial advice,
+        collect a piece simply because you like it. Every piece is my own original work.</p>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="how">
+    <h2>How to collect</h2>
+    <ol>
+      <li>Tap <b>Collect</b> on a piece to open its listing on the marketplace.</li>
+      <li>Connect a crypto wallet (like <b>MetaMask</b>) on that marketplace.</li>
+      <li>Complete the purchase there. The NFT lands in your wallet, and it is yours.</li>
+    </ol>
+  </div>
+
+  <div class="foot">
+    Original art by <b>Carlos Abel Vivanco / AbleV Labs</b> ·
+    <a href="https://ablevlabs.com/">ablevlabs.com &#8599;</a>
+    <div class="disc">Digital collectibles. Not financial advice. Collect for the love of the art.</div>
+  </div>
+</div>
+
+<script>
+/* ==== EDIT YOUR PIECES HERE ==================================================
+   Replace img with your file in /art, set the marketplace link, and flip status. */
+const PIECES = [
+  {title:"Character 01", desc:"New original character. Coming soon.", img:"", edition:"1 of 1", price:"", link:"", status:"coming soon"},
+  {title:"Character 02", desc:"New original character. Coming soon.", img:"", edition:"1 of 1", price:"", link:"", status:"coming soon"},
+  {title:"Character 03", desc:"New original character. Coming soon.", img:"", edition:"1 of 1", price:"", link:"", status:"coming soon"},
+  {title:"Character 04", desc:"New original character. Coming soon.", img:"", edition:"1 of 1", price:"", link:"", status:"coming soon"},
+  {title:"Character 05", desc:"New original character. Coming soon.", img:"", edition:"1 of 1", price:"", link:"", status:"coming soon"},
+  {title:"Character 06", desc:"New original character. Coming soon.", img:"", edition:"1 of 1", price:"", link:"", status:"coming soon"}
+];
+/* ============================================================================ */
+
+const PAL=[['#ff3b47','#ff7a1a'],['#e8960a','#ff3b47'],['#ff5a5a','#8a0f18'],['#ff7a1a','#e8b23a'],['#ff3b47','#b91020'],['#e8960a','#ff5c9d']];
+function placeholder(title,i){
+  const [a,b]=PAL[i%PAL.length];
+  const svg=`<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'>
+    <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0' stop-color='#070b14'/><stop offset='1' stop-color='#0b1220'/></linearGradient>
+      <radialGradient id='r' cx='0.5' cy='0.42' r='0.6'>
+      <stop offset='0' stop-color='${a}' stop-opacity='0.5'/><stop offset='1' stop-color='${a}' stop-opacity='0'/></radialGradient></defs>
+    <rect width='600' height='600' fill='url(#g)'/><rect width='600' height='600' fill='url(#r)'/>
+    <g stroke='${b}' stroke-opacity='0.5' fill='none' stroke-width='2'>
+      <circle cx='300' cy='250' r='120'/><rect x='210' y='160' width='180' height='180'/>
+      <path d='M120 460 L300 360 L480 460'/></g>
+    <g fill='${a}'><circle cx='300' cy='250' r='5'/><circle cx='210' cy='160' r='4'/><circle cx='480' cy='460' r='4'/></g>
+    <text x='300' y='530' text-anchor='middle' fill='#cdd6e6' font-family='monospace' font-size='22' letter-spacing='3'>${title.toUpperCase()}</text>
+    <text x='300' y='560' text-anchor='middle' fill='#6e5560' font-family='monospace' font-size='12' letter-spacing='4'>PREVIEW · YOUR ART HERE</text>
+  </svg>`;
+  return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+document.getElementById('grid').innerHTML = PIECES.map((p,i)=>{
+  const img = p.img && p.img.length ? esc(p.img) : placeholder(p.title,i);
+  const avail = p.status==='available' && p.link;
+  const stClass = avail ? 'available' : 'soon';
+  const stText = avail ? 'available' : 'coming soon';
+  const btn = avail
+    ? `<a class="collect on" href="${esc(p.link)}" target="_blank" rel="noopener">Collect &#8599;</a>`
+    : `<span class="collect off">Coming soon</span>`;
+  return `<div class="piece">
+    <img class="pimg" src="${img}" alt="${esc(p.title)}" loading="lazy">
+    <div class="pbody">
+      <div class="ptitle">${esc(p.title)}</div>
+      <div class="pdesc">${esc(p.desc||'')}</div>
+      <div class="prow"><span class="ed">edition <b>${esc(p.edition||'1 of 1')}</b></span>
+        <span class="status ${stClass}">${stText}</span></div>
+      ${p.price?`<div class="prow"><span>price</span><span style="color:var(--accent)">${esc(p.price)}</span></div>`:''}
+      ${btn}
+    </div></div>`;
+}).join('');
+</script>
+</body>
+</html>
