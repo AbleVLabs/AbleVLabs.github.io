@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A first-pass Sumerian-to-English translator: type transliterated Sumerian and get a word-by-word English gloss, from a lexicon learned by statistical alignment on 32,000+ real tablet phrases. By Carlos Abel Vivanco / AbleVLabs.">
+<meta name="theme-color" content="#04050a">
+<title>Reading Sumerian: A Word-by-Word Translator &middot; AbleV Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#04050a;--bg2:#080c14;--accent:#00d4ff;--accent2:#6c3fff;--gold:#e8960a;
+  --green:#00ff88;--pink:#ff5c9d;--red:#ff5a5a;--text:#e8edf5;--muted:#5a6480;--dim:#2a3050;
+  --border:rgba(0,212,255,.14);--card:rgba(8,14,26,.75)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;padding:1.6rem;
+  background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);
+  background-size:60px 60px}
+.wrap{max-width:1000px;margin:0 auto}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;
+  border-bottom:1px solid var(--border);padding-bottom:1.1rem;margin-bottom:.6rem}
+.kicker{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.1rem);letter-spacing:.02em;line-height:.95}
+h1 .c{color:var(--accent)}
+.lead{color:var(--muted);font-size:1rem;margin-top:.5rem;max-width:78ch;line-height:1.6}
+.lead em{font-style:normal;color:var(--text)}
+.back{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;white-space:nowrap}.back:hover{color:var(--accent)}
+
+.honest{display:flex;gap:.9rem;align-items:flex-start;background:linear-gradient(150deg,rgba(232,150,10,.09),rgba(0,212,255,.04));
+  border:1px solid rgba(232,150,10,.3);border-radius:14px;padding:1rem 1.2rem;margin:1.4rem 0 .4rem}
+.honest .ic{font-size:1.3rem;line-height:1}
+.honest .ht{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem}
+.honest p{color:var(--text);font-size:.88rem;line-height:1.6;max-width:90ch}
+
+.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.3rem;margin-top:1.4rem}
+.panel h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;margin-bottom:.2rem}
+.panel .sub{color:var(--muted);font-size:.8rem;margin-bottom:.8rem;line-height:1.5}
+.panel .sub code{font-family:'Space Mono',monospace;font-size:.76rem;color:var(--accent);background:#070b14;padding:1px 5px;border-radius:4px}
+textarea{width:100%;min-height:78px;background:#070b14;color:#cdd6e6;border:1px solid var(--dim);border-radius:10px;
+  padding:.7rem .8rem;font-family:'Space Mono',monospace;font-size:.9rem;line-height:1.5;resize:vertical}
+textarea:focus{outline:none;border-color:var(--accent)}
+.controls{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-top:.7rem}
+.btn{font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  border:none;border-radius:9px;padding:.6rem 1.1rem;cursor:pointer;background:var(--accent);color:#001018;transition:.15s}
+.btn:hover{background:#fff}
+.exlabel{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:.9rem 0 .4rem}
+.exbtns{display:flex;gap:.5rem;flex-wrap:wrap}
+.exbtn{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);border:1px solid var(--dim);border-radius:16px;padding:.35rem .8rem;cursor:pointer;transition:.15s;background:transparent}
+.exbtn:hover{color:#fff;border-color:var(--accent)}
+
+.outwrap{margin-top:1rem;display:none}
+.trans{background:#070b14;border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-bottom:1rem}
+.trans .l{font-family:'Space Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+.trans .t{font-size:1.25rem;line-height:1.5;color:#fff}
+.trans .t .unk{color:var(--red);opacity:.85}
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem}
+.wcard{background:#070b14;border:1px solid var(--border);border-radius:10px;padding:.7rem .8rem}
+.wcard.unk{border-color:rgba(255,90,90,.4)}
+.wcard .sw{font-family:'Space Mono',monospace;font-size:.86rem;color:var(--accent);font-weight:700;word-break:break-all}
+.wcard.unk .sw{color:var(--red)}
+.wcard .gl{font-size:1rem;color:#fff;margin-top:.2rem}
+.wcard .bar{height:4px;border-radius:3px;background:rgba(255,255,255,.08);margin-top:.5rem;overflow:hidden}
+.wcard .bar i{display:block;height:100%;background:var(--accent)}
+.wcard .alt{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);margin-top:.45rem;line-height:1.5}
+.wcard .conf{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--muted);margin-top:.3rem}
+.wcard .note{font-family:'Space Mono',monospace;font-size:.52rem;color:var(--accent2);margin-top:.3rem}
+.wcard .flag{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--red);margin-top:.3rem}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.85rem;margin-top:1.4rem}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem}
+.kpi .l{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.kpi .v{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1;margin-top:.3rem;color:#fff}
+.kpi .v.a{color:var(--accent)}.kpi .v.g{color:var(--green)}.kpi .v.gold{color:var(--gold)}
+
+.how{margin-top:1.4rem}
+.how h2{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:#fff;margin:1.4rem 0 .4rem}
+.how p{color:var(--muted);font-size:.94rem;line-height:1.7;max-width:86ch;margin-bottom:.7rem}
+.how p b{color:var(--text)}.how code{font-family:'Space Mono',monospace;font-size:.82rem;color:var(--accent);background:#070b14;padding:1px 6px;border-radius:5px}
+.foot{color:var(--muted);font-size:.78rem;margin-top:2.2rem;text-align:center;line-height:1.7;border-top:1px solid var(--border);padding-top:1.2rem}
+.foot a{text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="kicker">◆ NLP &middot; Ancient Language</div>
+      <h1>Reading <span class="c">Sumerian</span></h1>
+      <p class="lead">Type transliterated Sumerian and get a word-by-word English reading. The dictionary
+        behind it was not hand-written, it was <em>learned</em> by aligning <em>32,578</em> Sumerian and
+        English phrases from real cuneiform tablets. This is the first, honest layer of a translator, a
+        neural model is the next.</p>
+    </div>
+    <a class="back" href="/data-science.html">← case studies</a>
+  </div>
+
+  <div class="honest">
+    <div class="ic">◆</div>
+    <div>
+      <div class="ht">Read this first</div>
+      <p>This is a <b>first-pass gloss</b>, not a scholarly translation. It reads <b>transliterated</b>
+        Sumerian (Latin letters in the ATF style scholars use, not cuneiform pictures) using the corpus
+        conventions: hyphens between signs (<code>lugal-e</code>), determinatives in braces
+        (<code>{d}nanna</code>, <code>lagasz{ki}</code>), and <code>sz</code> for the "sh" sound. It has no
+        grammar and no word order, it labels each word with its most likely meaning. Unknown words show in
+        <b style="color:var(--red)">red</b>. Sumerian is ambiguous (one reading can mean several things, and
+        grammar words often fall back to a weak default like "the"), so treat this as a helper for a human,
+        exactly how the researchers who built the data intend it.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Try it</h3>
+    <div class="sub">Enter transliterated Sumerian. Numbers like <code>1(disz)</code> or plain digits become
+      <code>[number]</code>. Diacritics (<code>š</code>, <code>ḫ</code>) are accepted and folded to ATF.</div>
+    <textarea id="inp" spellcheck="false">lugal-e e2 mu-na-du3</textarea>
+    <div class="controls">
+      <button class="btn" id="go">Translate</button>
+      <span id="status" style="font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted)"></span>
+    </div>
+    <div class="exlabel">Or try a real line from a tablet:</div>
+    <div class="exbtns" id="examples"></div>
+
+    <div class="outwrap" id="out">
+      <div class="trans">
+        <div class="l">English reading</div>
+        <div class="t" id="transOut"></div>
+      </div>
+      <div class="trans" id="refWrap" style="display:none">
+        <div class="l">Scholarly reference (for the example lines, lightly cleaned)</div>
+        <div class="t" id="refOut" style="font-size:1rem;color:var(--muted)"></div>
+      </div>
+      <div class="l" style="font-family:'Space Mono',monospace;font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:.2rem 0 .5rem">Word by word</div>
+      <div class="words" id="words"></div>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="l">Phrase pairs learned from</div><div class="v a" id="kPairs">--</div></div>
+    <div class="kpi"><div class="l">Sumerian words known</div><div class="v" id="kVocab">--</div></div>
+    <div class="kpi"><div class="l">Word coverage (held-out)</div><div class="v g" id="kCov">--</div></div>
+    <div class="kpi"><div class="l">Meaning overlap vs scholars</div><div class="v gold" id="kF1">--</div></div>
+  </div>
+
+  <div class="how">
+    <h2>How it learns a dictionary from nothing</h2>
+    <p>Nobody typed in that <code>udu</code> means "sheep." The model saw tens of thousands of short phrase
+      pairs and used <b>IBM Model 1</b>, a classic word-alignment algorithm: it starts by assuming every
+      English word could translate every Sumerian word, then repeatedly rewards pairs that keep co-occurring.
+      After ten passes, <code>udu</code> has locked onto "sheep," <code>ki</code> onto "from," <code>lugal</code>
+      onto "king," <code>kiszib3</code> onto "seal." It is the same idea as counting which words travel
+      together, made precise.</p>
+    <p>The honest failure it exposes: Sumerian is full of <b>ambiguity</b>. The same reading can mean several
+      things, and grammatical particles carry little meaning on their own, so the model falls back to a weak
+      "the." Seeing that is the point, it is exactly where the next layer, a neural sequence-to-sequence model
+      that reads a whole line in context, earns its keep.</p>
+    <p>That neural model is the next build, and it extends the same NLP pipeline this project already uses:
+      <b>text to integer sequences, padding to a uniform length, an embedding layer, then an LSTM
+      encoder-decoder.</b></p>
+  </div>
+
+  <div class="foot">
+    Data: <b>MTAAC / CDLI</b> Sumerian-English parallel corpus (all compositions), via the
+    <a href="https://github.com/cdli-gh/Semi-Supervised-NMT-for-Sumerian-English" target="_blank" rel="noopener">cdli-gh</a> project.
+    Lexicon learned with IBM Model 1 alignment. Built by <b>Carlos Abel Vivanco / AbleV Labs</b> ·
+    <a href="https://ablevlabs.com/">ablevlabs.com &#8599;</a>
+  </div>
+</div>
+
+<script src="./data/sumerian_lexicon.js"></script>
+<script src="./data/sumerian_meta.js"></script>
+<script>
+const LEX=window.SUMLEX||{}, META=window.SUMMETA||{};
+const $=id=>document.getElementById(id);
+
+// determinative-stripped index: lets "nanna" match "{d}nanna"
+const STRIP={};
+for(const k in LEX){ const s=k.replace(/\{[^}]*\}/g,''); if(s && s!==k && !(s in LEX) && !(s in STRIP)) STRIP[s]=k; }
+
+const DIA={'š':'sz','ḫ':'h','ĝ':'g','ŋ':'g','ṣ':'s,','ṭ':'t,','×':'x',
+  '₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+function normTok(w){
+  w=w.toLowerCase().replace(/^[.,;:"“”’‘!?]+|[.,;:"“”’‘!?]+$/g,'');
+  let o=''; for(const ch of w) o+=(DIA[ch]!==undefined?DIA[ch]:ch);
+  return o;
+}
+const isNum=t=>/^\d+(\(.*\))?$/.test(t)||t==='num';
+
+function lookup(t){
+  if(LEX[t]) return {e:LEX[t]};
+  const st=t.replace(/\{[^}]*\}/g,'');
+  if(st!==t && LEX[st]) return {e:LEX[st], note:'determinative ignored'};
+  if(STRIP[t]) return {e:LEX[STRIP[t]], note:'determinative added'};
+  return null;
+}
+function glossTok(raw){
+  const t=normTok(raw);
+  if(t==='') return {raw, gloss:null, kind:'unk'};
+  if(isNum(t)) return {raw, gloss:'[number]', kind:'num'};
+  let L=lookup(t);
+  if(L && L.e.g[0][1]>=0.09){const g=L.e.g[0];return {raw,gloss:g[0],p:g[1],alts:L.e.g,kind:'ok',note:L.note};}
+  if(t.includes('-')){
+    const gs=[]; let ok=true;
+    for(const p of t.split('-')){
+      if(isNum(p)){gs.push('[number]');continue;}
+      const LP=lookup(p);
+      if(LP && LP.e.g[0][1]>=0.12) gs.push(LP.e.g[0][0]);
+      else {ok=false;break;}
+    }
+    if(ok && gs.length) return {raw, gloss:gs.join('-'), kind:'parts'};
+  }
+  if(L){const g=L.e.g[0];return {raw,gloss:g[0],p:g[1],alts:L.e.g,kind:'low',note:L.note};}
+  return {raw, gloss:null, kind:'unk'};
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function translate(){
+  const line=$('inp').value.trim();
+  $('refWrap').style.display='none';
+  if(!line){$('out').style.display='none';return;}
+  const results=line.split(/\s+/).map(glossTok);
+
+  const parts=[];
+  results.forEach(r=>{
+    const val=r.gloss===null?`<span class="unk">[${esc(r.raw)}?]</span>`:esc(r.gloss);
+    const plain=r.gloss||('?'+r.raw);
+    if(parts.length===0||parts[parts.length-1].plain!==plain) parts.push({html:val,plain});
+  });
+  $('transOut').innerHTML=parts.map(p=>p.html).join(' ');
+
+  $('words').innerHTML=results.map(r=>{
+    if(r.gloss===null)
+      return `<div class="wcard unk"><div class="sw">${esc(r.raw)}</div><div class="gl">unknown</div><div class="flag">not in the learned corpus</div></div>`;
+    const p=r.p!=null?Math.round(r.p*100):null;
+    const bar=p!=null?`<div class="bar"><i style="width:${Math.max(6,p)}%"></i></div><div class="conf">confidence ${p}%${r.kind==='low'?' (weak)':''}</div>`:'';
+    let alt='';
+    if(r.alts&&r.alts.length>1){
+      const o=r.alts.slice(1).map(a=>`${esc(a[0])} (${Math.round(a[1]*100)}%)`);
+      if(o.length) alt=`<div class="alt">also: ${o.join(', ')}</div>`;
+    }
+    let note='';
+    if(r.kind==='parts') note='<div class="note">glossed by parts</div>';
+    else if(r.note) note=`<div class="note">${esc(r.note)}</div>`;
+    return `<div class="wcard"><div class="sw">${esc(r.raw)}</div><div class="gl">${esc(r.gloss)}</div>${bar}${alt}${note}</div>`;
+  }).join('');
+
+  $('out').style.display='block';
+}
+
+function loadExamples(){
+  const box=$('examples'); if(!META.demos) return;
+  META.demos.forEach(d=>{
+    const b=document.createElement('button');
+    b.className='exbtn'; b.textContent=d.sum.length>36?d.sum.slice(0,36)+'…':d.sum;
+    b.onclick=()=>{$('inp').value=d.sum; translate(); $('refOut').textContent=d.ref; $('refWrap').style.display='block';};
+    box.appendChild(b);
+  });
+}
+
+(function init(){
+  if(!window.SUMLEX){ $('status').textContent='dictionary did not load'; return; }
+  $('kPairs').textContent=(META.pairs||0).toLocaleString();
+  $('kVocab').textContent=(META.sum_vocab||0).toLocaleString();
+  $('kCov').textContent=(META.coverage||0)+'%';
+  $('kF1').textContent=(META.adequacy_f1||0)+'%';
+  loadExamples(); translate();
+  $('status').textContent=Object.keys(LEX).length.toLocaleString()+' words loaded';
+})();
+$('go').onclick=translate;
+$('inp').addEventListener('keydown',e=>{ if((e.metaKey||e.ctrlKey)&&e.key==='Enter') translate(); });
+</script>
+</body>
+</html>

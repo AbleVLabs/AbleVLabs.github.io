@@ -481,9 +481,70 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     </div>
   </div>
 
+  <div class="case" style="margin-top:2rem">
+    <div class="case-top">
+      <div>
+        <h2>Teaching a Machine to Read Sumerian</h2>
+        <div class="pill-row"><span>NLP</span><span>Machine translation</span><span>Runs in-browser</span></div>
+      </div>
+      <span class="tag">◆ Live translator</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">The question</div>
+        <p>Sumerian is one of the oldest written languages on earth, and it is <b>dead</b>: no native
+          speakers, just clay tablets. Can a machine learn to read it, at least a first pass, the way modern
+          translation models are built, and can it learn its dictionary <b>without ever being given one?</b></p>
+      </div>
+      <div class="qa">
+        <div class="q">The data</div>
+        <p>The <b>MTAAC / CDLI</b> parallel corpus: 32,578 aligned Sumerian and English phrases from real
+          cuneiform tablets, <b>administrative and literary</b>, in the transliteration Assyriologists use
+          rather than raw cuneiform. The corpus authors are candid that it is noisy, so the project is scoped
+          and framed the same honest way.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The approach</div>
+        <p>A hybrid that extends the standard NLP pipeline (<b>text to sequences, padding, embeddings,
+          seq2seq</b>). Layer one, live now: a dictionary learned by <b>IBM Model 1 word alignment</b>, which
+          discovers that <code>udu</code> means "sheep" and <code>ki</code> means "from" purely from which
+          words keep travelling together. Layer two, next: an <b>LSTM encoder-decoder</b> that reads whole
+          lines in context.</p>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><div class="v">32,578</div><div class="l">phrase pairs</div></div>
+        <div class="metric"><div class="v">14,805</div><div class="l">Sumerian words learned</div></div>
+        <div class="metric"><div class="v g">91.4%</div><div class="l">word coverage (held-out)</div></div>
+        <div class="metric"><div class="v gold">43.8%</div><div class="l">meaning overlap vs scholars</div></div>
+      </div>
+
+      <div class="qa">
+        <div class="q">What it shows</div>
+        <p>With no dictionary supplied, alignment alone recovers correct readings for hundreds of Sumerian
+          words and glosses formulaic tablet lines sensibly. It also surfaces the hard part honestly:
+          Sumerian <b>homophones</b> like <code>gu</code> (ox, talent, thread) trip a context-free gloss,
+          which is exactly what the neural layer is built to fix. Type a line and watch it read, word by
+          word, with confidence and alternate readings.</p>
+      </div>
+      <div class="qa">
+        <div class="q">Skills demonstrated</div>
+        <div class="pill-row">
+          <span>NLP</span><span>machine translation</span><span>IBM Model 1 alignment</span>
+          <span>EM algorithm</span><span>lexicon induction</span><span>held-out evaluation</span>
+          <span>honest scoping</span><span>in-browser inference</span>
+        </div>
+      </div>
+
+      <div class="btns">
+        <a class="btn btn-fill" href="/sumerian-translator.html">Open the live translator &#8599;</a>
+      </div>
+    </div>
+  </div>
+
   <div class="soon">
-    <b>More case studies coming.</b> This portfolio grows with each project. Next up: an R and Tableau
-    build, and a deeper geospatial model.
+    <b>More case studies coming.</b> This portfolio grows with each project. Next up: the neural
+    sequence-to-sequence layer for the Sumerian translator, plus an R and Tableau build.
   </div>
 </div></section>
 
@@ -496,6 +557,7 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
     <a href="/mnist-dashboard.html">Draw pad &#8599;</a>
     <a href="/sql-dashboard.html">SQL console &#8599;</a>
     <a href="/ufo-search.html">UFO search &#8599;</a>
+    <a href="/sumerian-translator.html">Sumerian &#8599;</a>
     <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
     <a href="https://ablevlabs.com/">ablevlabs.com &#8599;</a>
   </span>

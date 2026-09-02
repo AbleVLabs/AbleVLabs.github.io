@@ -1205,6 +1205,17 @@ footer {
 --------------------------------------------------------------------------- */
 const UPDATES = [
   {
+    date: "2 Sep 2026", kind: "release", project: "Data Science",
+    title: "New case study: teaching a machine to read Sumerian",
+    body: "A first-pass Sumerian-to-English translator, now on the portfolio. It reads transliterated " +
+          "Sumerian and glosses it word by word, and the dictionary behind it was not written by hand: it " +
+          "was <b>learned</b> by IBM Model 1 alignment over 32,578 phrase pairs from real cuneiform tablets, " +
+          "enough for it to discover on its own that <i>udu</i> is sheep and <i>ki</i> is from. It covers " +
+          "91.4% of held-out words and is honest about where it breaks, like the Sumerian homophone " +
+          "<i>gu</i>, which is ox, talent, and thread at once. The neural sequence-to-sequence layer is next.",
+    link: "sumerian-translator.html", linkText: "Open the translator"
+  },
+  {
     date: "1 Sep 2026", kind: "release", project: "The Gone Wrongs",
     title: "New: The Gone Wrongs, an original art collection you can collect on-chain",
     body: "A collection of original characters, each built around a small wrongness: a lone survivor " +
