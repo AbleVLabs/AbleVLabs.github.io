@@ -342,6 +342,12 @@ section { position: relative; z-index: 1; }
 .art-banner .s { font-family:'Space Mono',monospace; font-size:.66rem; letter-spacing:.03em; color:var(--muted); margin-top:5px; line-height:1.5; }
 .art-banner .go { font-family:'Space Mono',monospace; font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:#ff3b47; white-space:nowrap; flex:0 0 auto; }
 @media(max-width:600px){ .art-banner{ flex-wrap:wrap; } .art-banner .go{ width:100%; } }
+.nft-strip { display:flex; justify-content:center; align-items:center; gap:.7rem; max-width:1120px;
+  margin:2.6rem auto .2rem; padding:.55rem 1rem; border:1px solid var(--dim); border-radius:9px;
+  font-family:'Space Mono',monospace; font-size:.6rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); text-decoration:none; background:transparent; transition:.2s; }
+.nft-strip:hover { color:var(--text); border-color:var(--muted); }
+.nft-strip .go { color:var(--muted); }
 .pcard { display: flex; align-items: center; gap: 16px; background: var(--card); border: 1px solid var(--border);
   border-radius: 16px; padding: 15px 17px; text-decoration: none; color: inherit; position: relative; overflow: hidden;
   transition: transform .18s, border-color .18s, box-shadow .18s; }
@@ -721,7 +727,6 @@ footer {
     <li><a href="#projects">Projects</a></li>
     <li><a href="#updates">Updates</a></li>
     <li><a href="#books">Books</a></li>
-    <li><a href="/gallery.html" style="color:#ff3b47">Collection</a></li>
     <li><a href="#community" style="color:#8b95ff">Community</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#nextup">Next Up</a></li>
@@ -772,15 +777,6 @@ footer {
         <div class="s">End-to-end ML case studies &middot; interactive dashboards &middot; reproducible notebooks</div>
       </div>
       <span class="go">View portfolio &#8599;</span>
-    </a>
-
-    <a href="/gallery.html" class="art-banner rv">
-      <span class="ic">&#9670;</span>
-      <div class="txt">
-        <div class="t">The Gone Wrongs &middot; Art Collection</div>
-        <div class="s">Original characters, collectible as NFTs &middot; something went wrong</div>
-      </div>
-      <span class="go">View collection &#8599;</span>
     </a>
 
     <!-- ===== Fitness & Well-being ===== -->
@@ -1526,11 +1522,14 @@ const UPDATES = [
   </div>
 </section>
 
+<a href="/gallery.html" class="nft-strip">◆ The Gone Wrongs &middot; original NFT art collection <span class="go">View &#8599;</span></a>
+
 <!-- FOOTER -->
 <footer>
   <span class="ft">&copy; 2026 AbleVLabs &mdash; Carlos Abel Vivanco</span>
   <span class="ft ft-status">[ Private Build ]</span>
   <span class="ft">
+    <a href="/gallery.html">Collection &#8599;</a>
     <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
     <a href="https://www.amazon.com/Books-Carlos-Vivanco/s?rh=n:283155,p_27:Carlos+Vivanco" target="_blank" rel="noopener">Amazon &#8599;</a>
     <a href="https://noether-patterns.streamlit.app" target="_blank" rel="noopener">Noether Patterns &#8599;</a>
