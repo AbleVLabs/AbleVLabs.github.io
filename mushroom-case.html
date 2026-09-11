@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Data science portfolio by Carlos Abel Vivanco: end-to-end machine learning case studies, each on its own page with an interactive tool and reproducible notebook.">
+<meta name="description" content="Edible or poisonous from 22 traits, where one kind of error is merely annoying and the other is fatal.">
 <meta name="theme-color" content="#04050a">
-<meta property="og:title" content="Data Science Portfolio · AbleV Labs">
-<meta property="og:description" content="Data science portfolio by Carlos Abel Vivanco: end-to-end machine learning case studies, each on its own page with an interactive tool and reproducible notebook.">
-<title>Data Science Portfolio · AbleV Labs</title>
+<meta property="og:title" content="Poisonous or Edible? A Mushroom Classifier · AbleV Labs">
+<meta property="og:description" content="Edible or poisonous from 22 traits, where one kind of error is merely annoying and the other is fatal.">
+<title>Poisonous or Edible? A Mushroom Classifier · AbleV Labs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -94,102 +94,53 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
 <div class="grid-bg"></div>
 <nav>
   <a href="https://ablevlabs.com/" class="logo">Able<b>V</b>Labs</a>
-  <a href="https://ablevlabs.com/#projects" class="back">&larr; All Projects</a>
+  <a href="/data-science.html" class="back">&larr; Data Science</a>
 </nav>
 
-<section id="hero">
-  <div class="kicker">Data Science &amp; Machine Learning &middot; Portfolio</div>
-  <h1 class="hero-title">Data <span class="c">Science</span> Work</h1>
-  <p class="hero-sub">End-to-end machine-learning case studies on real datasets. Each project goes the whole way: clean the data, explore it, engineer features, build and evaluate a model, and ship an interactive tool anyone can click through. Pick any card to read the full case study.</p>
-  <div class="stack">
-    <span>Python</span><span>pandas</span><span>NumPy</span><span>scikit-learn</span>
-    <span>SQL / SQLite</span><span>TensorFlow / Keras</span><span>NLP / embeddings</span><span>SciPy</span><span>Jupyter</span>
-  </div>
+<section id="hero" style="min-height:auto;padding-top:8rem;padding-bottom:1rem">
+  <div class="kicker">Classification &middot; Case Study 03</div>
+  <h1 class="hero-title" style="font-size:clamp(2.4rem,6vw,4.2rem)">Poisonous or Edible? A Mushroom Classifier</h1>
+  <p class="hero-sub">Edible or poisonous from 22 traits, where one kind of error is merely annoying and the other is fatal.</p>
 </section>
 
-<section class="pad" style="padding-top:1rem"><div class="wrap">
-  <div class="sec-head"><span class="sec-label">Case studies</span><span class="sec-num">08</span></div>
-  <div class="cards">
-    <a class="pcard" href="/powerlifting-case.html">
-      <div class="eyebrow"><span>Regression</span><span class="status">&#9679; Live</span></div>
-      <h3>Predicting Powerlifting Performance</h3>
-      <div class="desc">Predicting a lifter's total from bodyweight, age, sex, and equipment, and finding what actually drives strength.</div>
-      <div class="tags"><span>Regression</span><span>Real IPF data</span><span>End-to-end</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">0.71</div><div class="l">R² variance explained</div></div>
-        <span class="go">View case study &#8599;</span>
+<section class="pad" style="padding-top:1.5rem"><div class="wrap">
+  <div class="case">
+    <div class="case-top">
+      <div class="pill-row" style="margin-top:0"><span>Classification</span><span>Real UCI data</span><span>Interpretable</span></div>
+      <span class="tag">Live predictor + threshold demo + notebook</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">The question</div>
+        <p>Given 22 traits of a mushroom, is it edible or poisonous? A binary classification problem with a brutal twist: one kind of error is annoying, the other is fatal. That asymmetry is the whole point of the study.</p>
       </div>
-    </a>
-    <a class="pcard" href="/ufo-map-case.html">
-      <div class="eyebrow"><span>Geospatial</span><span class="status">&#9679; Live</span></div>
-      <h3>Mapping UFO Reports Across America</h3>
-      <div class="desc">Where 80,000 sightings cluster, when they spike, and what those patterns actually measure.</div>
-      <div class="tags"><span>Geospatial</span><span>Time-series forecast</span><span>Real NUFORC data</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">80,327</div><div class="l">reports analyzed</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="qa">
+        <div class="q">The data</div>
+        <p>The classic UCI Mushroom dataset: 8,124 real mushrooms from a 1981 Audubon Society field guide, every trait categorical. Real cleaning calls too: a constant column that carries no information gets dropped, and 2,480 missing stalk-root values are kept as their own category rather than thrown away. Then every trait is one-hot encoded into 116 features.</p>
       </div>
-    </a>
-    <a class="pcard" href="/mushroom-case.html">
-      <div class="eyebrow"><span>Classification</span><span class="status">&#9679; Live</span></div>
-      <h3>Poisonous or Edible? A Mushroom Classifier</h3>
-      <div class="desc">Edible or poisonous from 22 traits, where one kind of error is merely annoying and the other is fatal.</div>
-      <div class="tags"><span>Classification</span><span>Real UCI data</span><span>Interpretable</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">99.9%</div><div class="l">accuracy, both models</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="qa">
+        <div class="q">The approach</div>
+        <p>Explore the data (odor alone nearly separates the classes), one-hot encode, then train a logistic regression and a decision tree with a proper train/test split, then judge them the right way: confusion matrix, precision, recall, ROC and AUC, and a tuned decision threshold, not a single accuracy number.</p>
       </div>
-    </a>
-    <a class="pcard" href="/mnist-case.html">
-      <div class="eyebrow"><span>Deep learning</span><span class="status">&#9679; Live</span></div>
-      <h3>Draw a Digit: A Neural Network in Your Browser</h3>
-      <div class="desc">A convolutional network that reads handwriting, trained end to end and running live in the browser.</div>
-      <div class="tags"><span>Deep learning</span><span>CNN</span><span>TensorFlow / Keras</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">98.7%</div><div class="l">test accuracy</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="qa">
+        <div class="q">What it found</div>
+        <p>Both models scored above 99.8% on every metric, and made zero false positives. The catch: they still labeled 2 poisonous mushrooms as edible. Every mistake was the dangerous kind, which plain accuracy hid completely. Lowering the decision threshold drives those false negatives to zero. The tree also stayed readable: odor carries most of the signal, and its top rules read like a foraging heuristic. The real lesson transfers straight to fraud detection and disease screening: when one error is far more costly, accuracy is a trap and the confusion matrix is the truth.</p>
       </div>
-    </a>
-    <a class="pcard" href="/ufc-sql-case.html">
-      <div class="eyebrow"><span>SQL</span><span class="status">&#9679; Live</span></div>
-      <h3>UFC in SQL: A Live Query Console</h3>
-      <div class="desc">Thirty years of UFC fights modeled into a clean relational database you can query live in the browser.</div>
-      <div class="tags"><span>SQL</span><span>Relational modeling</span><span>Window functions</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">8,885</div><div class="l">bouts, fully queryable</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="metrics">
+        <div class="metric"><div class="v g">99.9%</div><div class="l">accuracy (both models)</div></div>
+        <div class="metric"><div class="v">2</div><div class="l">poison missed at 0.50 cutoff</div></div>
+        <div class="metric"><div class="v g">1.00</div><div class="l">ROC AUC</div></div>
+        <div class="metric"><div class="v">8,124</div><div class="l">mushrooms</div></div>
       </div>
-    </a>
-    <a class="pcard" href="/ufo-search-case.html">
-      <div class="eyebrow"><span>NLP</span><span class="status">&#9679; Live</span></div>
-      <h3>Search 80,000 UFO Reports by Meaning</h3>
-      <div class="desc">Semantic search over 80,000 reports so a query finds matching sightings even with zero shared words.</div>
-      <div class="tags"><span>NLP</span><span>Embeddings</span><span>Runs in-browser</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">384-d</div><div class="l">embedding per report</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="qa">
+        <div class="q">Skills demonstrated</div>
+        <div class="pill-row"><span>classification</span><span>one-hot encoding</span><span>missing-data strategy</span><span>logistic regression</span><span>decision trees</span><span>confusion matrix</span><span>precision / recall</span><span>ROC / AUC</span><span>threshold tuning</span><span>cost-sensitive evaluation</span><span>model interpretability</span></div>
       </div>
-    </a>
-    <a class="pcard" href="/sumerian-case.html">
-      <div class="eyebrow"><span>NLP</span><span class="status">&#9679; Live</span></div>
-      <h3>Teaching a Machine to Read Sumerian</h3>
-      <div class="desc">Learning a dead language's dictionary from aligned tablets, with no dictionary ever supplied.</div>
-      <div class="tags"><span>NLP</span><span>Machine translation</span><span>Runs in-browser</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">14,805</div><div class="l">Sumerian words learned</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="btns">
+        <a class="btn btn-fill" href="/mushroom-dashboard.html">Open the interactive walkthrough &#8599;</a>
+        <a class="btn btn-ghost" href="/mushroom-notebook.html" target="_blank" rel="noopener">View the full notebook &#8599;</a>
       </div>
-    </a>
-    <a class="pcard" href="/fl-lotto.html">
-      <div class="eyebrow"><span>Statistics</span><span class="status doc">&#9679; Write-up</span></div>
-      <h3>Can You Beat the Lottery?</h3>
-      <div class="desc">An eighteen-feature model tested, corrected, and honestly rejected, plus the one finding worth real money.</div>
-      <div class="tags"><span>Hypothesis testing</span><span>Negative result</span><span>Game theory</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">0 / 18</div><div class="l">features that survived</div></div>
-        <span class="go">View case study &#8599;</span>
-      </div>
-    </a>
+    </div>
   </div>
 </div></section>
 

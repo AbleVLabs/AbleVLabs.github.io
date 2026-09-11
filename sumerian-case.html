@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Data science portfolio by Carlos Abel Vivanco: end-to-end machine learning case studies, each on its own page with an interactive tool and reproducible notebook.">
+<meta name="description" content="Learning a dead language&#x27;s dictionary from aligned tablets, with no dictionary ever supplied.">
 <meta name="theme-color" content="#04050a">
-<meta property="og:title" content="Data Science Portfolio · AbleV Labs">
-<meta property="og:description" content="Data science portfolio by Carlos Abel Vivanco: end-to-end machine learning case studies, each on its own page with an interactive tool and reproducible notebook.">
-<title>Data Science Portfolio · AbleV Labs</title>
+<meta property="og:title" content="Teaching a Machine to Read Sumerian · AbleV Labs">
+<meta property="og:description" content="Learning a dead language&#x27;s dictionary from aligned tablets, with no dictionary ever supplied.">
+<title>Teaching a Machine to Read Sumerian · AbleV Labs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -94,102 +94,52 @@ footer{position:relative;z-index:1;display:flex;justify-content:space-between;al
 <div class="grid-bg"></div>
 <nav>
   <a href="https://ablevlabs.com/" class="logo">Able<b>V</b>Labs</a>
-  <a href="https://ablevlabs.com/#projects" class="back">&larr; All Projects</a>
+  <a href="/data-science.html" class="back">&larr; Data Science</a>
 </nav>
 
-<section id="hero">
-  <div class="kicker">Data Science &amp; Machine Learning &middot; Portfolio</div>
-  <h1 class="hero-title">Data <span class="c">Science</span> Work</h1>
-  <p class="hero-sub">End-to-end machine-learning case studies on real datasets. Each project goes the whole way: clean the data, explore it, engineer features, build and evaluate a model, and ship an interactive tool anyone can click through. Pick any card to read the full case study.</p>
-  <div class="stack">
-    <span>Python</span><span>pandas</span><span>NumPy</span><span>scikit-learn</span>
-    <span>SQL / SQLite</span><span>TensorFlow / Keras</span><span>NLP / embeddings</span><span>SciPy</span><span>Jupyter</span>
-  </div>
+<section id="hero" style="min-height:auto;padding-top:8rem;padding-bottom:1rem">
+  <div class="kicker">NLP &middot; Case Study 07</div>
+  <h1 class="hero-title" style="font-size:clamp(2.4rem,6vw,4.2rem)">Teaching a Machine to Read Sumerian</h1>
+  <p class="hero-sub">Learning a dead language's dictionary from aligned tablets, with no dictionary ever supplied.</p>
 </section>
 
-<section class="pad" style="padding-top:1rem"><div class="wrap">
-  <div class="sec-head"><span class="sec-label">Case studies</span><span class="sec-num">08</span></div>
-  <div class="cards">
-    <a class="pcard" href="/powerlifting-case.html">
-      <div class="eyebrow"><span>Regression</span><span class="status">&#9679; Live</span></div>
-      <h3>Predicting Powerlifting Performance</h3>
-      <div class="desc">Predicting a lifter's total from bodyweight, age, sex, and equipment, and finding what actually drives strength.</div>
-      <div class="tags"><span>Regression</span><span>Real IPF data</span><span>End-to-end</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">0.71</div><div class="l">R² variance explained</div></div>
-        <span class="go">View case study &#8599;</span>
+<section class="pad" style="padding-top:1.5rem"><div class="wrap">
+  <div class="case">
+    <div class="case-top">
+      <div class="pill-row" style="margin-top:0"><span>NLP</span><span>Machine translation</span><span>Runs in-browser</span></div>
+      <span class="tag">Live translator</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">The question</div>
+        <p>Sumerian is one of the oldest written languages on earth, and it is dead: no native speakers, just clay tablets. Can a machine learn to read it, at least a first pass, the way modern translation models are built, and can it learn its dictionary without ever being given one?</p>
       </div>
-    </a>
-    <a class="pcard" href="/ufo-map-case.html">
-      <div class="eyebrow"><span>Geospatial</span><span class="status">&#9679; Live</span></div>
-      <h3>Mapping UFO Reports Across America</h3>
-      <div class="desc">Where 80,000 sightings cluster, when they spike, and what those patterns actually measure.</div>
-      <div class="tags"><span>Geospatial</span><span>Time-series forecast</span><span>Real NUFORC data</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">80,327</div><div class="l">reports analyzed</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="qa">
+        <div class="q">The data</div>
+        <p>The MTAAC / CDLI parallel corpus: 32,578 aligned Sumerian and English phrases from real cuneiform tablets, administrative and literary, in the transliteration Assyriologists use rather than raw cuneiform. The corpus authors are candid that it is noisy, so the project is scoped and framed the same honest way.</p>
       </div>
-    </a>
-    <a class="pcard" href="/mushroom-case.html">
-      <div class="eyebrow"><span>Classification</span><span class="status">&#9679; Live</span></div>
-      <h3>Poisonous or Edible? A Mushroom Classifier</h3>
-      <div class="desc">Edible or poisonous from 22 traits, where one kind of error is merely annoying and the other is fatal.</div>
-      <div class="tags"><span>Classification</span><span>Real UCI data</span><span>Interpretable</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">99.9%</div><div class="l">accuracy, both models</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="qa">
+        <div class="q">The approach</div>
+        <p>A hybrid that extends the standard NLP pipeline (text to sequences, padding, embeddings, seq2seq). Layer one, live now: a dictionary learned by IBM Model 1 word alignment, which discovers that udu means sheep and ki means from purely from which words keep travelling together. Layer two, next: an LSTM encoder-decoder that reads whole lines in context.</p>
       </div>
-    </a>
-    <a class="pcard" href="/mnist-case.html">
-      <div class="eyebrow"><span>Deep learning</span><span class="status">&#9679; Live</span></div>
-      <h3>Draw a Digit: A Neural Network in Your Browser</h3>
-      <div class="desc">A convolutional network that reads handwriting, trained end to end and running live in the browser.</div>
-      <div class="tags"><span>Deep learning</span><span>CNN</span><span>TensorFlow / Keras</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">98.7%</div><div class="l">test accuracy</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="qa">
+        <div class="q">What it shows</div>
+        <p>With no dictionary supplied, alignment alone recovers correct readings for hundreds of Sumerian words and glosses formulaic tablet lines sensibly. It also surfaces the hard part honestly: Sumerian homophones like gu (ox, talent, thread) trip a context-free gloss, which is exactly what the neural layer is built to fix. Type a line and watch it read, word by word, with confidence and alternate readings.</p>
       </div>
-    </a>
-    <a class="pcard" href="/ufc-sql-case.html">
-      <div class="eyebrow"><span>SQL</span><span class="status">&#9679; Live</span></div>
-      <h3>UFC in SQL: A Live Query Console</h3>
-      <div class="desc">Thirty years of UFC fights modeled into a clean relational database you can query live in the browser.</div>
-      <div class="tags"><span>SQL</span><span>Relational modeling</span><span>Window functions</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">8,885</div><div class="l">bouts, fully queryable</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="metrics">
+        <div class="metric"><div class="v">32,578</div><div class="l">phrase pairs</div></div>
+        <div class="metric"><div class="v">14,805</div><div class="l">Sumerian words learned</div></div>
+        <div class="metric"><div class="v g">91.4%</div><div class="l">word coverage (held-out)</div></div>
+        <div class="metric"><div class="v">43.8%</div><div class="l">meaning overlap vs scholars</div></div>
       </div>
-    </a>
-    <a class="pcard" href="/ufo-search-case.html">
-      <div class="eyebrow"><span>NLP</span><span class="status">&#9679; Live</span></div>
-      <h3>Search 80,000 UFO Reports by Meaning</h3>
-      <div class="desc">Semantic search over 80,000 reports so a query finds matching sightings even with zero shared words.</div>
-      <div class="tags"><span>NLP</span><span>Embeddings</span><span>Runs in-browser</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">384-d</div><div class="l">embedding per report</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="qa">
+        <div class="q">Skills demonstrated</div>
+        <div class="pill-row"><span>NLP</span><span>machine translation</span><span>IBM Model 1 alignment</span><span>EM algorithm</span><span>lexicon induction</span><span>held-out evaluation</span><span>honest scoping</span><span>in-browser inference</span></div>
       </div>
-    </a>
-    <a class="pcard" href="/sumerian-case.html">
-      <div class="eyebrow"><span>NLP</span><span class="status">&#9679; Live</span></div>
-      <h3>Teaching a Machine to Read Sumerian</h3>
-      <div class="desc">Learning a dead language's dictionary from aligned tablets, with no dictionary ever supplied.</div>
-      <div class="tags"><span>NLP</span><span>Machine translation</span><span>Runs in-browser</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">14,805</div><div class="l">Sumerian words learned</div></div>
-        <span class="go">View case study &#8599;</span>
+      <div class="btns">
+        <a class="btn btn-fill" href="/sumerian-translator.html">Open the live translator &#8599;</a>
       </div>
-    </a>
-    <a class="pcard" href="/fl-lotto.html">
-      <div class="eyebrow"><span>Statistics</span><span class="status doc">&#9679; Write-up</span></div>
-      <h3>Can You Beat the Lottery?</h3>
-      <div class="desc">An eighteen-feature model tested, corrected, and honestly rejected, plus the one finding worth real money.</div>
-      <div class="tags"><span>Hypothesis testing</span><span>Negative result</span><span>Game theory</span></div>
-      <div class="foot">
-        <div class="stat"><div class="v">0 / 18</div><div class="l">features that survived</div></div>
-        <span class="go">View case study &#8599;</span>
-      </div>
-    </a>
+    </div>
   </div>
 </div></section>
 

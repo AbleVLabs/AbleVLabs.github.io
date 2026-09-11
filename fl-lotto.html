@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A statistical investigation into whether a Florida Lotto prediction model can beat random chance. Eighteen features tested, none survived correction.">
+<meta name="theme-color" content="#04050a">
+<meta property="og:title" content="Can You Beat the Lottery? · AbleV Labs">
+<meta property="og:description" content="Eighteen features tested, zero survived correction. A negative result documented honestly, plus the one finding worth real money.">
+<meta property="og:url" content="https://ablevlabs.com/fl-lotto.html">
+<title>Can You Beat the Lottery? · AbleV Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#04050a;--bg2:#080c14;--accent:#00d4ff;--accent2:#6c3fff;--gold:#e8960a;
+  --ember:#c23b22;--green:#00ff88;--text:#e8edf5;--muted:#5a6480;--dim:#2a3050;
+  --border:rgba(0,212,255,.12);--card:rgba(8,14,26,.72)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;position:relative}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);
+  background-size:72px 72px}
+body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.025) 2px,rgba(0,0,0,.025) 4px)}
+a{color:inherit}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;
+  padding:1.15rem 3rem;background:rgba(4,5,10,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#fff;text-decoration:none}
+.logo b{color:var(--accent)}
+.back{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.back:hover{color:var(--accent)}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 3rem}
+section{position:relative;z-index:1}
+
+#hero{min-height:86vh;display:flex;flex-direction:column;justify-content:center;padding:7rem 3rem 3rem;max-width:1080px;margin:0 auto}
+.kicker{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--green);margin-bottom:1.4rem}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,9vw,6.5rem);line-height:.9;letter-spacing:.02em;color:#fff}
+.hero-title .c{color:var(--accent)}
+.hero-sub{font-family:'Rajdhani',sans-serif;font-size:1.2rem;color:var(--muted);max-width:64ch;line-height:1.65;margin:1.6rem 0 0}
+.stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.8rem}
+.stack span{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.06em;color:var(--muted);border:1px solid var(--dim);border-radius:20px;padding:5px 12px}
+
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 2rem;padding-bottom:.8rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.sec-label{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.sec-num{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:transparent;-webkit-text-stroke:1px var(--dim);line-height:1}
+.pad{padding:4rem 0}
+
+.case{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;
+  box-shadow:0 30px 80px -50px rgba(0,212,255,.5)}
+.case-top{padding:1.8rem 2rem 1.4rem;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
+.case-top h2{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:#fff;letter-spacing:.02em;line-height:1}
+.case-top .tag{font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--green);border:1px solid rgba(0,255,136,.35);border-radius:20px;padding:4px 10px;white-space:nowrap}
+.case-top .tag.red{color:var(--ember);border-color:rgba(194,59,34,.4)}
+.case-body{padding:1.6rem 2rem 2rem}
+.qa{margin-bottom:1.5rem}
+.qa .q{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem}
+.qa p{color:var(--muted);font-size:1rem;line-height:1.7}
+.qa p code{font-family:'Space Mono',monospace;font-size:.84em;color:var(--accent);background:rgba(0,212,255,.06);padding:1px 5px;border-radius:4px}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.9rem;margin:1.6rem 0}
+.metric{background:#04070e;border:1px solid var(--dim);border-radius:12px;padding:1rem}
+.metric .v{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);line-height:1}
+.metric .v.g{color:var(--green)}
+.metric .v.r{color:var(--ember)}
+.metric .v.gold{color:var(--gold)}
+.metric .l{font-family:'Space Mono',monospace;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.4rem}
+.btns{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:1.6rem}
+.btn{font-family:'Space Mono',monospace;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:.85rem 1.7rem;text-decoration:none;border:1px solid;transition:.2s;border-radius:10px}
+.btn-fill{background:var(--accent);color:#001018;border-color:var(--accent)}
+.btn-fill:hover{background:#fff;border-color:#fff;box-shadow:0 0 30px -6px rgba(0,212,255,.7)}
+.btn-ghost{background:transparent;color:var(--muted);border-color:var(--dim)}
+.btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,.25)}
+.pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:.6rem}
+.pill-row span{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);border:1px solid var(--dim);border-radius:16px;padding:3px 10px}
+
+table.tbl{width:100%;border-collapse:collapse;margin:1.2rem 0;font-family:'Space Mono',monospace;font-size:.72rem}
+table.tbl th{text-align:left;color:var(--muted);font-weight:400;letter-spacing:.1em;text-transform:uppercase;
+  font-size:.58rem;padding:.6rem .8rem;border-bottom:1px solid var(--dim)}
+table.tbl td{padding:.6rem .8rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text)}
+table.tbl td.num{text-align:right;font-variant-numeric:tabular-nums}
+table.tbl td.ok{color:var(--green)}
+table.tbl td.no{color:var(--ember)}
+table.tbl tr:last-child td{border-bottom:none}
+.scroll{overflow-x:auto}
+
+.errlist{counter-reset:err;margin:1rem 0 0;list-style:none}
+.errlist li{counter-increment:err;position:relative;padding:.75rem 0 .75rem 3.2rem;border-bottom:1px solid rgba(255,255,255,.04);
+  color:var(--muted);font-size:.97rem;line-height:1.65}
+.errlist li::before{content:counter(err,decimal-leading-zero);position:absolute;left:0;top:.85rem;
+  font-family:'Space Mono',monospace;font-size:.62rem;color:var(--ember);letter-spacing:.08em}
+.errlist li:last-child{border-bottom:none}
+.errlist .h{color:var(--text);display:block;margin-bottom:.15rem}
+
+.callout{border-left:2px solid var(--gold);background:rgba(232,150,10,.04);padding:1.2rem 1.5rem;border-radius:0 12px 12px 0;margin:1.5rem 0}
+.callout p{color:var(--muted);font-size:1rem;line-height:1.7}
+.callout .ch{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+
+footer{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem;border-top:1px solid rgba(255,255,255,.05);flex-wrap:wrap;gap:1rem;margin-top:2rem}
+.ft{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.12em;color:var(--dim)}
+.ft a{text-decoration:none;transition:color .2s;margin-left:1.4rem}.ft a:hover{color:var(--accent)}
+@media(max-width:768px){nav{padding:1rem 1.4rem}.wrap{padding:0 1.4rem}#hero{padding:6rem 1.4rem 3rem}.case-body{padding:1.4rem}.case-top{padding:1.4rem}footer{padding:1.5rem 1.4rem}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="grid"></div>
+
+<nav>
+  <a href="https://ablevlabs.com/" class="logo">Able<b>V</b>Labs</a>
+  <a href="https://ablevlabs.com/data-science.html" class="back">← Data Science</a>
+</nav>
+
+<section id="hero">
+  <div class="kicker">Statistical Validation · Negative Result</div>
+  <h1 class="hero-title">Can You Beat<br>The <span class="c">Lottery?</span></h1>
+  <p class="hero-sub">I built an eighteen-feature model to predict Florida Lotto numbers, backtested it,
+    and watched it report a 17% edge at p = 0.012. Then I tested that result properly and it evaporated.
+    This is the write-up of a negative result: eighteen features, roughly forty statistical tests, twelve
+    errors caught in my own work, and the one finding that turned out to be worth real money.</p>
+  <div class="stack">
+    <span>Python</span><span>NumPy</span><span>pandas</span><span>SciPy</span>
+    <span>hypothesis testing</span><span>walk-forward validation</span><span>Bonferroni correction</span>
+    <span>power analysis</span><span>Monte Carlo</span><span>CUSUM</span><span>game theory</span>
+  </div>
+</section>
+
+<section class="pad" style="padding-top:1rem"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">The investigation</span><span class="sec-num">01</span></div>
+
+  <div class="case">
+    <div class="case-top">
+      <div>
+        <h2>Eighteen Features, Zero Signal</h2>
+        <div class="pill-row"><span>Hypothesis testing</span><span>Feature validation</span><span>Negative result</span></div>
+      </div>
+      <span class="tag red">Model rejected</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">The question</div>
+        <p>Florida Lotto draws 6 numbers from 53, giving 22,957,480 possible combinations. The internet is
+          full of systems built on hot numbers, overdue numbers and pattern analysis. This project asked
+          whether historical draw data can predict future draws, and more importantly, how anyone would know
+          if it could.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The data</div>
+        <p>4,009 draws under strict walk-forward validation. Every test draw was scored by an engine rebuilt
+          from prior draws only, so no future information could leak backward. Eighteen features were
+          engineered across three categories. Number-level signals covered frequency, exponential recency,
+          number freshness and hot/cold z-scores. Structural signals covered positional distribution, pair
+          and triplet co-occurrence, gap sequences, consecutive counts, odd/even and low/high balance, decade
+          distribution, and sum and spread modelled with Gaussian kernels. Inter-draw signals measured how
+          numbers and combinations repeat from one draw to the next.</p>
+      </div>
+      <div class="qa">
+        <div class="q">The approach</div>
+        <p>The exact baseline comes first. A hypergeometric distribution gives 0.6792 expected matches per
+          ticket, and any model has to beat that number to claim an edge. Each feature was then tested
+          independently by scoring 400 candidate tickets per draw, splitting them into top and bottom
+          quartiles, and comparing actual match counts between the halves. The final step is the one most
+          analyses skip: the entire backtest was re-run across twelve independent datasets to check whether
+          the edge survived resampling.</p>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><div class="v r">0 / 18</div><div class="l">features surviving correction</div></div>
+        <div class="metric"><div class="v">0.6606</div><div class="l">model average vs 0.6792 theory</div></div>
+        <div class="metric"><div class="v r">p = 0.43</div><div class="l">model vs random, 12 datasets</div></div>
+        <div class="metric"><div class="v">13 / 14</div><div class="l">randomness tests clean</div></div>
+      </div>
+
+      <div class="qa">
+        <div class="q">What it found</div>
+        <p>The first backtest reported 0.795 average matches against the 0.679 baseline, a 17% edge at
+          p = 0.012, which looked like a real result. Across twelve independent datasets the same model
+          averaged 0.6606 matches, below the theoretical baseline, with a paired p-value of 0.43. The
+          apparent edge was sampling noise. A 150-draw backtest carries a standard error of 0.06, so a model
+          with no skill at all lands anywhere between 0.56 and 0.80 about 95% of the time. A single backtest
+          cannot establish an edge.</p>
+      </div>
+
+      <div class="qa">
+        <div class="q">Why the features failed</div>
+        <p>Four of the eighteen features reached p below 0.05. None survived correction. Testing eighteen
+          features at a 5% threshold produces roughly one false positive by chance, and the Bonferroni
+          threshold for that many tests is p below 0.0028.</p>
+      </div>
+
+      <div class="qa">
+        <div class="q">The mechanism, tested directly</div>
+        <p>The underlying reason appears in a direct test. Walking all 4,009 draws and recording every
+          number's gap since its last appearance shows that a number drawn last time had an 11.38% chance of
+          appearing again, while one cold for twenty or more draws had 11.16%. The expected rate under
+          independence is 11.32%. Fisher's exact test returned p = 0.30, and a chi-squared test across
+          twenty-six gap buckets returned p = 0.62. The gap carries no information about the next draw. The
+          process has no memory.</p>
+      </div>
+
+      <div class="qa">
+        <div class="q">Validating the method</div>
+        <p>A null result invites the objection that the tests were simply too weak to detect anything. To
+          rule that out, the identical battery was run against three systems with known structure.</p>
+      </div>
+
+      <div class="scroll">
+      <table class="tbl">
+        <tr><th>System</th><th>Lag-1 autocorrelation</th><th>Forecast vs baseline</th><th>Edge persists</th></tr>
+        <tr><td>Lottery</td><td class="num">0.0142</td><td class="num no">-0.3%</td><td class="no">0 of 10 runs</td></tr>
+        <tr><td>Weather-like</td><td class="num">0.8462</td><td class="num ok">+47.3%</td><td class="ok">10 of 10 runs</td></tr>
+        <tr><td>Sales-like</td><td class="num">0.9824</td><td class="num ok">+47.3%</td><td class="ok">yes</td></tr>
+        <tr><td>Churn-like</td><td class="num">n/a</td><td class="num ok">p = 2.6e-160</td><td class="ok">yes</td></tr>
+      </table>
+      </div>
+
+      <div class="callout">
+        <div class="ch">The distinction that matters</div>
+        <p>The same machinery that found nothing in the lottery fired instantly on every system with real
+          structure, and held across every independent sample. There is a real difference between a model
+          that failed and a question that has no answer. This was the second kind, and the tools were working
+          correctly by telling me so.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="pad" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">What I got wrong</span><span class="sec-num">02</span></div>
+
+  <div class="case">
+    <div class="case-top">
+      <div>
+        <h2>Twelve Errors, Caught by Testing</h2>
+        <div class="pill-row"><span>Self-review</span><span>Verification</span><span>Methodology</span></div>
+      </div>
+      <span class="tag red">Error log</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">Why this section exists</div>
+        <p>Most portfolio pieces show only the finished result. This one includes the wreckage, because the
+          error trail is the skill on display. Every item below was published with confidence and later
+          retracted. Eleven of the twelve were caught by running a test rather than by re-reading the
+          reasoning, which is itself the lesson about where review effort belongs.</p>
+      </div>
+
+      <ol class="errlist">
+        <li><span class="h">Reported a statistically significant edge from one backtest.</span>
+          The 17% edge at p = 0.012 was sampling noise, as twelve independent datasets later showed.</li>
+        <li><span class="h">Used the wrong prize table.</span>
+          Pulled prizes from a secondary site showing the retired $1 game while charging the current $2
+          ticket price, understating the game's value by 81%.</li>
+        <li><span class="h">Ignored the automatic multiplier.</span>
+          Every non-jackpot prize is multiplied by an average of 3.346 times. It was left out of the
+          economics entirely.</li>
+        <li><span class="h">Filtered out consecutive pairs as structurally abnormal.</span>
+          Backwards. Players avoid consecutive numbers, so tickets containing them are under-played and
+          under-shared. The filter was steering toward the crowd rather than away from it.</li>
+        <li><span class="h">Recommended all-high tickets without testing robustness.</span>
+          Modelling contrarian crowding showed the strategy inverts on itself once adoption passes roughly
+          35%.</li>
+        <li><span class="h">Built a fraud detector that flagged a provably fair lottery.</span>
+          A t-test run with 20,000 reference samples against the observed mean inverts the roles of the two
+          groups and rejects on a trivial difference.</li>
+        <li><span class="h">Shipped a biased estimator with intervals that were too narrow.</span>
+          The calibration curve was non-monotonic from noise, and the bootstrap treated it as exact. Two of
+          four confidence intervals missed the true value.</li>
+        <li><span class="h">Conflated the CUSUM alarm with the change point.</span>
+          Reported onset at draw 495 for a change that began at draw 400.</li>
+        <li><span class="h">Overstated a change-point estimator.</span>
+          Called it far better when it beat the alarm by five draws out of a ninety-five-draw error. A
+          likelihood-ratio scan proved 8.9 times more accurate.</li>
+        <li><span class="h">Claimed coverage that the output contradicted.</span>
+          Printed the line "the interval covers the truth" in a table where two of four intervals visibly did
+          not.</li>
+        <li><span class="h">Invented a ticket-sales curve and quoted it as measured.</span>
+          It implied 6.2 tickets per Florida resident at a billion-dollar jackpot, and it drove a break-even
+          figure presented without that caveat.</li>
+        <li><span class="h">Concluded that Double Play should be skipped.</span>
+          Based on an assumption explicitly flagged as unverified. One fetch of the operator's own rules
+          reversed the recommendation completely.</li>
+      </ol>
+
+      <div class="callout" style="margin-top:2rem">
+        <div class="ch">The pattern</div>
+        <p>Nearly every error came from computing an answer under an assumption and then letting the
+          conclusion stand as though the assumption were settled. The fix is cheap and mechanical. When a
+          single unverified fact can flip a recommendation, verify it before publishing rather than after.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="pad" style="padding-top:0"><div class="wrap">
+  <div class="sec-head"><span class="sec-label">What actually worked</span><span class="sec-num">03</span></div>
+
+  <div class="case">
+    <div class="case-top">
+      <div>
+        <h2>The Part That Was Worth Money</h2>
+        <div class="pill-row"><span>Game theory</span><span>Expected value</span><span>Behavioral modeling</span></div>
+      </div>
+      <span class="tag">Validated finding</span>
+    </div>
+    <div class="case-body">
+      <div class="qa">
+        <div class="q">The pivot</div>
+        <p>Once prediction was ruled out, the question changed. The probability of winning is fixed at one in
+          22,957,480 regardless of which numbers are chosen, but the jackpot is divided among winners, and
+          that depends entirely on what other people play. That is a fact about human behavior rather than
+          about the draw, and human behavior does have memory.</p>
+      </div>
+
+      <div class="metrics">
+        <div class="metric"><div class="v g">78.2%</div><div class="l">Double Play return per dollar</div></div>
+        <div class="metric"><div class="v">27.0%</div><div class="l">base game return per dollar</div></div>
+        <div class="metric"><div class="v g">51%</div><div class="l">reduction in expected sharing</div></div>
+        <div class="metric"><div class="v gold">46.5%</div><div class="l">of draws hold a consecutive pair</div></div>
+      </div>
+
+      <div class="qa">
+        <div class="q">The finding that mattered</div>
+        <p>Reading the operator's own rules document surfaced something no amount of draw analysis could.
+          Florida's automatic multiplier applies to the Double Play add-on as well as the base game, and
+          Double Play's prize floors are higher at half the price: $3,500 against $3,000 for five matches,
+          $60 against $50 for four, $7 against $5 for three. Working the coupled free-ticket recursion
+          through, the one-dollar add-on returns 78.2 cents against the base ticket's 27.0 cents per dollar.
+          The crossover where base tickets become the better buy sits near a $65 million jackpot, a level
+          this game does not reach.</p>
+      </div>
+
+      <div class="qa">
+        <div class="q">Behavioral edges, quantified</div>
+        <p>Three patterns in player behavior proved measurable. Players cluster heavily on 1 through 31
+          because they use birthdays. They avoid consecutive pairs because those do not look random, even
+          though 46.5% of actual draws contain one. And a few percent mark visual shapes on the playslip,
+          such as lines, diagonals and blocks, which randomly chosen tickets form essentially never.
+          Modelling all three produced a ticket selector whose expected number of co-winners is half that of
+          a random ticket, and which stays below average popularity even if a third of self-pickers adopt the
+          same contrarian approach.</p>
+      </div>
+
+      <div class="qa">
+        <div class="q">The honest bottom line</div>
+        <p>A three-dollar full ticket returns about $1.32 in expected value. None of this makes the lottery a
+          positive-value proposition, and nothing can. What it does is ensure that if the improbable happens
+          the prize is split fewer ways, and that every dollar spent buys more than it otherwise would.</p>
+      </div>
+
+      <div class="qa">
+        <div class="q">Skills demonstrated</div>
+        <div class="pill-row">
+          <span>hypothesis testing</span><span>multiple-comparison correction</span><span>walk-forward validation</span>
+          <span>power analysis</span><span>Monte Carlo simulation</span><span>hypergeometric modeling</span>
+          <span>kernel density estimation</span><span>CUSUM change detection</span><span>likelihood-ratio scan</span>
+          <span>adversarial modeling</span><span>expected-value analysis</span><span>game theory</span>
+          <span>source verification</span><span>honest reporting</span>
+        </div>
+      </div>
+
+      <div class="btns">
+        <a class="btn btn-ghost" href="https://ablevlabs.com/data-science.html">More case studies ↗</a>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<footer>
+  <span class="ft">© 2026 AbleVLabs · Carlos Abel Vivanco</span>
+  <span class="ft">
+    <a href="/data-science.html">Data science ↗</a>
+    <a href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub ↗</a>
+    <a href="https://ablevlabs.com/">ablevlabs.com ↗</a>
+  </span>
+</footer>
+
+<script>
+(function(){
+  var c=document.getElementById('stars'),x=c.getContext('2d'),s=[];
+  function size(){c.width=innerWidth;c.height=innerHeight;}
+  size();addEventListener('resize',size);
+  for(var i=0;i<110;i++)s.push({x:Math.random(),y:Math.random(),r:Math.random()*1.1+.2,a:Math.random()*.5+.15,d:Math.random()*.012+.003});
+  function draw(){
+    x.clearRect(0,0,c.width,c.height);
+    for(var i=0;i<s.length;i++){var p=s[i];p.a+=p.d;if(p.a>.7||p.a<.12)p.d=-p.d;
+      x.beginPath();x.arc(p.x*c.width,p.y*c.height,p.r,0,6.283);
+      x.fillStyle='rgba(0,212,255,'+p.a.toFixed(3)+')';x.fill();}
+    requestAnimationFrame(draw);
+  }
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)draw();
+})();
+</script>
+</body>
+</html>
