@@ -1207,6 +1207,42 @@ footer {
 --------------------------------------------------------------------------- */
 const UPDATES = [
   {
+    date: "18 Sep 2026", kind: "feature", project: "kami 0.11.0",
+    title: "kami now teaches PyTorch one step at a time",
+    body: "deep_train() builds a whole neural network in one line, which is fast but scrolls past before " +
+          "you can learn from it. New in 0.11.0, <b>kami.deep_project()</b> runs that same build one stage " +
+          "per cell: prepare the data, design the network, train it, score it. Each step hands you the real " +
+          "object to inspect and change before the next, so you can edit the network and train your own " +
+          "version, and each ends with a quick check you can switch off. It runs on the same engine as " +
+          "deep_train, so a straight run produces the same model. <b>755 tests.</b>",
+    link: "kami.html", linkText: "See kami"
+  },
+  {
+    date: "17 Sep 2026", kind: "release", project: "kami 0.10.0",
+    title: "kami learned deep learning, and how to read the training loop you wrote",
+    body: "The biggest kami release yet: a PyTorch half that does not stop helping the moment you start " +
+          "writing your own code. It builds and trains a network for you and shows the exact PyTorch it " +
+          "ran, then <b>reads code you wrote yourself</b> and names the traps that never raise an error, " +
+          "like an nn.Softmax stacked in front of CrossEntropyLoss or a missing optimizer.zero_grad(). " +
+          "Hand it a folder of photos instead of a table and it catches the near-duplicate leak that makes " +
+          "image models look better than they are: on a test folder a random split left 264 duplicate " +
+          "pairs straddling train and test, and its grouped split left zero. PyTorch stays optional and is " +
+          "never imported until you call a deep function.",
+    link: "kami.html", linkText: "See kami"
+  },
+  {
+    date: "13 Sep 2026", kind: "release", project: "Neuromodulated Local Learning",
+    title: "New paper: Neuromodulated Local Learning",
+    body: "A preprint on credit assignment. Backpropagation sends one chain of gradients through every " +
+          "layer, which is what leaves deep plain networks vulnerable to vanishing gradients. Local " +
+          "learning cuts the chain by giving each layer its own objective, but then the layers learn in " +
+          "isolation, blind to how they serve the whole. <b>Neuromodulated Local Learning</b> keeps the " +
+          "local objectives and adds a small learned neuromodulator that watches each layer's statistics " +
+          "and scales its learning, restoring the global coordination local methods throw away. A proof " +
+          "of concept, validated on CIFAR-10, with the notebook to reproduce it.",
+    link: "nll.html", linkText: "Read the paper"
+  },
+  {
     date: "2 Sep 2026", kind: "feature", project: "The Gone Wrongs",
     title: "New pieces: The Author, The Prompt, and The God in the Server Room",
     body: "Three new works, all circling one idea: AI as an unseen author. <b>The Author</b> is a tribute to " +
