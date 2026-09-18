@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>kami — your machine-learning tutor · AbleVLabs</title>
-<meta name="description" content="kami (Knowledge-Aware Model Interpreter): a Python library that builds a model from your data, then explains what it found in plain English. By AbleVLabs.">
+<meta name="description" content="kami (Knowledge-Aware Model Interpreter): a Python library that builds a model from your data, then explains what it found in plain English. Now with a PyTorch half that reads the training loop you wrote. By AbleVLabs.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="kami — your machine-learning tutor">
 <meta property="og:description" content="Knowledge-Aware Model Interpreter - a Python library that builds a model from your data, then explains what it found in plain English.">
@@ -105,7 +105,7 @@
   .step h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:18px;margin:8px 0 6px;letter-spacing:.02em}
   .step p{font-size:14.5px;color:var(--muted);margin:0}
   .note{margin-top:18px;font-size:15px;color:var(--muted);border-left:2px solid var(--line-strong);padding-left:14px}
-  .note code{font-family:'Space Mono',monospace;color:var(--a);font-size:13px}
+  .note code,.body code,.step p code,.outlist .o span code{font-family:'Space Mono',monospace;color:var(--a);font-size:13px}
 
   /* guardrails grid */
   .outlist{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
@@ -151,6 +151,7 @@
       <a href="#teaches">It teaches</a>
       <a href="#charts">Charts</a>
       <a href="#safety">Guardrails</a>
+      <a href="#deep">Deep learning</a>
       <a href="#v090">0.9.0</a>
       <a href="#cheatsheet">Cheat sheet</a>
     </div>
@@ -165,7 +166,7 @@
     <p class="subtitle">Your Machine-Learning Tutor</p>
     <p class="acronym"><b>K</b>nowledge-<b>A</b>ware <b>M</b>odel <b>I</b>nterpreter</p>
     <p class="lede">A Python library that <b>builds</b> a model from your data &mdash; then <b>explains</b> what it
-    found, in plain English. Built for the rest of us: honest about what it knows, and patient enough to teach you why.</p>
+    found, in plain English. Built for the rest of us: honest about what it knows, and patient enough to teach you why. As of 0.10.0 it does neural networks too &mdash; and reads the PyTorch <em>you</em> wrote.</p>
     <div class="links">
       <a class="pill install" id="installPill" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">pip install ablevlabs</a>
       <a class="pill" href="https://pypi.org/project/ablevlabs/" target="_blank" rel="noopener">PyPI &#8599;</a>
@@ -368,6 +369,99 @@ What you're looking at: each dot is one row, placed by its 'size_sqft'
     </div>
   </section>
 
+
+  <!-- DEEP LEARNING -->
+  <section id="deep">
+    <p class="seclabel">// 0.10.0 &mdash; neural networks <span class="hint">&mdash; PyTorch, without the cliff</span></p>
+    <h2>It keeps teaching after you outgrow it.</h2>
+    <p class="body">Most teaching wrappers help right up to the moment you write your own training loop,
+    and then they stop. Kami starts there. The deep half has three rungs, and it is built to get
+    <em>weaker</em> on purpose as you get stronger.</p>
+
+    <div class="steps">
+      <div class="step"><div class="n">RUNG 01</div><h3>Kami does all of it</h3><p><code>kami.deep_train(df, target="churn")</code> prepares the columns, designs a network from the shape of your data, trains with early stopping, and scores on rows it never saw.</p></div>
+      <div class="step"><div class="n">RUNG 02</div><h3>Kami shows its work</h3><p><code>result.show_code()</code> prints the exact, runnable PyTorch that just executed &mdash; module, loop, optimizer. Copy it into a cell and start changing things.</p></div>
+      <div class="step"><div class="n">RUNG 03</div><h3>Kami reads code you wrote</h3><p><code>kami.deep_check(model, ...)</code> takes your own model and your own training loop, and names the traps before they cost you an afternoon.</p></div>
+    </div>
+
+    <p class="body">Rung three is the whole argument for building this. The errors that crash are the easy
+    ones. The expensive ones run fine, drop your loss a little, and leave you with a model that is quietly
+    worse than it should be &mdash; and nothing in PyTorch says a word.</p>
+
+    <div class="term">
+      <div class="head"><span class="dots"><i></i><i></i><i></i></span> kami.deep_check &#9656; output</div>
+<pre>   --- CODE CHECK ---
+
+   Kami read your code. <span class="gd">3 things will bite you.</span>
+
+   <span class="gd">[!]</span> Your last layer is Softmax and your loss is CrossEntropyLoss.
+       CrossEntropyLoss applies softmax itself, so yours runs twice.
+       Fix: delete the nn.Softmax line and let the loss do it.
+
+   <span class="gd">[!]</span> optimizer.zero_grad() is never called in your loop. PyTorch ADDS
+       each batch's gradients to the last batch's instead of replacing
+       them. Fix: call optimizer.zero_grad() at the top of the batch loop.
+
+   <span class="gd">[!]</span> model.train() and model.eval() are never called, and this model
+       contains Dropout. That layer behaves differently in the two modes.
+       Fix: model.train() before training, model.eval() before validation.
+
+   <span class="hl">The rest looked fine: shapes line up end to end, model and data agree
+   on device and number type.</span></pre>
+    </div>
+
+    <p class="note">Kami reads plain functions, class methods and closures. It never claims to have checked
+    something it could not read &mdash; whatever it did not look at is listed under <b>Not checked</b>.</p>
+
+    <p class="body" style="margin-top:34px"><strong>Photos, and the trap nobody warns you about.</strong>
+    Hand <code>deep_look()</code> a folder instead of a table and it reads your classes the way torchvision
+    expects them. Then it does the thing torchvision will not.</p>
+
+    <div class="term">
+      <div class="head"><span class="dots"><i></i><i></i><i></i></span> kami.deep_look(folder=&hellip;) &#9656; output</div>
+<pre>   --- BEFORE YOU TRAIN ---
+
+   Classes:  2
+   Images:   120
+
+      cats      60  ########################
+      dogs      60  ########################
+
+   <span class="gd">[!] 39 of the 120 images Kami looked at are near-copies of another
+       one, in 1 group(s). The biggest group has 40 almost-identical
+       images in it.</span>
+
+       If copies of the same shot end up on both sides of the split, the
+       model is scored on pictures it has effectively already trained on.
+       The number comes back wonderful and means nothing.
+
+   <span class="hl">Genuinely different pictures, once near-copies are counted once:</span>
+      cats      60 of 60
+      dogs      <span class="ac">21 of 60</span></pre>
+    </div>
+
+    <p class="body">That last block is the point. A class can be sixty files and twenty-one pictures, and a
+    random split will happily put copies of the same dog in the training half and in the test half. Kami
+    fingerprints every image, groups the near-copies, counts your classes in <em>pictures</em> rather than in
+    files, and splits so every copy of a shot stays on one side. On the folder above, a random split left
+    <b>264</b> near-duplicate pairs straddling train and test. The grouped split left <b>zero</b>.</p>
+
+    <div class="outlist">
+      <div class="o"><b>Honest scores, not flattering ones</b><span>Scaling, filling and encoding are learned from the training rows only, <em>after</em> the split. Doing it before is textbook data leakage, and Kami prints the reason on screen so you learn the habit instead of inheriting it.</span></div>
+      <div class="o"><b>It won't let you pick by test score</b><span>Train five times on the same table and Kami points out that you have been choosing with the rows that were supposed to be held back. No other library warns about this.</span></div>
+      <div class="o"><b>Its own defaults are something to beat</b><span>The architecture rule won outright on one of four real datasets, and Kami says so out loud. <code>deep_tune()</code> sweeps one setting at a time and ranks on validation loss.</span></div>
+      <div class="o"><b>Thresholds are measured, not assumed</b><span>Three numbers first picked by convention turned out wrong when they were swept: the skew threshold, the network width, and the image duplicate distance. All three now come from a measurement, and the measurement is in the source.</span></div>
+      <div class="o"><b>Errors translated before they crash</b><span>Shape, device and dtype mismatches are roughly half of all beginner PyTorch errors. <code>deep_trace()</code> prints the shape at every layer, which is the cure for the commonest one.</span></div>
+      <div class="o"><b>PyTorch stays optional</b><span>Importing kami never loads torch. Each deep function asks for it only when you actually call that function, and says how to install it if it is missing.</span></div>
+    </div>
+
+    <p class="note" style="margin-top:26px">297 tests, lint clean. <b>In:</b> tables, regression and
+    classification, feedforward networks, eleven lessons, save and load, importance, honest comparison
+    &mdash; and, for folders of images, reading the folder, near-duplicate detection and a leak-free grouped
+    split. <b>Not yet:</b> training on images, text and transformers, Lightning. Each of those gets its own
+    release, and the three rungs above are the structure they plug into.</p>
+  </section>
+
   <!-- 0.9.0 -->
   <section id="v090">
     <p class="seclabel">// 0.9.0 &mdash; statistical corrections</p>
@@ -463,6 +557,24 @@ kami.<span class="fn">suggest_charts</span>(df)           <span class="c"># whic
 kami.<span class="fn">learn</span>(<span class="str">"TabPFN"</span>)             <span class="c"># what's new in tabular ML right now</span>
 kami.<span class="fn">translate</span>(<span class="str">"R2"</span>)             <span class="c"># any jargon term, decoded</span>
 kami.<span class="fn">roadmap</span>()                  <span class="c"># the whole workflow, step by step</span></pre>
+    </div>
+
+    <div class="codeblock">
+      <p class="cap">neural networks &mdash; the deep half</p>
+      <button class="copy">copy</button>
+      <pre>pip install torch                       <span class="c"># only needed for the deep functions</span>
+
+kami.<span class="fn">deep_info</span>()                       <span class="c"># the whole map, in the terminal</span>
+kami.<span class="fn">deep_look</span>(df, target=<span class="str">"churn"</span>)      <span class="c"># should this be a network at all?</span>
+kami.<span class="fn">deep_look</span>(folder=<span class="str">"photos/"</span>)        <span class="c"># same verb, a folder of images</span>
+
+result = kami.<span class="fn">deep_train</span>(df, target=<span class="str">"churn"</span>)
+result.<span class="fn">show_code</span>()                     <span class="c"># the PyTorch that just ran</span>
+result.<span class="fn">importance</span>()                    <span class="c"># which columns it leaned on</span>
+
+kami.<span class="fn">deep_check</span>(my_model, df, target=<span class="str">"churn"</span>,   <span class="c"># now check code YOU wrote</span>
+                loss_fn=loss_fn, loop=my_loop)
+kami.<span class="fn">deep_learn</span>(<span class="str">"transfer learning"</span>)     <span class="c"># eleven lessons, each naming its trap</span></pre>
     </div>
 
     <table class="opts">
