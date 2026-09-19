@@ -827,7 +827,7 @@ footer {
 
     <!-- ===== Security & Systems ===== -->
     <div class="cat-group">
-      <div class="cat-head rv"><span class="cat-name">Security &amp; Systems</span><span class="cat-count">02</span><span class="cat-line"></span></div>
+      <div class="cat-head rv"><span class="cat-name">Security &amp; Systems</span><span class="cat-count">03</span><span class="cat-line"></span></div>
       <div class="pgrid">
 
         <a href="/paranoid-penguin.html" class="pcard rv" style="--pc:#6c3fff33; --d:.0s">
@@ -840,6 +840,12 @@ footer {
           <div class="tile"><img src="logos/folder-saga.png" alt="Folder Saga" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#f4cf6333,#f4cf6311)">&#9819;</div></div>
           <div class="pbody"><div class="pname">Folder Saga</div><div class="psub">Reversible File Organizer &middot; Game Layer &middot; Duplicate Sweeper</div></div>
           <div class="pright"><span class="pill pill-live">&#9679; Live</span><span class="arr">&#8599;</span></div>
+        </a>
+
+        <a href="/cliffid.html" class="pcard rv" style="--pc:#35c9ff33; --d:.12s">
+          <div class="tile"><img src="logos/cliffid.png" alt="CliffID" onerror="if(this.getAttribute('src').slice(-8)!=='.png.png'){this.src=this.getAttribute('src')+'.png'}else{this.style.display='none';this.nextElementSibling.style.display='flex'}"><div class="ph" style="display:none;background:linear-gradient(135deg,#35c9ff33,#35c9ff11)">C</div></div>
+          <div class="pbody"><div class="pname">CliffID</div><div class="psub">Offline Face Recognition &middot; PyTorch &middot; Runs On Your Machine</div></div>
+          <div class="pright"><span class="pill pill-soon">&#9675; Beta</span><span class="arr">&#8599;</span></div>
         </a>
 
       </div>
@@ -1206,6 +1212,20 @@ footer {
      shown: first 4 render immediately, the rest behind "show earlier"
 --------------------------------------------------------------------------- */
 const UPDATES = [
+  {
+    date: "19 Sep 2026", kind: "release", project: "CliffID",
+    title: "New: CliffID, face recognition that runs offline and admits when it does not know you",
+    body: "Cliff + ID, named after Clifford, the family dog, who is on the icon. A desktop app " +
+          "that watches your webcam, puts a name over the faces it knows, and says " +
+          "<b>unknown</b> for everyone else. Nothing is trained and no photographs are stored: a " +
+          "pretrained network turns a face into 512 numbers, and recognising someone is measuring " +
+          "the distance to the people you enrolled. The threshold for &ldquo;close enough&rdquo; was " +
+          "measured rather than copied: same person after webcam-style changes came out 0.05 to 0.36, " +
+          "genuinely different people 0.97 to 1.47, so the default sits at 0.80 in the gap. There is a " +
+          "browser version on the same engine, and it stores nothing at all, because a public demo " +
+          "that quietly piled up strangers' faces would be the wrong thing to build.",
+    link: "cliffid.html", linkText: "See CliffID"
+  },
   {
     date: "18 Sep 2026", kind: "feature", project: "kami 0.11.0",
     title: "kami now teaches PyTorch one step at a time",
