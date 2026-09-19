@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CliffID &middot; offline face recognition &middot; AbleVLabs</title>
+<meta name="description" content="CliffID: an offline face-recognition desktop app built with PyTorch. It names the faces it knows, says unknown for everyone else, stores no photographs, and works with no internet. Named after Clifford. By AbleVLabs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07090f; --panel:#0d1320; --panel-2:#111829;
+    --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.16);
+    --ink:#e8ecf4; --muted:#6b7689;
+    --a:#35c9ff; --b:#ffc24b; --live:#38e08a;
+    --a-soft:rgba(53,201,255,.14);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Rajdhani',system-ui,sans-serif;
+    line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.5), transparent),
+      radial-gradient(1px 1px at 75% 18%, rgba(255,255,255,.35), transparent),
+      radial-gradient(1px 1px at 42% 72%, rgba(255,255,255,.4), transparent),
+      radial-gradient(1px 1px at 88% 64%, rgba(255,255,255,.3), transparent),
+      radial-gradient(1px 1px at 12% 84%, rgba(255,255,255,.3), transparent),
+      radial-gradient(2px 2px at 60% 44%, rgba(53,201,255,.25), transparent);
+    background-repeat:no-repeat}
+  .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 22px}
+
+  nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(10px);
+    background:rgba(7,9,15,.78);border-bottom:1px solid var(--line)}
+  nav .bar{max-width:920px;margin:0 auto;padding:13px 22px;display:flex;
+    justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  nav a{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;
+    color:var(--muted);text-decoration:none;transition:.15s}
+  nav a:hover{color:var(--a)}
+  nav .home{color:var(--ink);font-weight:700}
+  nav .navlinks{display:flex;gap:16px;flex-wrap:wrap}
+
+  .eyebrow{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.18em;
+    color:var(--muted);text-transform:uppercase;margin:0 0 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .eyebrow .dot{color:var(--live)}
+  .vbadge{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--live);
+    border:1px solid rgba(56,224,138,.4);border-radius:2px;padding:2px 8px}
+
+  header{padding:60px 0 18px}
+  h1{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(72px,16vw,150px);
+    line-height:.84;letter-spacing:.02em;margin:0}
+  .subtitle{font-size:clamp(16px,2.6vw,21px);font-weight:600;letter-spacing:.05em;
+    color:var(--muted);margin:8px 0 0;text-transform:uppercase}
+  .acronym{font-family:'Space Mono',monospace;font-size:clamp(12.5px,1.9vw,15px);letter-spacing:.14em;
+    color:var(--muted);margin:14px 0 0;text-transform:uppercase}
+  .acronym b{color:var(--a);font-weight:700}
+  .lede{font-size:clamp(17px,2.6vw,20px);max-width:62ch;margin:22px 0 0;color:var(--ink)}
+  .lede b{color:var(--a)}
+  .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;align-items:center}
+  .pill{font-family:'Space Mono',monospace;font-size:13px;border:1px solid var(--line-strong);
+    border-radius:2px;padding:9px 14px;color:var(--ink);text-decoration:none;display:inline-flex;
+    gap:8px;align-items:center;background:var(--panel);transition:.18s;cursor:pointer}
+  .pill.install{color:var(--live);border-color:rgba(56,224,138,.35)}
+  .pill.install::before{content:"$";color:var(--muted)}
+  .pill:hover{border-color:var(--a);color:var(--a)}
+  .pill.install:hover{color:var(--live);border-color:var(--live)}
+
+  section{padding:46px 0;border-top:1px solid var(--line)}
+  .seclabel{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 22px}
+  .seclabel .hint{color:var(--muted);text-transform:none;letter-spacing:0;font-size:13px}
+  h2{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(34px,6vw,52px);
+    line-height:.95;letter-spacing:.02em;margin:0 0 16px}
+  p.body{font-size:17px;max-width:64ch;margin:0 0 16px}
+  p.body b{color:var(--a)}
+  strong{color:var(--ink);font-weight:700}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .chip{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);
+    border:1px solid var(--line);border-radius:2px;padding:6px 10px;background:var(--panel)}
+  .chip b{color:var(--a);font-weight:400}
+
+  /* terminal / output console */
+  .term{border:1px solid var(--line-strong);border-radius:4px;overflow:hidden;
+    background:var(--panel);margin:0 0 6px;box-shadow:0 0 24px rgba(53,201,255,.05)}
+  .term .head{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);
+    background:var(--panel-2);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted)}
+  .term .head .dots{display:flex;gap:6px;margin-right:6px}
+  .term .head .dots i{width:9px;height:9px;border-radius:50%;display:block;background:var(--line-strong)}
+  .term .head .dots i:nth-child(1){background:#ff5f56} .term .head .dots i:nth-child(2){background:var(--b)} .term .head .dots i:nth-child(3){background:var(--live)}
+  .term pre{margin:0;padding:18px 16px;overflow:auto;font-family:'Space Mono',monospace;
+    font-size:12.5px;line-height:1.65;color:var(--ink)}
+  .term pre .hl{color:var(--live)} .term pre .ac{color:var(--a)} .term pre .gd{color:var(--b)}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px}
+  .step{border:1px solid var(--line);border-radius:3px;background:var(--panel);padding:20px}
+  .step .n{font-family:'Space Mono',monospace;font-size:12px;color:var(--a);letter-spacing:.1em}
+  .step h3{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:18px;margin:8px 0 6px;letter-spacing:.02em}
+  .step p{font-size:14.5px;color:var(--muted);margin:0}
+  .note{margin-top:18px;font-size:15px;color:var(--muted);border-left:2px solid var(--line-strong);padding-left:14px}
+  .note code{font-family:'Space Mono',monospace;color:var(--a);font-size:13px}
+
+  /* guardrails grid */
+  .outlist{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
+  .outlist .o{border:1px solid var(--line);border-radius:3px;background:var(--panel);padding:14px 15px}
+  .outlist .o b{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15.5px;color:var(--ink);letter-spacing:.02em}
+  .outlist .o span{display:block;color:var(--muted);font-size:14px;margin-top:4px}
+
+  /* code / cheat sheet */
+  .codeblock{position:relative;margin:0 0 18px}
+  .codeblock pre{font-family:'Space Mono',monospace;font-size:13px;line-height:1.7;color:var(--ink);
+    background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:18px 16px;overflow:auto;margin:0}
+  .codeblock .cap{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+  .codeblock .copy{position:absolute;top:30px;right:10px;font-family:'Space Mono',monospace;font-size:10.5px;
+    letter-spacing:.08em;text-transform:uppercase;background:var(--panel-2);color:var(--muted);
+    border:1px solid var(--line-strong);border-radius:2px;padding:4px 8px;cursor:pointer;transition:.15s}
+  .codeblock .copy:hover{color:var(--a);border-color:var(--a)}
+  pre .c{color:var(--muted)} pre .kw{color:#c792ea} pre .fn{color:var(--a)} pre .str{color:#a5d6a7} pre .num{color:var(--b)}
+  table.opts{width:100%;border-collapse:collapse;margin-top:4px;font-size:14.5px}
+  table.opts th,table.opts td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.opts th{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  table.opts td code{font-family:'Space Mono',monospace;color:var(--a);font-size:13px}
+
+  footer{padding:34px 0 60px;border-top:1px solid var(--line);font-family:'Space Mono',monospace;
+    font-size:12px;color:var(--muted)}
+  footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center}
+  footer a{color:var(--muted);text-decoration:none;transition:.15s}
+  footer a:hover{color:var(--a)}
+
+  @media (max-width:620px){
+    .steps{grid-template-columns:1fr}
+    .outlist{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+</style>
+<style>
+/* ---- the in-browser demo ---- */
+.demo{display:grid;grid-template-columns:1fr 300px;gap:18px;margin-top:6px;align-items:start}
+.demo-stage{position:relative;border:1px solid var(--line-strong);border-radius:4px;
+  overflow:hidden;background:#000;aspect-ratio:4/3;box-shadow:0 0 30px rgba(53,201,255,.06)}
+.demo-stage video,.demo-stage canvas{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block}
+.demo-stage video{transform:scaleX(-1)}
+.demo-cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:10px;text-align:center;padding:26px;background:var(--panel);z-index:3}
+.demo-cover.gone{display:none}
+.demo-cover-t{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:21px;color:var(--ink);
+  margin:0;letter-spacing:.02em}
+.demo-cover-s{font-size:13.5px;color:var(--muted);margin:0;max-width:330px;line-height:1.6}
+.demo-cover-n{font-family:'Space Mono',monospace;font-size:11.5px;color:var(--a);margin:2px 0 0;
+  min-height:16px;letter-spacing:.04em}
+.demo-go{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--a);background:transparent;border:1px solid var(--a);
+  border-radius:3px;padding:11px 20px;cursor:pointer;transition:background .18s,color .18s}
+.demo-go:hover{background:var(--a);color:#04121a}
+.demo-go:disabled{opacity:.45;cursor:default;background:transparent;color:var(--a)}
+
+.demo-side{display:flex;flex-direction:column;gap:9px}
+.demo-row{display:flex;flex-direction:column;gap:8px}
+.demo-side input[type=text]{font-family:'Space Mono',monospace;font-size:13px;color:var(--ink);
+  background:var(--panel);border:1px solid var(--line-strong);border-radius:3px;padding:10px 11px;
+  width:100%;box-sizing:border-box}
+.demo-side input[type=text]:focus{outline:none;border-color:var(--a)}
+.demo-side input[type=text]:disabled{opacity:.4}
+.demo-btn{font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--a);background:var(--panel);border:1px solid var(--line-strong);
+  border-radius:3px;padding:10px 12px;cursor:pointer;transition:border-color .18s,color .18s}
+.demo-btn:hover:not(:disabled){border-color:var(--a)}
+.demo-btn:disabled{opacity:.35;cursor:default}
+.demo-btn-q{color:var(--muted);margin-top:4px}
+.demo-btn-q:hover:not(:disabled){border-color:var(--b);color:var(--b)}
+
+.demo-lbl{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin:8px 0 0}
+.demo-lbl b{color:var(--a);font-weight:400}
+.demo-list{border:1px solid var(--line);border-radius:3px;background:var(--panel);
+  max-height:150px;overflow-y:auto}
+.demo-empty{font-size:12.5px;color:var(--muted);margin:0;padding:11px 12px;line-height:1.55}
+.demo-person{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:9px 11px;border-bottom:1px solid var(--line);font-family:'Space Mono',monospace;font-size:12.5px}
+.demo-person:last-child{border-bottom:none}
+.demo-person span{color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.demo-person button{background:none;border:none;color:var(--muted);cursor:pointer;
+  font-family:'Space Mono',monospace;font-size:14px;line-height:1;padding:2px 4px}
+.demo-person button:hover{color:var(--b)}
+
+.demo-side input[type=range]{width:100%;accent-color:var(--a);margin:2px 0 0}
+.demo-side input[type=range]:disabled{opacity:.35}
+.demo-hint{font-size:12px;color:var(--muted);margin:0;line-height:1.55}
+.demo-status{font-family:'Space Mono',monospace;font-size:11.5px;color:var(--muted);
+  margin:6px 0 0;line-height:1.5;min-height:32px}
+.demo-status.on{color:var(--a)}
+.demo-status.bad{color:var(--b)}
+
+@media(max-width:820px){
+  .demo{grid-template-columns:1fr}
+  .demo-list{max-height:120px}
+}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="bar">
+    <a class="home" href="https://ablevlabs.com">&larr; AbleVLabs</a>
+    <div class="navlinks">
+      <a href="#what">What it is</a>
+      <a href="#how">How it works</a>
+      <a href="#try">Try it</a>
+      <a href="#threshold">The threshold</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#engine">One engine</a>
+      <a href="#start">Run it</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow"><span class="dot">&#9679;</span> computer vision &middot; 06 // in progress <span class="vbadge">NEW</span></p>
+    <img src="logos/cliffid.png" alt="CliffID" width="112" height="112"
+         style="display:block;width:112px;height:112px;border-radius:22px;margin:0 0 1.1rem;
+                box-shadow:0 0 0 1px rgba(0,212,255,.45), 0 10px 34px -12px rgba(0,212,255,.55);"
+         onerror="this.style.display='none'">
+    <h1>CLIFFID</h1>
+    <p class="subtitle">Offline Face Recognition</p>
+    <p class="acronym">Cliff + ID &middot; named after Clifford, the family dog</p>
+    <p class="acronym" style="margin-top:.35rem">PyTorch &middot; runs on your machine &middot; nothing leaves it</p>
+    <p class="lede">A desktop app that watches your webcam, puts a name over the faces it knows, and
+    says <b>unknown</b> for everyone else. You enrol people from the window. It trains nothing,
+    stores no photographs, and after the first run it never touches the internet again.</p>
+    <div class="links">
+      <a class="pill" href="https://github.com/AbleVLabs" target="_blank" rel="noopener">GitHub &#8599;</a>
+      <a class="pill" href="#try">Try it in your browser &#8595;</a>
+      <a class="pill" href="/kami.html">kami &#8599;</a>
+    </div>
+  </header>
+
+  <!-- WHAT IT IS -->
+  <section id="what">
+    <p class="seclabel">// what it is</p>
+    <h2>It knows who is at the camera, and admits when it doesn't.</h2>
+    <p class="body">Point it at your webcam. Every face gets a box: green with a name for the people
+    it has met, amber and <em>unknown</em> for everyone else. To add someone, type a name, have them
+    look at the camera, and click Enrol. That is the whole workflow.</p>
+    <p class="body">The part most demos skip is the <b>unknown</b>. A recogniser that always picks its
+    closest guess will confidently call a stranger by your name, and that is the one mistake people
+    actually notice. CliffID refuses to answer when nobody enrolled is close enough, and shows you the
+    distance so you can see how close the call was.</p>
+    <div class="chips">
+      <span class="chip"><b>&rsaquo;</b> fully offline</span>
+      <span class="chip"><b>&rsaquo;</b> no training</span>
+      <span class="chip"><b>&rsaquo;</b> no photos stored</span>
+      <span class="chip"><b>&rsaquo;</b> desktop and browser</span>
+      <span class="chip"><b>&rsaquo;</b> 35 tests</span>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <p class="seclabel">// how it works <span class="hint">the idea is smaller than people expect</span></p>
+    <h2>No model is trained. Nothing learns your face.</h2>
+    <p class="body">There is no classifier per person, and nothing is fine-tuned when you enrol. A
+    pretrained network turns any face into <b>512 numbers</b>, a faceprint. The same face photographed
+    twice lands in almost the same place. Two different people land far apart. Everything else follows
+    from that one property.</p>
+
+    <div class="steps">
+      <div class="step"><div class="n">01</div><h3>Find and straighten</h3><p>MTCNN locates every face and uses the eyes, nose and mouth to rotate and crop it to a standard square. Skipping this quietly costs accuracy: the model was trained on faces straightened the same way.</p></div>
+      <div class="step"><div class="n">02</div><h3>Turn it into numbers</h3><p>InceptionResnetV1, trained on VGGFace2, turns that square into 512 numbers scaled to a fixed length, so distances between any two faceprints mean the same thing.</p></div>
+      <div class="step"><div class="n">03</div><h3>Measure the distance</h3><p>Compare against everyone enrolled and take the nearest, if it is near enough. Enrolling is just saving a faceprint under a name. One photo is enough.</p></div>
+    </div>
+
+    <div class="term">
+      <div class="head"><span class="dots"><i></i><i></i><i></i></span> cliffid &#9656; what it says</div>
+<pre>   <span class="hl">Paul Rudd  0.30</span>      enrolled earlier, recognised on a tilted, brighter shot
+   <span class="gd">unknown    1.48</span>      a real person it has never met
+   <span class="ac">2 face(s) . Able</span>  one it knows, one it does not</pre>
+    </div>
+    <p class="note">Those numbers are real, from the test run. Recognising someone it had enrolled,
+    on a photograph it had never seen, scored <b>0.30</b>. A genuinely different person scored
+    <b>1.48</b>. The gap between those two is the entire product.</p>
+  </section>
+
+  <!-- TRY IT -->
+  <section id="try">
+    <p class="seclabel">// try it <span class="hint">your camera, your machine, nothing uploaded</span></p>
+    <h2>Enrol yourself, then see if it knows you.</h2>
+    <p class="body">This runs entirely in your browser. Your camera feed is never uploaded, never
+    recorded, and never reaches a server, because there is no server: the model is downloaded to
+    your machine and the whole thing happens there. Close the tab and every trace of it is gone.</p>
+
+    <div class="demo">
+      <div class="demo-stage">
+        <video id="dm-video" playsinline muted></video>
+        <canvas id="dm-canvas"></canvas>
+        <div class="demo-cover" id="dm-cover">
+          <p class="demo-cover-t">Camera off</p>
+          <p class="demo-cover-s">About 7 MB of model downloads the first time you start it.
+          Nothing downloads until you press the button.</p>
+          <button class="demo-go" id="dm-start">Start camera</button>
+          <p class="demo-cover-n" id="dm-boot"></p>
+        </div>
+      </div>
+
+      <div class="demo-side">
+        <div class="demo-row">
+          <input id="dm-name" type="text" maxlength="24" placeholder="your name" autocomplete="off" spellcheck="false" disabled>
+          <button class="demo-btn" id="dm-enrol" disabled>Enrol this face</button>
+        </div>
+
+        <p class="demo-lbl">Enrolled <span id="dm-count">0</span></p>
+        <div class="demo-list" id="dm-list"><p class="demo-empty">Nobody yet. Type a name, look at the camera, press Enrol.</p></div>
+
+        <p class="demo-lbl">Strictness <b id="dm-tval">0.50</b></p>
+        <input id="dm-thr" type="range" min="0.30" max="0.70" step="0.01" value="0.50" disabled>
+        <p class="demo-hint">Left is stricter. Move it and watch the distances: below the line is a
+        name, above it is <em>unknown</em>.</p>
+
+        <button class="demo-btn demo-btn-q" id="dm-stop" disabled>Stop camera</button>
+        <p class="demo-status" id="dm-status">Idle.</p>
+      </div>
+    </div>
+
+    <p class="note"><b>Two honest notes.</b> This demo is not the same engine as the desktop app.
+    The desktop app uses PyTorch and a 512-number faceprint; a browser cannot run that, so the demo
+    uses a smaller model with a <b>128-number</b> faceprint. Same three steps, less separation
+    between people, which is why it gets its own measured threshold below. And second: enrol
+    yourself, or someone standing next to you who is happy to be enrolled. It is a toy on a
+    portfolio site, not a reason to point a camera at a stranger.</p>
+  </section>
+
+  <!-- THE DEMO'S OWN THRESHOLD -->
+  <section id="demothreshold">
+    <p class="seclabel">// the demo got measured too</p>
+    <h2>The number everyone copies turned out to be at the edge.</h2>
+    <p class="body">The browser model has a widely quoted default of <b>0.60</b>. Rather than take
+    it, the same measurement was run again on the same five faces and the same webcam-style changes,
+    this time through the model that is actually running above.</p>
+
+    <table class="opts">
+      <tr><th>Pairs</th><th>Lowest</th><th>Median</th><th>Highest</th></tr>
+      <tr><td>Same person, after webcam-style change</td><td><code>0.057</code></td><td><code>0.141</code></td><td><code>0.329</code></td></tr>
+      <tr><td>Genuinely different people</td><td><code>0.632</code></td><td><code>0.897</code></td><td><code>1.002</code></td></tr>
+    </table>
+
+    <p class="body">The closest pair of genuinely different people came out at <b>0.632</b>. The
+    quoted default of 0.60 sits <b>0.03</b> underneath it. That is not a safety margin, it is a
+    rounding error, and one slightly unlucky pair of strangers puts a name on the wrong face. The
+    slider above starts at <b>0.50</b> instead, which clears the worst same-person case by a wide
+    margin and still leaves real distance to the nearest stranger.</p>
+    <p class="note">Worth comparing to the desktop app, because the difference is the point. The
+    PyTorch model's two groups sat between 0.36 and 0.97, a gap of 0.61. The browser model's sit
+    between 0.33 and 0.63, a gap of 0.30. Half the room. That is the cost of a model small enough
+    to download in seconds, and it is why the desktop app is the one to run if you want it to be
+    right rather than convenient.</p>
+  </section>
+
+  <!-- THE THRESHOLD -->
+  <section id="threshold">
+    <p class="seclabel">// the number that decides everything</p>
+    <h2>"Close enough" was measured, not taken from a blog post.</h2>
+    <p class="body">Every face recogniser needs one number: how far apart two faceprints may be and
+    still count as the same person. Too tight and it fails to know you. Too loose and it calls a
+    stranger by your name. Most tutorials paste in a value and move on.</p>
+    <p class="body">This one was measured. Five genuinely different real faces gave ten real
+    different-person pairs. Each face was then put through the kind of change a webcam actually
+    produces, dimmer, brighter, tilted ten degrees, zoomed, softened, mirrored, giving thirty
+    same-person pairs.</p>
+
+    <table class="opts">
+      <tr><th>Pairs</th><th>Lowest</th><th>Median</th><th>Highest</th></tr>
+      <tr><td>Same person, after webcam-style change</td><td><code>0.046</code></td><td><code>0.209</code></td><td><code>0.360</code></td></tr>
+      <tr><td>Genuinely different people</td><td><code>0.971</code></td><td><code>1.305</code></td><td><code>1.467</code></td></tr>
+    </table>
+
+    <p class="body">Every threshold between <b>0.36</b> and <b>0.97</b> scored thirty out of thirty
+    recognised with zero false accepts, so the gap is wide and the exact value is not delicate. The
+    default is <b>0.80</b>, placed deliberately off-centre in that gap: well clear of the worst
+    same-person case, because real life adds pose and expression that those variations do not, while
+    staying below the closest different-person pair.</p>
+    <p class="note">And the honest caveat, which is on the slider in the app for exactly this reason:
+    those same-person pairs were variations of one photo each, not photos taken on different days. Real
+    same-person distances will run higher. So the app shows the live distance and lets you move the
+    threshold, because tuning it on your own face and your own lighting beats any number shipped in a
+    file.</p>
+  </section>
+
+  <!-- PRIVACY -->
+  <section id="privacy">
+    <p class="seclabel">// privacy, by construction</p>
+    <h2>The demo cannot collect faces, because there is nowhere to put them.</h2>
+    <div class="outlist">
+      <div class="o"><b>No photographs are stored</b><span>Only the 512 numbers, and a face cannot be rebuilt from them. The desktop app keeps a single small file of names and faceprints, on your machine.</span></div>
+      <div class="o"><b>The browser demo saves nothing at all</b><span>Every visitor gets their own list, held in memory for their visit and gone when they leave. The models are shared between visitors; the people are not. A test proves a second visitor sees an empty list.</span></div>
+      <div class="o"><b>Offline after the first run</b><span>The only network call CliffID ever makes is downloading the two pretrained models once. After that you can pull the plug and it works exactly the same.</span></div>
+      <div class="o"><b>Enrol people who agreed to it</b><span>It is built for your own face and people who are happy to be added. That is the honest scope of a personal recogniser, and it is worth saying out loud rather than leaving implied.</span></div>
+    </div>
+  </section>
+
+  <!-- ONE ENGINE -->
+  <section id="engine">
+    <p class="seclabel">// architecture</p>
+    <h2>One engine, two faces on it.</h2>
+    <p class="body">The recognition code knows nothing about windows or browsers. It finds faces, makes
+    faceprints and matches them, and that is all it does. The desktop window and the browser page are
+    both thin layers on top.</p>
+
+    <div class="codeblock">
+      <p class="cap">the whole shape</p>
+      <pre><span class="c"># the brain. no tkinter, no gradio, no idea either exists</span>
+core/
+    detector.py     <span class="c"># find faces, straighten them</span>
+    embedder.py     <span class="c"># a face -> 512 numbers</span>
+    gallery.py      <span class="c"># who is enrolled</span>
+    recognizer.py   <span class="c"># the three joined up</span>
+
+app.py              <span class="c"># the desktop window  (tkinter)</span>
+web.py              <span class="c"># the same thing in a browser  (gradio)</span></pre>
+    </div>
+
+    <p class="note">That claim got tested rather than asserted. The browser version was written after
+    the desktop one, and it needed no change to <code>core/</code> at all except letting the matching
+    take a per-visitor gallery, which the desktop app never needed because there is only ever one of
+    you. Everything else was reused untouched.</p>
+  </section>
+
+  <!-- RUN IT -->
+  <section id="start">
+    <p class="seclabel">// run it</p>
+    <h2>Two commands, then look at the camera.</h2>
+
+    <div class="codeblock">
+      <p class="cap">desktop</p>
+      <button class="copy">copy</button>
+      <pre>pip install -r requirements.txt
+
+python -m cliffid            <span class="c"># your webcam</span>
+python -m cliffid --fake     <span class="c"># no webcam needed, see the window</span></pre>
+    </div>
+
+    <div class="codeblock">
+      <p class="cap">browser, same engine</p>
+      <button class="copy">copy</button>
+      <pre>python -m cliffid.web</pre>
+    </div>
+
+    <p class="body">Type a name, look at the camera, click Enrol. It takes six frames and blends them,
+    which is why you hold still for a second: the blend cancels whatever was odd about any single frame
+    and keeps what is consistently you.</p>
+
+    <p class="note"><b>Status.</b> Built and tested, running locally. 35 tests pass with no webcam and
+    no model download required, because the camera has a stand-in and the window is tested against a
+    stub. The public browser demo is written and ready to publish but is not up yet. This page will get
+    the link when it is.</p>
+  </section>
+
+</div>
+
+<script type="module">
+/* ------------------------------------------------------------------
+   CliffID, in the browser.
+
+   The same three steps as the desktop app: find and straighten a face,
+   turn it into numbers, measure the distance to the people you enrolled.
+   The model is smaller (128 numbers instead of 512) because a browser
+   cannot run PyTorch, so it carries its own measured threshold.
+
+   Nothing is uploaded and nothing is stored. The gallery below is a
+   plain array in memory; closing the tab is the delete button.
+
+   The library and model weights are served from this site. To use a CDN
+   instead, point LIB and MODELS at:
+     https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/dist/face-api.esm.js
+     https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model
+   ------------------------------------------------------------------ */
+(function () {
+  // The './' matters: a dynamic import() without it is read as a bare module name,
+  // not a file next to the page, and fails to resolve.
+  var LIB = './vendor/face-api.esm.js';
+  var MODELS = './models';
+
+  var ENROL_FRAMES = 6;   // the desktop app blends six frames; so does this
+  var DETECT_MS = 130;    // how often to look, not every frame
+  var BACKENDS = ['webgl', 'cpu'];   // graphics card if there is one, otherwise plain JS
+
+  // The detector searches at one scale at a time, so the right setting depends on how
+  // much of the frame your face fills. 320 suits someone sitting at a laptop; 608 finds
+  // a smaller, further-away face. Measured on one test face: at 320 it scored 0.98, at
+  // 416 it scored 0.30 and often missed entirely. So rather than pick one and hope, it
+  // starts at 320 and swaps to the other whenever a look comes back empty.
+  var SIZES = [320, 608];
+  var sizeIx = 0;
+
+  var el = function (id) { return document.getElementById(id); };
+  var video = el('dm-video'), canvas = el('dm-canvas'), cover = el('dm-cover');
+  var startBtn = el('dm-start'), stopBtn = el('dm-stop'), enrolBtn = el('dm-enrol');
+  var nameIn = el('dm-name'), thr = el('dm-thr'), tval = el('dm-tval');
+  var listEl = el('dm-list'), countEl = el('dm-count');
+  var statusEl = el('dm-status'), bootEl = el('dm-boot');
+  if (!video || !canvas) return;
+
+  var fa = null, backend = null, stream = null, timer = null, busy = false, enrolling = false;
+  var gallery = [];            // [{name, faceprint}] - memory only, never saved
+  var lastFaces = [];
+  var holdUntil = 0;           // keeps an action message on screen briefly
+
+  function say(text, kind, holdMs) {
+    if (holdMs) holdUntil = Date.now() + holdMs;
+    else if (Date.now() < holdUntil) return;
+    statusEl.textContent = text;
+    statusEl.className = 'demo-status' + (kind ? ' ' + kind : '');
+  }
+
+  function detectorOpts() {
+    return new fa.TinyFaceDetectorOptions({ inputSize: SIZES[sizeIx], scoreThreshold: 0.35 });
+  }
+
+  function distance(a, b) {
+    var s = 0;
+    for (var i = 0; i < a.length; i++) { var d = a[i] - b[i]; s += d * d; }
+    return Math.sqrt(s);
+  }
+
+  function nearest(faceprint) {
+    var best = null;
+    for (var i = 0; i < gallery.length; i++) {
+      var d = distance(faceprint, gallery[i].faceprint);
+      if (!best || d < best.d) best = { name: gallery[i].name, d: d };
+    }
+    return best;
+  }
+
+  function drawList() {
+    countEl.textContent = gallery.length;
+    if (!gallery.length) {
+      listEl.innerHTML = '<p class="demo-empty">Nobody yet. Type a name, look at the camera, press Enrol.</p>';
+      return;
+    }
+    listEl.innerHTML = '';
+    gallery.forEach(function (p, i) {
+      var row = document.createElement('div');
+      row.className = 'demo-person';
+      var label = document.createElement('span');
+      label.textContent = p.name;
+      var x = document.createElement('button');
+      x.type = 'button';
+      x.textContent = 'x';
+      x.title = 'Forget ' + p.name;
+      x.setAttribute('aria-label', 'Forget ' + p.name);
+      x.onclick = function () {
+        gallery.splice(i, 1);
+        drawList();
+        say('Forgot ' + p.name + '.', null, 2200);
+      };
+      row.appendChild(label); row.appendChild(x);
+      listEl.appendChild(row);
+    });
+  }
+
+  function paint() {
+    var w = video.videoWidth, h = video.videoHeight;
+    if (!w || !h) return;
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    var c = canvas.getContext('2d');
+    c.clearRect(0, 0, w, h);
+    // the video is mirrored for the viewer, so mirror the boxes to match
+    c.save(); c.translate(w, 0); c.scale(-1, 1);
+    c.lineWidth = Math.max(2, Math.round(w / 320));
+    c.font = '600 ' + Math.max(13, Math.round(w / 34)) + "px 'Space Mono', monospace";
+
+    lastFaces.forEach(function (f) {
+      var known = f.name !== null;
+      var col = known ? '#38e08a' : '#ffc24b';
+      var b = f.box;
+      c.strokeStyle = col;
+      c.strokeRect(b.x, b.y, b.width, b.height);
+
+      var label = (known ? f.name : 'unknown') +
+                  (f.d === null ? '' : '  ' + f.d.toFixed(2));
+      c.save(); c.translate(b.x + b.width, 0); c.scale(-1, 1);   // un-mirror the text
+      var pad = 6, th = Math.max(19, Math.round(w / 24));
+      var tw = c.measureText(label).width + pad * 2;
+      var ty = b.y - th < 2 ? b.y + b.height + 2 : b.y - th;
+      c.fillStyle = 'rgba(7,9,15,.82)';
+      c.fillRect(0, ty, tw, th);
+      c.fillStyle = col;
+      c.fillText(label, pad, ty + th - Math.round(th * 0.28));
+      c.restore();
+    });
+    c.restore();
+  }
+
+  async function look() {
+    if (busy || enrolling || !fa || video.readyState < 2) return;
+    busy = true;
+    try {
+      var found = await fa.detectAllFaces(video, detectorOpts())
+                          .withFaceLandmarks().withFaceDescriptors();
+      if (!found.length) sizeIx = (sizeIx + 1) % SIZES.length;   // try the other scale next time
+      var limit = parseFloat(thr.value);
+      lastFaces = found.map(function (r) {
+        var near = gallery.length ? nearest(Array.from(r.descriptor)) : null;
+        var known = near && near.d <= limit;
+        return {
+          box: r.detection.box,
+          name: known ? near.name : null,
+          d: near ? near.d : null
+        };
+      });
+      paint();
+      if (!found.length) say('Looking. No face in shot.');
+      else {
+        var names = lastFaces.filter(function (f) { return f.name; }).map(function (f) { return f.name; });
+        say(found.length + ' face' + (found.length > 1 ? 's' : '') +
+            (names.length ? '  .  ' + names.join(', ') : '  .  nobody it knows'), 'on');
+      }
+    } catch (e) {
+      say('Recognition hiccup: ' + e.message, 'bad');
+    }
+    busy = false;
+  }
+
+  async function enrol() {
+    var name = (nameIn.value || '').trim();
+    if (!name) { say('Type a name first.', 'bad', 2500); nameIn.focus(); return; }
+    if (gallery.some(function (p) { return p.name.toLowerCase() === name.toLowerCase(); })) {
+      say('Already enrolled someone called ' + name + '.', 'bad', 2800); return;
+    }
+    enrolling = true; enrolBtn.disabled = true;
+    say('Hold still, taking ' + ENROL_FRAMES + ' frames.', 'on', 4000);
+    var sum = null, got = 0;
+    try {
+      for (var i = 0; i < ENROL_FRAMES; i++) {
+        var r = await fa.detectSingleFace(video, detectorOpts())
+                        .withFaceLandmarks().withFaceDescriptor();
+        if (!r) sizeIx = (sizeIx + 1) % SIZES.length;
+        if (r) {
+          var v = r.descriptor;
+          if (!sum) { sum = new Float32Array(v.length); }
+          for (var k = 0; k < v.length; k++) sum[k] += v[k];
+          got++;
+        }
+        await new Promise(function (r2) { setTimeout(r2, 90); });
+      }
+    } catch (e) {
+      say('Enrol failed: ' + e.message, 'bad', 4000);
+      enrolling = false; enrolBtn.disabled = false; return;
+    }
+    if (!got) {
+      say('Could not see a face. More light, or move closer.', 'bad', 4000);
+    } else {
+      // Blend the frames. The blend cancels whatever was odd about any single frame and
+      // keeps what is consistently you. No rescaling: the threshold was measured against
+      // these descriptors exactly as the model produces them.
+      var mean = Array.prototype.slice.call(sum).map(function (x) { return x / got; });
+      gallery.push({ name: name, faceprint: mean });
+      drawList();
+      nameIn.value = '';
+      say('Enrolled ' + name + ' from ' + got + ' of ' + ENROL_FRAMES + ' frames.', 'on', 3500);
+    }
+    enrolling = false; enrolBtn.disabled = false;
+  }
+
+  async function start() {
+    startBtn.disabled = true;
+    if (!window.isSecureContext) {
+      bootEl.textContent = 'Needs https. Open this page on the site, not as a local file.';
+      startBtn.disabled = false; return;
+    }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      bootEl.textContent = 'This browser will not give a page camera access.';
+      startBtn.disabled = false; return;
+    }
+    try {
+      bootEl.textContent = 'Downloading the model, about 7 MB.';
+      fa = await import(LIB);
+      // Pick where the maths runs before asking for any model. WebGL uses the graphics
+      // card and is much faster; cpu is plain JavaScript and always works. Without this
+      // the library throws on the first load, because nothing has claimed a backend.
+      backend = null;
+      for (var i = 0; i < BACKENDS.length && !backend; i++) {
+        try {
+          if (await fa.tf.setBackend(BACKENDS[i])) { await fa.tf.ready(); backend = BACKENDS[i]; }
+        } catch (e) { /* try the next one */ }
+      }
+      if (!backend) { await fa.tf.ready(); backend = fa.tf.getBackend() || 'unknown'; }
+      await fa.nets.tinyFaceDetector.loadFromUri(MODELS);
+      await fa.nets.faceLandmark68Net.loadFromUri(MODELS);
+      await fa.nets.faceRecognitionNet.loadFromUri(MODELS);
+    } catch (e) {
+      bootEl.textContent = 'Could not load the model. ' + e.message;
+      startBtn.disabled = false; return;
+    }
+    try {
+      bootEl.textContent = 'Asking for the camera.';
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }, audio: false
+      });
+      video.srcObject = stream;
+      await video.play();
+    } catch (e) {
+      bootEl.textContent = e.name === 'NotAllowedError'
+        ? 'Camera permission was declined. Allow it in the address bar and press start again.'
+        : 'No camera available. ' + e.message;
+      startBtn.disabled = false; return;
+    }
+    cover.classList.add('gone');
+    [nameIn, enrolBtn, thr, stopBtn].forEach(function (n) { n.disabled = false; });
+    say('Camera on (' + backend + '). Type a name and enrol yourself.', 'on', 3000);
+    timer = setInterval(look, DETECT_MS);
+  }
+
+  function stop() {
+    if (timer) { clearInterval(timer); timer = null; }
+    if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
+    video.srcObject = null;
+    lastFaces = [];
+    if (canvas.getContext) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    cover.classList.remove('gone');
+    bootEl.textContent = 'Camera stopped. The model stays cached, so starting again is quick.';
+    startBtn.disabled = false;
+    [nameIn, enrolBtn, thr, stopBtn].forEach(function (n) { n.disabled = true; });
+    say('Stopped. Anyone enrolled is still in memory until you reload.', null, 3000);
+  }
+
+  // Recognition is the expensive part of this page, so do not run it against a tab
+  // nobody is looking at. It also keeps the buttons responsive when you come back.
+  document.addEventListener('visibilitychange', function () {
+    if (!stream) return;
+    if (document.hidden) {
+      if (timer) { clearInterval(timer); timer = null; }
+    } else if (!timer) {
+      timer = setInterval(look, DETECT_MS);
+    }
+  });
+
+  startBtn.addEventListener('click', start);
+  stopBtn.addEventListener('click', stop);
+  enrolBtn.addEventListener('click', enrol);
+  nameIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') enrol(); });
+  thr.addEventListener('input', function () {
+    tval.textContent = parseFloat(thr.value).toFixed(2);
+    paint();
+  });
+  window.addEventListener('pagehide', stop);
+
+  drawList();
+  window.__cliffidDemo = {   // so the page can be driven in a test
+    gallery: function () { return gallery; },
+    faces: function () { return lastFaces; },
+    start: start, enrol: enrol, stop: stop, ready: function () { return !!stream; },
+    backend: function () { return backend; },
+    status: function () { return statusEl.textContent; },
+    running: function () { return !!timer; }
+  };
+})();
+
+</script>
+</body>
+</html>

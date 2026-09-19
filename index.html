@@ -1213,6 +1213,20 @@ footer {
 --------------------------------------------------------------------------- */
 const UPDATES = [
   {
+    date: "19 Sep 2026", kind: "feature", project: "CliffID",
+    title: "CliffID now runs in your browser, on your own webcam, with nothing uploaded",
+    body: "The project page has a working demo in it. Enrol yourself, and it puts your name " +
+          "over your face; anyone it has not met comes back as <b>unknown</b>. There is no server " +
+          "involved at all: the model downloads to your machine and every frame stays there, which " +
+          "is the only honest way to put a face recogniser on a public page. It is not the desktop " +
+          "engine, because a browser cannot run PyTorch, so it uses a smaller model with a " +
+          "128-number faceprint and got its own measurement. That turned up something worth " +
+          "saying out loud: the threshold everyone copies for this model is <b>0.60</b>, and the " +
+          "closest pair of genuinely different people measured <b>0.622</b>. Twenty-two thousandths " +
+          "of headroom is not a margin. The demo ships at 0.50.",
+    link: "cliffid.html#try", linkText: "Try it on your webcam"
+  },
+  {
     date: "19 Sep 2026", kind: "release", project: "CliffID",
     title: "New: CliffID, face recognition that runs offline and admits when it does not know you",
     body: "Cliff + ID, named after Clifford, the family dog, who is on the icon. A desktop app " +
