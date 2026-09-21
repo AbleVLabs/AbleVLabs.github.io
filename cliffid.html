@@ -344,21 +344,23 @@
 
     <table class="opts">
       <tr><th>Pairs</th><th>Lowest</th><th>Median</th><th>Highest</th></tr>
-      <tr><td>Same person, after webcam-style change</td><td><code>0.057</code></td><td><code>0.141</code></td><td><code>0.329</code></td></tr>
-      <tr><td>Genuinely different people</td><td><code>0.632</code></td><td><code>0.897</code></td><td><code>1.002</code></td></tr>
+      <tr><td>Same person, after webcam-style change</td><td><code>0.065</code></td><td><code>0.147</code></td><td><code>0.271</code></td></tr>
+      <tr><td>Genuinely different people</td><td><code>0.622</code></td><td><code>0.901</code></td><td><code>0.989</code></td></tr>
     </table>
 
-    <p class="body">The closest pair of genuinely different people came out at <b>0.632</b>. The
-    quoted default of 0.60 sits <b>0.03</b> underneath it. That is not a safety margin, it is a
+    <p class="body">The closest pair of genuinely different people came out at <b>0.622</b>. The
+    quoted default of 0.60 sits <b>0.022</b> underneath it. That is not a safety margin, it is a
     rounding error, and one slightly unlucky pair of strangers puts a name on the wrong face. The
-    slider above starts at <b>0.50</b> instead, which clears the worst same-person case by a wide
-    margin and still leaves real distance to the nearest stranger.</p>
+    slider above starts at <b>0.50</b> instead: <b>0.122</b> clear of the nearest stranger and
+    <b>0.229</b> above the worst same-person case, with all thirty same-person pairs still
+    recognised and no false accepts.</p>
     <p class="note">Worth comparing to the desktop app, because the difference is the point. The
-    PyTorch model's two groups sat between 0.36 and 0.97, a gap of 0.61. The browser model's sit
-    between 0.33 and 0.63, a gap of 0.30. Half the room. That is the cost of a model small enough
-    to download in seconds, and it is why the desktop app is the one to run if you want it to be
-    right rather than convenient.</p>
+    PyTorch model's two groups sat between 0.36 and 0.97, a gap of <b>0.61</b>. The browser model's
+    sit between 0.27 and 0.62, a gap of <b>0.35</b>. A little over half the room, from a model
+    small enough to download in seconds. That is the trade, and it is why the desktop app is the
+    one to run when you want it right rather than convenient.</p>
   </section>
+
 
   <!-- THE THRESHOLD -->
   <section id="threshold">
